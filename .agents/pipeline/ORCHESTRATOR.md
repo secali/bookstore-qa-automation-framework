@@ -1,50 +1,52 @@
-# 🤖 Orquestador del Pipeline de QA Multi-Agente End-to-End
+# 🤖 End-to-End Multi-Agent QA Pipeline Orchestrator
 
-> **Inspirado en la Arquitectura de Sergio Cañete Linares:** Ecosistema de agentes de IA para el ciclo de vida continuo de pruebas guiado por especificaciones (*Spec-Driven Development*).  
-> **Objetivo:** Transformar una Historia de Usuario (HU) en pruebas automatizadas ejecutables en TypeScript + Playwright + Cucumber BDD con validación de contratos, cero steps huérfanos y máxima velocidad.
+> **Based on Sergio Cañete Linares' Architecture:** Autonomous multi-agent AI ecosystem covering the entire QA lifecycle through Spec-Driven Development (SDD), ISTQB-aligned test categorization, and a generic, page-agnostic automation engine.
 
 ---
 
-## 🔄 Flujo de Trabajo del Pipeline (De Requisito a Código Ejecutable)
+## 🔄 Pipeline Workflow Overview
 
 ```mermaid
 flowchart TD
-    HU[Historia de Usuario / Requerimiento] --> A1[Agente 1: Story & Codebase Analyst]
-    A1 -->|Inspecciona Repositorio, Swagger, Rutas y Modelos| R1[ANALYSIS_REPORT.md\n• Criterios de Aceptación\n• Endpoints y Schemas\n• Criterios de Testabilidad]
+    US[User Story / Acceptance Criteria] --> A1[Agent 1: Story & Codebase Analyst]
+    A1 -->|Inspects Codebase, Models, Schemas, React DOM| R1[ANALYSIS_REPORT.md\n• Technical Mapping\n• ISTQB Levels & Types\n• Accessibility Identifiers]
     
-    R1 --> A2[Agente 2: QA Test Strategist & BDD Architect]
-    A2 -->|Aplica Pirámide 70% API / 30% UI & Niveles N1-N4| R2[TEST_PLAN & GHERKIN FEATURES\n• Casos N1-N4\n• Archivos .feature declarativos\n• Taxonomía de Tags]
+    R1 --> A2[Agent 2: QA Test Strategist & BDD Architect]
+    A2 -->|70% API / 30% UI Pyramid & N1-N4 Matrix| R2[TEST_PLAN & ENGLISH GHERKIN\n• ISTQB Tagging Taxonomy\n• Declarative Business Scenarios\n• Generic Puzzle Piece Phrasing]
     
-    R2 --> A3[Agente 3: SDET Automation Implementer]
-    DIC[STEPS_DICTIONARY.md\nCatálogo Oficial de Steps] --> A3
+    R2 --> A3[Agent 3: SDET Automation Implementer]
+    DIC[STEPS_DICTIONARY.md\nEnglish BDD Steps Catalog] --> A3
     
-    A3 -->|Implementa o Reutiliza Steps en TypeScript| CODE[CÓDIGO DEL FRAMEWORK\n• Step Definitions modulares\n• Page Objects Playwright\n• Schemas Zod]
+    A3 -->|Reuses Atomic Generic Steps & ElementResolver| CODE[AUTOMATION REPOSITORY\n• GenericHttpClient\n• ElementResolver (Page-Agnostic)\n• Zod OpenAPI Contracts]
     
-    CODE --> VAL[Control de Calidad Automático\n1. npx tsc --noEmit\n2. npx cucumber-js --dry-run]
-    VAL --> CI[Pipeline CI/CD en GitHub Actions]
+    CODE --> VAL[Automated 4-Step Quality Gate\n1. npm run format\n2. npm run lint\n3. npx tsc --noEmit\n4. npx cucumber-js --dry-run]
+    VAL --> CI[Hermetic Docker CI/CD in GitHub Actions]
 ```
 
 ---
 
-## 👥 Definición de los Tres Agentes del Pipeline
+## 👥 The Three Pipeline Agents
 
-| Agente | Nombre | Rol y Misión | Artefacto de Entrada | Artefacto de Salida | Archivo de Especificación |
-|---|---|---|---|---|---|
-| **Agente 1** | **Story & Codebase Analyst** | Analiza la HU y examina el código fuente del repositorio (rutas Express, modelos Mongo, Swagger, componentes React) para detectar requisitos implícitos y criterios de testabilidad. | Historia de Usuario en lenguaje natural / Jira | `ANALYSIS_REPORT.md` | [01-story-and-code-analyst.md](./agents/01-story-and-code-analyst.md) |
-| **Agente 2** | **QA Test Strategist & BDD Architect** | Diseña la estrategia de prueba bajo la pirámide 70% API / 30% UI (niveles N1-N4) y redacta los escenarios Gherkin declarativos de negocio. | `ANALYSIS_REPORT.md` | `INCREMENTAL_TEST_PLAN.md` y archivos `.feature` | [02-qa-test-planner.md](./agents/02-qa-test-planner.md) |
-| **Agente 3** | **SDET Automation Implementer** | Conoce el framework en profundidad. Consulta [STEPS_DICTIONARY.md](../../STEPS_DICTIONARY.md) para reutilizar steps existentes, implementa nuevos steps sólo si es necesario, actualiza Page Objects y valida compilación y dry-run. | Archivos `.feature` + `STEPS_DICTIONARY.md` | Código TypeScript (`src/`, `tests/`) | [03-sdet-implementer.md](./agents/03-sdet-implementer.md) |
+| Agent | Specification File | Role & Primary Duty |
+|---|---|---|
+| **Agent 1: Story & Codebase Analyst** | [01-story-and-code-analyst.md](./agents/01-story-and-code-analyst.md) | **Shift-Left Technical Analysis:** Inspects user story and workspace code (routes, Mongoose models, React components, Swagger docs) to output `ANALYSIS_REPORT.md` with ISTQB test categorization. |
+| **Agent 2: QA Test Strategist & BDD Architect** | [02-qa-test-planner.md](./agents/02-qa-test-planner.md) | **Test Strategy & English Gherkin:** Designs the 70% API / 30% UI pyramid across levels N1-N4. Authors declarative English `.feature` files tagged with formal ISTQB taxonomy (`@integration-test`, `@system-test`, `@system-integration-test`, `@contract`, `@security`, `@functional`, `@usability`, `@boundary-value-analysis`, `@equivalence-partitioning`, `@state-transition`, `@error-guessing`, `@positive-testing`, `@negative-testing`, `@smoke`, `@p1`). |
+| **Agent 3: SDET Automation Implementer** | [03-sdet-implementer.md](./agents/03-sdet-implementer.md) | **Generic SDET Implementation:** Consumes [STEPS_DICTIONARY.md](../../STEPS_DICTIONARY.md). Executes tests via the page-agnostic `ElementResolver` and endpoint-agnostic `GenericHttpClient`. Executes the automated 4-step quality gate. |
+
 
 ---
 
-## 🚀 Cómo Ejecutar el Pipeline en Antigravity
+## 🚀 How to Trigger the Pipeline in Antigravity
 
-Para ejecutar el pipeline sobre una nueva funcionalidad o historia de usuario, invoca a los agentes secuencialmente en el prompt:
+Invoke the agents sequentially in chat prompts:
 
-### Fase 1: Análisis de Requisitos y Código
-> *"Actúa como el **Agente 1 (Story & Codebase Analyst)** siguiendo `.agents/pipeline/agents/01-story-and-code-analyst.md`. Analiza la siguiente Historia de Usuario e inspecciona el repositorio: [Pega aquí la HU]."*
+```text
+# Step 1: Technical Analysis
+Act as Agent 1 (Story & Codebase Analyst) using .agents/pipeline/agents/01-story-and-code-analyst.md. Analyze this User Story: [Paste Story].
 
-### Fase 2: Estrategia y Redacción BDD
-> *"Actúa como el **Agente 2 (QA Test Strategist)** siguiendo `.agents/pipeline/agents/02-qa-test-planner.md`. Toma el informe del Agente 1 y genera el plan de pruebas 70/30 y los archivos `.feature` en Gherkin declarativo."*
+# Step 2: Test Strategy & Gherkin
+Act as Agent 2 (QA Test Strategist) using .agents/pipeline/agents/02-qa-test-planner.md. Using Agent 1's analysis, generate the ISTQB test plan and English .feature files.
 
-### Fase 3: Implementación y Validación SDET
-> *"Actúa como el **Agente 3 (SDET Automation Implementer)** siguiendo `.agents/pipeline/agents/03-sdet-implementer.md`. Toma las features del Agente 2, consulta `STEPS_DICTIONARY.md` para reutilizar steps, implementa el código en TypeScript y valida con `tsc` y `cucumber-js --dry-run`."*
+# Step 3: SDET Implementation
+Act as Agent 3 (SDET Implementer) using .agents/pipeline/agents/03-sdet-implementer.md. Follow STEPS_DICTIONARY.md, reuse generic steps, and validate with tsc and cucumber-js --dry-run.
+```

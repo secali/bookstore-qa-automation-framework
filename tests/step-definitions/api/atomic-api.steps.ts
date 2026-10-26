@@ -131,3 +131,46 @@ const assertResponseArrayLength = function (this: CustomWorld, minCount: number)
 };
 Then('the response should contain an array with at least {int} item(s)', assertResponseArrayLength);
 Then('la respuesta contiene un array con al menos {int} elemento(s)', assertResponseArrayLength);
+
+// 5. Generic Status Code & Header Assertions
+const assertStatusCodeAlias = function (this: CustomWorld, expectedStatus: number) {
+  const actualStatus = this.context.lastResponse?.status;
+  expect(actualStatus, `Expected status code ${expectedStatus} but received ${actualStatus}`).toBe(expectedStatus);
+};
+Then('the response status code should be {int}', assertStatusCodeAlias);
+Then('el código de estado de la respuesta debe ser {int}', assertStatusCodeAlias);
+
+const assertResponseHeaderContains = function (this: CustomWorld, headerName: string, expectedSubstring: string) {
+  const headers = this.context.lastResponse?.headers || {};
+  const headerValue = headers[headerName.toLowerCase()] || headers[headerName] || '';
+  expect(String(headerValue).toLowerCase()).toContain(expectedSubstring.toLowerCase());
+};
+Then('the response header {string} should contain {string}', assertResponseHeaderContains);
+Then('la cabecera de respuesta {string} debe contener {string}', assertResponseHeaderContains);
+
+const assertFieldDoesNotExist = function (this: CustomWorld, path: string) {
+  const body = this.context.lastResponse?.body;
+  const actual = getNestedProperty(body, path);
+  expect(
+    actual,
+    `Field '${path}' was expected to NOT exist, but was found with value ${JSON.stringify(actual)}`
+  ).toBeUndefined();
+};
+Then('the response field {string} should not exist', assertFieldDoesNotExist);
+Then('el campo {string} de la respuesta no debe existir', assertFieldDoesNotExist);
+
+// 6. Generic Bearer Token Configuration
+const setBearerToken = function (this: CustomWorld, rawToken: string) {
+  const token = resolveTemplate(rawToken, this);
+  this.apiClient.http.setAuthToken(token);
+  this.context.token = token;
+};
+When('the user sets the Bearer authorization token to {string}', setBearerToken);
+When('configura el token de autorización Bearer con {string}', setBearerToken);
+
+const clearAuthToken = function (this: CustomWorld) {
+  this.apiClient.http.clearAuthToken();
+  delete this.context.token;
+};
+When('the user removes the authorization token', clearAuthToken);
+When('elimina el token de autorización', clearAuthToken);

@@ -18,11 +18,3 @@ const loginWithSpecificCredentials = async function (this: CustomWorld, email: s
 };
 When('the user submits email {string} and password {string} on the login page', loginWithSpecificCredentials);
 When('el usuario ingresa el email {string} y la contraseña {string}', loginWithSpecificCredentials);
-
-const assertErrorMessageDisplayed = async function (this: CustomWorld) {
-  expect(this.loginPage).toBeDefined();
-  const alertText = await this.loginPage!.getAlertText();
-  expect(alertText.length).toBeGreaterThan(0);
-};
-Then('an error alert message should be displayed on screen', assertErrorMessageDisplayed);
-Then('se muestra un mensaje de error en pantalla', assertErrorMessageDisplayed);

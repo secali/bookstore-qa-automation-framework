@@ -99,4 +99,32 @@ export class ElementResolver {
     const table = this.getTable(tableIdentifier);
     return table.locator('tbody tr, [role="row"]').filter({ hasText: text }).first();
   }
+
+  /**
+   * Localiza un mensaje de alerta, notificación, error o toast de forma agnóstica.
+   */
+  findAlert(textSubstring?: string): Locator {
+    const baseLocator = this.page.locator(
+      '[role="alert"], .alert, .alert-danger, .alert-success, .error, .error-message, .notification, .toast'
+    );
+    if (textSubstring) {
+      return baseLocator.filter({ hasText: new RegExp(textSubstring, 'i') }).first();
+    }
+    return baseLocator.first();
+  }
+
+  /**
+   * Localiza un checkbox o switch por etiqueta accesible, testid o id.
+   */
+  findCheckbox(identifier: string, container?: Locator): Locator {
+    const parent = container || this.page;
+    const regex = new RegExp(`^${identifier}$|${identifier}`, 'i');
+    return parent
+      .locator(`[data-testid="${identifier}"]`)
+      .or(parent.getByRole('checkbox', { name: regex }))
+      .or(parent.getByLabel(regex))
+      .or(parent.locator(`input[type="checkbox"][name="${identifier}"]`))
+      .or(parent.locator(`#${identifier}`))
+      .first();
+  }
 }

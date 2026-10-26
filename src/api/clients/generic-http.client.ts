@@ -24,6 +24,16 @@ export class GenericHttpClient {
     this.customHeaders = {};
   }
 
+  setAuthToken(token: string): void {
+    this.world.context.token = token;
+    this.setHeader('Authorization', `Bearer ${token}`);
+  }
+
+  clearAuthToken(): void {
+    delete this.world.context.token;
+    delete this.customHeaders['Authorization'];
+  }
+
   private buildHeaders(extraHeaders?: Record<string, string>): Record<string, string> {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',

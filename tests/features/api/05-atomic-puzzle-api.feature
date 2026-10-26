@@ -1,4 +1,4 @@
-@api @atomic @lego @regression
+@api @atomic @generic @integration-test @regression
 Feature: Atomic API Resource Management (Lego Puzzle Pieces)
   As an SDET Automation Engineer
   I want to assemble reusable generic steps as puzzle pieces
@@ -7,7 +7,7 @@ Feature: Atomic API Resource Management (Lego Puzzle Pieces)
   Background:
     Given the user is authenticated as an admin in the API
 
-  @smoke
+  @integration-test @functional @positive-testing @contract @equivalence-partitioning @atomic @generic @smoke @p1
   Scenario: Create a resource via dynamic JSON payload and retrieve it using stored context variables
     When the user sends a "POST" request to "/books" with JSON payload:
       """
@@ -27,6 +27,7 @@ Feature: Atomic API Resource Management (Lego Puzzle Pieces)
     Then the API response status code should be 200
     And the response field "id" should equal "{{createdItemId}}"
 
+  @integration-test @functional @positive-testing @negative-testing @state-transition @atomic @generic @reliability @p1
   Scenario: Update and delete resource using chainable context references
     Given a book is created via API with random valid data
     When the user saves the response field "id" as "targetId"
@@ -38,3 +39,4 @@ Feature: Atomic API Resource Management (Lego Puzzle Pieces)
     Then the API response status code should be 200
     When the user sends a "GET" request to "/books/{{targetId}}"
     Then the API response status code should be 404
+

@@ -172,3 +172,74 @@ const assertFieldValue = async function (this: CustomWorld, fieldIdentifier: str
 };
 Then('the {string} field should have value {string}', assertFieldValue);
 Then('el campo {string} tiene el valor {string}', assertFieldValue);
+
+// 6. Generic Alert and Notification Assertions
+const assertAlertVisible = async function (this: CustomWorld, rawSubstring?: string) {
+  expect(this.page).toBeDefined();
+  const alert = rawSubstring
+    ? this.elementResolver!.findAlert(resolveTemplate(rawSubstring, this))
+    : this.elementResolver!.findAlert();
+  await expect(alert).toBeVisible({ timeout: 5000 });
+};
+Then('an alert message should be displayed on screen', async function (this: CustomWorld) {
+  await assertAlertVisible.call(this);
+});
+Then('an error alert message should be displayed on screen', async function (this: CustomWorld) {
+  await assertAlertVisible.call(this);
+});
+Then('an alert message containing {string} should be visible', async function (this: CustomWorld, text: string) {
+  await assertAlertVisible.call(this, text);
+});
+Then('se muestra un mensaje de alerta en la pantalla', async function (this: CustomWorld) {
+  await assertAlertVisible.call(this);
+});
+Then('un mensaje de alerta que contiene {string} está visible', async function (this: CustomWorld, text: string) {
+  await assertAlertVisible.call(this, text);
+});
+
+// 7. Generic Button States
+const assertOnPageButtonDisabled = async function (this: CustomWorld, pageName: string, buttonIdentifier: string) {
+  expect(this.page).toBeDefined();
+  const btn = this.elementResolver!.findButton(buttonIdentifier);
+  await expect(btn).toBeDisabled({ timeout: 5000 });
+};
+Then('on the {string} page, the {string} button should be disabled', assertOnPageButtonDisabled);
+Then('en la página {string}, el botón {string} está deshabilitado', assertOnPageButtonDisabled);
+
+const assertOnPageButtonEnabled = async function (this: CustomWorld, pageName: string, buttonIdentifier: string) {
+  expect(this.page).toBeDefined();
+  const btn = this.elementResolver!.findButton(buttonIdentifier);
+  await expect(btn).toBeEnabled({ timeout: 5000 });
+};
+Then('on the {string} page, the {string} button should be enabled', assertOnPageButtonEnabled);
+Then('en la página {string}, el botón {string} está habilitado', assertOnPageButtonEnabled);
+
+// 8. Generic In-Modal Text Assertions
+const inModalAssertText = async function (this: CustomWorld, rawText: string) {
+  expect(this.page).toBeDefined();
+  const modal = this.elementResolver!.getActiveModal();
+  const text = resolveTemplate(rawText, this);
+  const textLocator = modal.getByText(new RegExp(text, 'i')).first();
+  await expect(textLocator).toBeVisible({ timeout: 5000 });
+};
+Then('in the active modal, the text {string} should be visible', inModalAssertText);
+Then('en el modal activo, el texto {string} está visible', inModalAssertText);
+
+// 9. Generic Checkbox Interactions
+const checkCheckbox = async function (this: CustomWorld, checkboxIdentifier: string) {
+  expect(this.page).toBeDefined();
+  const box = this.elementResolver!.findCheckbox(checkboxIdentifier);
+  await box.waitFor({ state: 'visible', timeout: 5000 });
+  await box.check();
+};
+When('the user checks the {string} checkbox', checkCheckbox);
+When('marca la casilla {string}', checkCheckbox);
+
+const uncheckCheckbox = async function (this: CustomWorld, checkboxIdentifier: string) {
+  expect(this.page).toBeDefined();
+  const box = this.elementResolver!.findCheckbox(checkboxIdentifier);
+  await box.waitFor({ state: 'visible', timeout: 5000 });
+  await box.uncheck();
+};
+When('the user unchecks the {string} checkbox', uncheckCheckbox);
+When('desmarca la casilla {string}', uncheckCheckbox);

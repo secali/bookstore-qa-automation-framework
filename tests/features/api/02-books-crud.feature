@@ -1,4 +1,4 @@
-@api @books @regression
+@api @books @integration-test @regression
 Feature: Book Catalog Management (Full REST API CRUD)
   As an authenticated BookStore administrator
   I want to perform CRUD operations on books via REST API
@@ -7,14 +7,14 @@ Feature: Book Catalog Management (Full REST API CRUD)
   Background:
     Given the user is authenticated as an admin in the API
 
-  @smoke @p1
+  @integration-test @functional @positive-testing @contract @smoke @p1
   Scenario: Retrieve books catalog and verify initial seed books
     When the user requests all books from the API
     Then the API response status code should be 200
     And the response should match the "BookList" contract
     And the books list should contain at least 5 books
 
-  @smoke @p1
+  @integration-test @functional @positive-testing @contract @equivalence-partitioning @smoke @p1
   Scenario: Successfully create a book with valid complete payload
     When the user creates a new book via API with the following data:
       | title                   | author        | isbn          | price | category |
@@ -23,7 +23,7 @@ Feature: Book Catalog Management (Full REST API CRUD)
     And the response should match the "Book" contract
     And the created book should match the submitted payload
 
-  @p1
+  @integration-test @functional @positive-testing @negative-testing @state-transition @contract @reliability @p1
   Scenario: Full entity lifecycle: Create, Retrieve by ID, Update and Delete
     Given a book is created via API with random valid data
     And the API response status code should be 201
@@ -37,3 +37,4 @@ Feature: Book Catalog Management (Full REST API CRUD)
     Then the API response status code should be 200
     When the user attempts to delete the same already deleted book
     Then the API response status code should be 404
+

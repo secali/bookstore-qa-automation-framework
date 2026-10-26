@@ -88,6 +88,11 @@ These steps are completely decoupled from any specific business entity. If tomor
 | `Then the response field {string} should equal the number {float}` | JSON path, expected number | Compares numeric value. |
 | `Then the response field {string} should contain {string}` | JSON path, expected substring | Asserts substring presence in text or array. |
 | `Then the response field {string} should not be null or empty` | JSON path | Asserts non-null presence and non-empty string. |
+| `Then the response field {string} should not exist` | JSON path | Asserts that property does not exist in response JSON. |
+| `Then the response status code should be {int}` | Status code integer | Generic alias to assert HTTP response status. |
+| `Then the response header {string} should contain {string}` | Header name, expected text | Asserts substring presence in HTTP response headers. |
+| `When the user sets the Bearer authorization token to {string}` | Token / `{{token}}` | Directly sets Bearer token for downstream requests. |
+| `When the user removes the authorization token` | *None* | Clears Authorization header to test unauthenticated access. |
 | `Then the response should contain an array with at least {int} item(s)` | Min items count | Validates array length in response body. |
 
 ---
@@ -121,18 +126,26 @@ These steps eliminate the need to reimplement Page Objects when new pages or mod
 | `Given the user opens the {string} page with preloaded API session` | `"Books"`, `"Dashboard"`, `"/orders"` | Obtains JWT via fast API call, injects into `localStorage`, and navigates. |
 | `When on the {string} page, the user enters {string} into the {string} field` | Page name, Value, Element identifier | Identifies element by `data-testid`, label, placeholder, name, or id on that page. |
 | `When on the {string} page, the user clicks the {string} button` | Page name, Button identifier | Finds and clicks button on specified page. |
+| `Then on the {string} page, the {string} button should be disabled` | Page name, Button identifier | Asserts button is in disabled state. |
+| `Then on the {string} page, the {string} button should be enabled` | Page name, Button identifier | Asserts button is in enabled state. |
 | `Then the modal should be visible` | *None* | Verifies that an active modal or dialog (`.modal`, `[role="dialog"]`) is open. |
 | `Then the modal should not be visible` | *None* | Verifies that modal is closed/hidden. |
 | `When in the active modal, the user enters {string} into the {string} field` | Value, Field identifier | Scopes input resolution strictly within the active modal dialog. |
 | `When in the {string} modal, the user enters {string} into the {string} field` | Modal title, Value, Field identifier | Scopes input resolution to a specifically titled modal. |
 | `When in the active modal, the user clicks the {string} button` | Button text / identifier | Clicks button strictly inside the active modal dialog (`"Save"`, `"Confirm"`). |
 | `When in the {string} modal, the user clicks the {string} button` | Modal title, Button identifier | Clicks button in a specifically titled modal dialog. |
+| `Then in the active modal, the text {string} should be visible` | Expected text in modal | Scopes text assertion strictly within the open modal. |
 | `When in the table, the user finds the row containing {string} and clicks the {string} button` | Row text, Button identifier | Finds the matching table row and clicks the row action button (`"Delete"`, `"Edit"`). |
 | `Then in the table, the row containing {string} should be visible` | Row text | Asserts that a row with the given text exists in the table. |
 | `Then in the table, the row containing {string} should not be visible` | Row text | Asserts row absence in the table. |
+| `Then an alert message should be displayed on screen` | *None* | Universal assertion for any toast, error, or alert notification. |
+| `Then an error alert message should be displayed on screen` | *None* | Asserts error message presence across any page or view. |
+| `Then an alert message containing {string} should be visible` | Substring text | Asserts text within any alert/notification container. |
 | `When the user clears the {string} field` | Field identifier | Clears text from input field. |
 | `When the user selects option {string} in the {string} dropdown` | Option label, Select identifier | Selects option in dropdown element. |
 | `Then the {string} field should have value {string}` | Field identifier, Expected value | Asserts input element value. |
+| `When the user checks the {string} checkbox` | Checkbox identifier | Checks an accessible checkbox or switch. |
+| `When the user unchecks the {string} checkbox` | Checkbox identifier | Unchecks an accessible checkbox or switch. |
 
 ---
 
@@ -161,14 +174,27 @@ You can use these dynamic tokens inside any Gherkin string, endpoint, or JSON pa
 
 ---
 
+## 🏷️ 9. Mandatory ISTQB Tagging Taxonomy
+
+Every scenario must include formal ISTQB tags:
+
+| Dimension | ISTQB Tags | Purpose |
+|---|---|---|
+| **Test Level** | `@integration-test`, `@system-test`, `@system-integration-test` | Defines the testing scope in the architecture. |
+| **Test Type** | `@functional`, `@security`, `@contract`, `@usability`, `@reliability` | Defines the quality characteristic being validated. |
+| **Design Technique** | `@boundary-value-analysis`, `@equivalence-partitioning`, `@state-transition`, `@error-guessing` | Standard black-box test design techniques applied. |
+| **Approach & Polarity** | `@positive-testing`, `@negative-testing` | Happy-path vs. robustness/error paths. |
+| **Execution Scope** | `@smoke`, `@regression`, `@p1` | Pipeline triggering and test selection. |
+| **Paradigm** | `@atomic`, `@generic`, `@hybrid` | Signifies puzzle-piece, page-agnostic automation. |
+
+---
+
 ## 🛠️ Step Extension Guidelines for Agent 3
 
 If a new user story genuinely requires a new step not listed here:
 1. **Target File:**
    - Generic API step ➔ `tests/step-definitions/api/atomic-api.steps.ts`
-   - Entity-specific API step ➔ `tests/step-definitions/api/<entity>.steps.ts`
    - Generic UI step ➔ `tests/step-definitions/ui/atomic-ui.steps.ts`
-   - View-specific UI step ➔ `tests/step-definitions/ui/<view>.steps.ts`
 2. **Template Structure:**
    ```typescript
    When('the user performs generic action with {string} and {int}', async function (this: CustomWorld, text: string, num: number) {
@@ -178,3 +204,4 @@ If a new user story genuinely requires a new step not listed here:
    ```
 3. **Mandatory Quality Gate:**
    Run `npm run format && npm run lint && npx tsc --noEmit && npx cucumber-js --dry-run` to ensure 0 errors and 0 orphan steps before pushing.
+

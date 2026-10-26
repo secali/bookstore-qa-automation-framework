@@ -205,11 +205,39 @@ Inspirado en los proyectos de arquitectura de IA de Sergio Cañete (Orquestador 
 
 ---
 
+## 🎯 FASE 10: Generalización Total, Taxonomía ISTQB y Auditoría Integral SDET
+
+Atendiendo a la instrucción explícita del evaluador para reforzar la filosofía de **cero tests acoplados a una sola página o endpoint**, se realizaron las siguientes actuaciones clave:
+
+1. **Ampliación del Motor Atómico y Agnóstico (`ElementResolver` y `GenericHttpClient`)**:
+   - Incorporación de resolución universal de alertas, mensajes de error y notificaciones (`findAlert(textSubstring)`).
+   - Incorporación de soporte universal para checkboxes y selectores accesibles (`findCheckbox`).
+   - Métodos en `GenericHttpClient` para control programático de tokens (`setAuthToken`, `clearAuthToken`).
+2. **Eliminación de Pasos Específicos Redundantes**:
+   - Se refactorizó `tests/step-definitions/ui/login-ui.steps.ts` para eliminar el step acoplado de alerta y utilizar el step universal de `tests/step-definitions/ui/atomic-ui.steps.ts` (`Then an error alert message should be displayed on screen`).
+   - Todos los modales, tablas, alertas y campos operan bajo los steps genéricos de `atomic-ui.steps.ts` y `atomic-api.steps.ts`.
+3. **Etiquetado Formal según Estándares ISTQB**:
+   - Los 21 escenarios de la suite (9 archivos `.feature`) fueron etiquetados exhaustivamente con taxonomía ISTQB:
+     - **Niveles**: `@integration-test`, `@system-test`, `@system-integration-test`.
+     - **Tipos**: `@functional`, `@security`, `@contract`, `@usability`, `@reliability`.
+     - **Técnicas de Diseño**: `@boundary-value-analysis`, `@equivalence-partitioning`, `@state-transition`, `@error-guessing`.
+     - **Enfoque / Polaridad**: `@positive-testing`, `@negative-testing`.
+     - **Ejecución y Alcance**: `@smoke`, `@regression`, `@p1`, `@atomic`, `@generic`, `@hybrid`.
+4. **Actualización de Agentes del Pipeline (`.agents/pipeline/`)**:
+   - `03-sdet-implementer.md` actualizado con la Regla de Oro: **Prohibido crear tests o steps específicos de una sola página o endpoint**.
+   - `02-qa-test-planner.md` y `01-story-and-code-analyst.md` actualizados con la taxonomía ISTQB y directrices de abstracción en piezas de puzzle.
+   - `STEPS_DICTIONARY.md` actualizado con todos los nuevos steps y la tabla de taxonomía ISTQB.
+5. **Auditoría Técnica SDET ([AUDITORIA_CALIDAD_SDET.md](file:///c:/Users/PC/Documents/LogNext-Verisure/AUDITORIA_CALIDAD_SDET.md))**:
+   - Informe exhaustivo evaluando el aprovechamiento de Playwright (`APIRequestContext`, Web-First Assertions, inyección de sesión con `addInitScript`), el desacoplamiento de páginas/endpoints, y el paso exitoso del Quality Gate de 4 pasos (0 errores, 0 warnings, 0 steps huérfanos).
+
+---
+
 ## 🗂️ Índice de Artefactos Creados
 
 | Archivo | Propósito |
 |---|---|
 | [BITACORA_PASO_A_PASO.md](file:///c:/Users/PC/Documents/LogNext-Verisure/BITACORA_PASO_A_PASO.md) | Registro cronológico y detallado de toda la solución (este documento). |
+| [AUDITORIA_CALIDAD_SDET.md](file:///c:/Users/PC/Documents/LogNext-Verisure/AUDITORIA_CALIDAD_SDET.md) | Informe de auditoría técnica y cumplimiento de la filosofía SDET genérica. |
 | [STEPS_DICTIONARY.md](file:///c:/Users/PC/Documents/LogNext-Verisure/STEPS_DICTIONARY.md) | Diccionario oficial de steps genéricos y convenciones Cucumber + Playwright. |
 | [.agents/pipeline/ORCHESTRATOR.md](file:///c:/Users/PC/Documents/LogNext-Verisure/.agents/pipeline/ORCHESTRATOR.md) | Orquestador del pipeline de QA multi-agente end-to-end. |
 | [.agents/pipeline/agents/](file:///c:/Users/PC/Documents/LogNext-Verisure/.agents/pipeline/agents/) | Especificaciones de Agente 1 (Analyst), Agente 2 (QA Lead) y Agente 3 (SDET). |
@@ -228,5 +256,6 @@ Inspirado en los proyectos de arquitectura de IA de Sergio Cañete (Orquestador 
 | [src/api/](file:///c:/Users/PC/Documents/LogNext-Verisure/src/api/) | Capa de clientes REST, contratos Zod y tipos TypeScript. |
 | [src/ui/](file:///c:/Users/PC/Documents/LogNext-Verisure/src/ui/) | Capa de Page Objects y componentes para React Frontend. |
 | [src/support/](file:///c:/Users/PC/Documents/LogNext-Verisure/src/support/) | CustomWorld (DI), hooks de ciclo de vida y generador de reportes. |
-| [tests/features/](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/features/) | 7 features BDD en Gherkin (4 de API y 3 de UI). |
-| [tests/step-definitions/](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/step-definitions/) | Step definitions genéricas y modulares tipadas en TypeScript. |
+| [tests/features/](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/features/) | 9 features BDD en Gherkin (5 de API y 4 de UI) con tags ISTQB completos. |
+| [tests/step-definitions/](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/step-definitions/) | Step definitions genéricas, atómicas y modulares tipadas en TypeScript. |
+

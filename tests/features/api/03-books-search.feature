@@ -1,4 +1,4 @@
-@api @books @search @regression
+@api @books @search @integration-test @regression
 Feature: Book Catalog Search and Filtering via REST API
   As a BookStore user
   I want to search and filter the catalog via API
@@ -7,6 +7,7 @@ Feature: Book Catalog Search and Filtering via REST API
   Background:
     Given the user is authenticated as an admin in the API
 
+  @integration-test @functional @positive-testing @contract @search @equivalence-partitioning @smoke @p1
   Scenario: Search books by matching title term
     Given a new book is created via API with the following data:
       | title                 | author      | isbn          | price | category |
@@ -15,3 +16,4 @@ Feature: Book Catalog Search and Filtering via REST API
     Then the API response status code should be 200
     And the response should match the "BookList" contract
     And the books list should contain at least 1 book
+
