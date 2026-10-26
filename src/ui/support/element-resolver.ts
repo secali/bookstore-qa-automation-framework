@@ -28,37 +28,63 @@ export class ElementResolver {
     }
   }
 
+  private logicalMap: Map<string, string> = new Map();
+
   /**
-   * Localiza un campo de entrada (input, textarea, select) por cualquier identificador:
-   * 1. data-testid
-   * 2. aria-label / getByLabel
-   * 3. placeholder / getByPlaceholder
-   * 4. name attribute
-   * 5. id
+   * Registra un alias lógico hacia un selector específico (salida de emergencia sin Page Objects)
+   */
+  registerLogicalName(alias: string, selector: string): void {
+    this.logicalMap.set(alias.toLowerCase(), selector);
+  }
+
+  /**
+   * Localiza un campo de entrada (input, textarea, select) priorizando accesibilidad:
+   * 1. Alias lógico registrado
+   * 2. aria-label / getByLabel (accesibilidad recomendada por Playwright)
+   * 3. data-testid (contrato de prueba)
+   * 4. placeholder / getByPlaceholder
+   * 5. name attribute o id
    */
   findField(identifier: string, container?: Locator): Locator {
     const parent = container || this.page;
-    const regex = new RegExp(`^${identifier}$|${identifier}`, 'i');
+    if (this.logicalMap.has(identifier.toLowerCase())) {
+      return parent.locator(this.logicalMap.get(identifier.toLowerCase())!).first();
+    }
+
+    const exactRegex = new RegExp(`^${identifier}$`, 'i');
+    const fallbackRegex = new RegExp(identifier, 'i');
 
     return parent
-      .locator(`[data-testid="${identifier}"]`)
-      .or(parent.getByLabel(regex))
-      .or(parent.getByPlaceholder(regex))
+      .getByLabel(exactRegex)
+      .or(parent.locator(`[data-testid="${identifier}"]`))
+      .or(parent.getByLabel(fallbackRegex))
+      .or(parent.getByPlaceholder(exactRegex))
       .or(parent.locator(`input[name="${identifier}"], textarea[name="${identifier}"], select[name="${identifier}"]`))
       .or(parent.locator(`#${identifier}`))
       .first();
   }
 
   /**
-   * Localiza un botón por su texto, rol, testid o id.
+   * Localiza un botón priorizando accesibilidad:
+   * 1. Alias lógico registrado
+   * 2. Rol accesible getByRole('button') exacto
+   * 3. data-testid
+   * 4. Rol accesible getByRole('button') flexible o texto visible
+   * 5. id
    */
   findButton(identifier: string, container?: Locator): Locator {
     const parent = container || this.page;
-    const regex = new RegExp(`^${identifier}$|${identifier}`, 'i');
+    if (this.logicalMap.has(identifier.toLowerCase())) {
+      return parent.locator(this.logicalMap.get(identifier.toLowerCase())!).first();
+    }
+
+    const exactRegex = new RegExp(`^${identifier}$`, 'i');
+    const fallbackRegex = new RegExp(identifier, 'i');
 
     return parent
-      .locator(`[data-testid="${identifier}"]`)
-      .or(parent.getByRole('button', { name: regex }))
+      .getByRole('button', { name: exactRegex })
+      .or(parent.locator(`[data-testid="${identifier}"]`))
+      .or(parent.getByRole('button', { name: fallbackRegex }))
       .or(parent.locator(`button:has-text("${identifier}"), input[type="submit"][value="${identifier}"]`))
       .or(parent.locator(`#${identifier}`))
       .first();

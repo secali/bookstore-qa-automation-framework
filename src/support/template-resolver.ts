@@ -36,6 +36,12 @@ export function resolveTemplate(template: string, world?: CustomWorld): string {
         if (world?.context.storedData && world.context.storedData[key] !== undefined) {
           return String(world.context.storedData[key]);
         }
+        if (world) {
+          const availableKeys = Object.keys(world.context.storedData || {});
+          throw new Error(
+            `Unresolved template variable '{{${key}}}'. Variable was not found in scenario context. Available keys: [${availableKeys.join(', ')}]`
+          );
+        }
         return match;
     }
   });

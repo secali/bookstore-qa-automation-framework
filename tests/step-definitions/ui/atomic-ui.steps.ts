@@ -23,8 +23,11 @@ const openPageWithSession = async function (this: CustomWorld, rawPathOrPage: st
 
   await this.page!.addInitScript(
     ({ jwt, email, role }) => {
-      localStorage.setItem('token', jwt);
-      localStorage.setItem('user', JSON.stringify({ email, role }));
+      // Inyección idempotente: no reinyectar si el escenario ha ejecutado un logout explícito
+      if (!sessionStorage.getItem('explicit_logout')) {
+        localStorage.setItem('token', jwt);
+        localStorage.setItem('user', JSON.stringify({ email, role }));
+      }
     },
     { jwt: this.context.token!, email, role }
   );

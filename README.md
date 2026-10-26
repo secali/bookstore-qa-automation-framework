@@ -100,9 +100,11 @@ Este framework traslada la experiencia senior en **Java + Cucumber / Rest Assure
 | `npm run test:parallel` | **Ejecución multihilo paralela (4 workers)** para máxima velocidad. |
 | `npm run test:api` | Ejecuta exclusivamente la suite de **API / Backend (70%)**. |
 | `npm run test:ui` | Ejecuta exclusivamente la suite de **UI / Frontend (30%)**. |
+| `npm run test:unit` | Ejecuta las **pruebas unitarias** de los motores internos (`jsonpath` y `template-resolver`). |
 | `npm run test:smoke` | Ejecuta los flujos críticos de verificación rápida (`@smoke`). |
 | `npm run test:contracts` | Ejecuta las validaciones de esquemas OpenAPI y envelope de errores (`@contracts`). |
 | `npm run test:hybrid` | Ejecuta las pruebas híbridas (inyección API y verificación UI). |
+| `npm run dashboard` | Abre el **dashboard interactivo** visual en español para la defensa técnica. |
 | `npm run report` | Genera y consolida el reporte visual en `reports/cucumber-html-report.html`. |
 
 ---
@@ -134,21 +136,24 @@ Las instrucciones del reto estipulan:
    - **Cómo funciona:** El archivo `bookstore-images.tar` se versiona directamente o mediante Git LFS en el repositorio.
    - **En el runner de GitHub Actions (`.github/workflows/ci.yml`):**
      1. Hace checkout del código.
-     2. Ejecuta `docker load -i bookstore-images.tar` directo al daemon del runner de GitHub.
-     3. Levanta con `docker compose up -d`.
-     4. Realiza un **polling activo de salud** sobre `http://localhost:5000/api/health` mediante un script `until` con timeout de 60s, evitando carreras antes de que MongoDB y el backend inicien.
-     5. Lanza la suite en paralelo (`npx cucumber-js --parallel 4`).
-     6. Publica los reportes HTML como artefactos del workflow (`actions/upload-artifact@v4`).
-     7. Ejecuta teardown con `docker compose down -v`.
-   - **Limitaciones de la solución elegida:** El clonado inicial del repositorio transfiere el peso del tarball (~89 MB), pero garantiza portabilidad total sin dependencias externas ni configuraciones de credenciales para quien ejecute el proyecto.
+     2. Instala dependencias y corre linters y compilación estricta TypeScript en Node 22 LTS.
+     3. Ejecuta `docker load -i bookstore-images.tar` directo al daemon del runner de GitHub.
+     4. Levanta con `docker compose up -d`.
+     5. Realiza un **polling activo de salud** con `curl --retry-connrefused` sobre `http://localhost:5000/api/health` y comprueba el frontend en el puerto `3000`.
+     6. Lanza la suite en paralelo (`npx cucumber-js --parallel 4`).
+     7. Publica los reportes HTML, capturas y trazas como artefactos del workflow (`actions/upload-artifact@v4`).
+     8. Ejecuta teardown con `docker compose down -v`.
+   - **Limitaciones de la solución elegida y mitigación en producción:** En un entorno enterprise air-gapped real, esta solución se ejecuta sobre runners *self-hosted* internos que disponen de las imágenes Docker cacheadas en local sin necesidad de transferir el archivo `.tar` en cada clonado de Git.
 
 ---
 
-## 📂 7. Documentación Adicional y Ecosistema de IA
+## 📂 7. Documentación Adicional y Ecosistema de Arquitectura
 
-- [STEPS_DICTIONARY.md](file:///c:/Users/PC/Documents/LogNext-Verisure/STEPS_DICTIONARY.md): Diccionario oficial de steps genéricos y convenciones Cucumber + Playwright (cero steps huérfanos).
-- [.agents/pipeline/ORCHESTRATOR.md](file:///c:/Users/PC/Documents/LogNext-Verisure/.agents/pipeline/ORCHESTRATOR.md): Orquestador del pipeline de QA multi-agente end-to-end (Story Analyst, QA Planner, SDET Implementer).
-- [BITACORA_PASO_A_PASO.md](file:///c:/Users/PC/Documents/LogNext-Verisure/BITACORA_PASO_A_PASO.md): Registro cronológico y detallado de todas las fases del desarrollo.
-- [requirements.md](file:///c:/Users/PC/Documents/LogNext-Verisure/requirements.md): Análisis exhaustivo funcional y técnico de los servicios, modelos y endpoints.
-- [test-plan.md](file:///c:/Users/PC/Documents/LogNext-Verisure/test-plan.md): Plan maestro de pruebas con desglose por niveles N1-N4 y matriz de trazabilidad.
-- [.agents/skills/sdet-sergio-canete/](file:///c:/Users/PC/Documents/LogNext-Verisure/.agents/skills/sdet-sergio-canete/): Skill de IA personalizada para continuar la evolución arquitectónica del framework.
+- [INFORME_REVISION_TECNICA_EXPERTOS.md](./INFORME_REVISION_TECNICA_EXPERTOS.md): **Informe exhaustivo para expertos y revisión por pares (Peer Review)**, con análisis de trade-offs, limitaciones conocidas y mitigaciones.
+- [STEPS_DICTIONARY.md](./STEPS_DICTIONARY.md): Diccionario oficial de steps genéricos y convenciones Cucumber + Playwright (cero steps huérfanos).
+- [AUDITORIA_CALIDAD_SDET.md](./AUDITORIA_CALIDAD_SDET.md): Auditoría completa de estándares Playwright, pirámide de pruebas y dictamen de steps de dominio.
+- [.agents/pipeline/ORCHESTRATOR.md](./.agents/pipeline/ORCHESTRATOR.md): Orquestador del pipeline de QA multi-agente end-to-end (Story Analyst, QA Planner, SDET Implementer).
+- [BITACORA_PASO_A_PASO.md](./BITACORA_PASO_A_PASO.md): Registro cronológico y detallado de todas las fases del desarrollo.
+- [requirements.md](./requirements.md): Análisis exhaustivo funcional y técnico de los servicios, modelos y endpoints.
+- [test-plan.md](./test-plan.md): Plan maestro de pruebas con desglose por niveles N1-N4 y matriz de trazabilidad.
+- [dashboard/index.html](./dashboard/index.html): Dashboard interactivo visual para la defensa del framework ante el evaluador.
