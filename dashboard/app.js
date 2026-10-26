@@ -1,276 +1,276 @@
 /**
- * OmniSpec SDET Engine — Interactive Dashboard Logic
- * Architect: Sergio Cañete Linares (Senior QA Automation Engineer / SDET)
+ * OmniSpec SDET Framework — Lógica Interactiva del Panel
+ * Arquitecto: Sergio Cañete Linares (Senior QA Automation Engineer / SDET)
  */
 
 // ============================================================================
-// 1. Data Store: 21 Automated Scenarios across 9 Feature Files
+// 1. Matriz de los 21 Escenarios Automatizados (Taxonomía ISTQB)
 // ============================================================================
-const SCENARIOS = [
-  // API Layer (15 Scenarios)
+const ESCENARIOS = [
+  // Capa API REST (15 Escenarios)
   {
     id: "API-01",
-    file: "01-auth.feature",
-    title: "Successful administrator login returns JWT token",
-    layer: "API",
+    archivo: "01-auth.feature",
+    titulo: "Login exitoso de administrador retorna token JWT",
+    capa: "API",
     tags: ["@system-test", "@functional", "@security", "@authentication", "@smoke", "@p1"]
   },
   {
     id: "API-02",
-    file: "01-auth.feature",
-    title: "Registration of a new user in the platform",
-    layer: "API",
+    archivo: "01-auth.feature",
+    titulo: "Registro de un nuevo usuario en la plataforma",
+    capa: "API",
     tags: ["@system-test", "@functional", "@state-transition", "@smoke", "@p1"]
   },
   {
     id: "API-03",
-    file: "01-auth.feature",
-    title: "Rejected login with non-existent user credentials",
-    layer: "API",
+    archivo: "01-auth.feature",
+    titulo: "Rechazo de login ante credenciales inexistentes",
+    capa: "API",
     tags: ["@system-test", "@functional", "@negative-testing", "@security", "@p1"]
   },
   {
     id: "API-04",
-    file: "01-auth.feature",
-    title: "Registration rejected when email is already in use",
-    layer: "API",
+    archivo: "01-auth.feature",
+    titulo: "Rechazo de registro si el correo electrónico ya existe",
+    capa: "API",
     tags: ["@system-test", "@functional", "@negative-testing", "@equivalence-partitioning", "@p1"]
   },
   {
     id: "API-05",
-    file: "02-books-crud.feature",
-    title: "Create a new book with valid payload",
-    layer: "API",
+    archivo: "02-books-crud.feature",
+    titulo: "Creación de un nuevo libro con payload válido",
+    capa: "API",
     tags: ["@system-test", "@functional", "@positive-testing", "@smoke", "@p1"]
   },
   {
     id: "API-06",
-    file: "02-books-crud.feature",
-    title: "Update an existing book's price and verify update",
-    layer: "API",
+    archivo: "02-books-crud.feature",
+    titulo: "Actualización de precio de libro y verificación de persistencia",
+    capa: "API",
     tags: ["@system-test", "@functional", "@state-transition", "@p1"]
   },
   {
     id: "API-07",
-    file: "02-books-crud.feature",
-    title: "Delete a book and verify it no longer exists",
-    layer: "API",
+    archivo: "02-books-crud.feature",
+    titulo: "Eliminación de un libro y confirmación de ausencia (404)",
+    capa: "API",
     tags: ["@system-test", "@functional", "@state-transition", "@smoke", "@p1"]
   },
   {
     id: "API-08",
-    file: "03-books-search.feature",
-    title: "Search books by title returns matching records",
-    layer: "API",
+    archivo: "03-books-search.feature",
+    titulo: "Búsqueda de libros por título retorna registros coincidentes",
+    capa: "API",
     tags: ["@system-test", "@functional", "@positive-testing", "@smoke", "@p1"]
   },
   {
     id: "API-09",
-    file: "04-contracts-and-errors.feature",
-    title: "Response matches the OpenAPI Book contract schema",
-    layer: "API",
+    archivo: "04-contracts-and-errors.feature",
+    titulo: "Validación de esquema OpenAPI Zod en runtime para Book",
+    capa: "API",
     tags: ["@contract", "@integration-test", "@regression", "@smoke", "@p1"]
   },
   {
     id: "API-10",
-    file: "04-contracts-and-errors.feature",
-    title: "Request without Authorization token returns 401 Unauthorized",
-    layer: "API",
+    archivo: "04-contracts-and-errors.feature",
+    titulo: "Petición sin cabecera Authorization retorna 401 Unauthorized",
+    capa: "API",
     tags: ["@security", "@system-test", "@negative-testing", "@p1"]
   },
   {
     id: "API-11",
-    file: "04-contracts-and-errors.feature",
-    title: "Validation errors when required fields are missing",
-    layer: "API",
+    archivo: "04-contracts-and-errors.feature",
+    titulo: "Rechazo con envelope 400 cuando faltan campos requeridos",
+    capa: "API",
     tags: ["@boundary-value-analysis", "@equivalence-partitioning", "@negative-testing", "@p1"]
   },
   {
     id: "API-12",
-    file: "04-contracts-and-errors.feature",
-    title: "Requesting a non-existent ID returns 404 Not Found",
-    layer: "API",
+    archivo: "04-contracts-and-errors.feature",
+    titulo: "Consulta de ID inexistente retorna 404 con envelope estándar",
+    capa: "API",
     tags: ["@boundary-value-analysis", "@negative-testing", "@error-guessing", "@p1"]
   },
   {
     id: "API-13",
-    file: "04-contracts-and-errors.feature",
-    title: "Price boundary value testing (Price <= 0 is rejected)",
-    layer: "API",
+    archivo: "04-contracts-and-errors.feature",
+    titulo: "Prueba de valor límite para precio menor o igual a cero",
+    capa: "API",
     tags: ["@boundary-value-analysis", "@negative-testing", "@p1"]
   },
   {
     id: "API-14",
-    file: "05-atomic-puzzle-api.feature",
-    title: "Dynamic JSONPath mutation and chained CRUD verification",
-    layer: "API",
+    archivo: "05-atomic-puzzle-api.feature",
+    titulo: "Mutación dinámica por JSONPath y CRUD encadenado sin DTOs",
+    capa: "API",
     tags: ["@atomic", "@generic", "@system-test", "@smoke", "@p1"]
   },
   {
     id: "API-15",
-    file: "05-atomic-puzzle-api.feature",
-    title: "Data isolation: seed, verify, delete, and assert 404",
-    layer: "API",
+    archivo: "05-atomic-puzzle-api.feature",
+    titulo: "Aislamiento de datos: seed, aserción, borrado y teardown",
+    capa: "API",
     tags: ["@atomic", "@generic", "@reliability", "@state-transition", "@p1"]
   },
 
-  // UI Layer (6 Scenarios)
+  // Capa UI (6 Escenarios)
   {
     id: "UI-01",
-    file: "01-login-ui.feature",
-    title: "Successful login through the graphical user interface",
-    layer: "UI",
+    archivo: "01-login-ui.feature",
+    titulo: "Inicio de sesión exitoso mediante formulario web",
+    capa: "UI",
     tags: ["@system-test", "@functional", "@security", "@authentication", "@usability", "@smoke", "@p1"]
   },
   {
     id: "UI-02",
-    file: "01-login-ui.feature",
-    title: "Visible error message upon invalid login attempt",
-    layer: "UI",
+    archivo: "01-login-ui.feature",
+    titulo: "Alerta de error visible ante intento de login fallido",
+    capa: "UI",
     tags: ["@system-test", "@functional", "@negative-testing", "@security", "@error-guessing", "@p1"]
   },
   {
     id: "UI-03",
-    file: "02-books-catalog-ui.feature",
-    title: "Initial table load displays pre-seeded books",
-    layer: "UI",
+    archivo: "02-books-catalog-ui.feature",
+    titulo: "Carga inicial del catálogo muestra registros semilla",
+    capa: "UI",
     tags: ["@system-test", "@functional", "@positive-testing", "@usability", "@smoke", "@p1"]
   },
   {
     id: "UI-04",
-    file: "02-books-catalog-ui.feature",
-    title: "Create a book via modal in UI and delete it from the table",
-    layer: "UI",
+    archivo: "02-books-catalog-ui.feature",
+    titulo: "Alta de libro en modal interactivo y borrado directo en tabla",
+    capa: "UI",
     tags: ["@system-test", "@functional", "@state-transition", "@boundary-value-analysis", "@usability", "@p1"]
   },
   {
     id: "UI-05",
-    file: "03-hybrid-e2e.feature",
-    title: "Book created via API is immediately visible and searchable on UI",
-    layer: "UI (Hybrid)",
+    archivo: "03-hybrid-e2e.feature",
+    titulo: "Libro creado vía API es indexado y visible en UI de inmediato",
+    capa: "UI (Híbrido)",
     tags: ["@system-integration-test", "@functional", "@hybrid", "@usability", "@smoke", "@p1"]
   },
   {
     id: "UI-06",
-    file: "04-atomic-puzzle-ui.feature",
-    title: "Full user journey: Navigation, modal form submission, table deletion",
-    layer: "UI (Atomic)",
+    archivo: "04-atomic-puzzle-ui.feature",
+    titulo: "Recorrido completo: navegación, modal de alta y borrado en tabla",
+    capa: "UI (Atómico)",
     tags: ["@system-test", "@functional", "@state-transition", "@usability", "@atomic", "@generic", "@smoke", "@p1"]
   }
 ];
 
 // ============================================================================
-// 2. Data Store: Universal Steps Catalog
+// 2. Catálogo Universal de Pasos (Steps Dictionary)
 // ============================================================================
-const STEPS = [
+const PASOS = [
   {
-    category: "api-req",
-    pattern: 'When the user sends a "{method}" request to "{endpoint}"',
-    desc: 'Sends an HTTP request with any verb to any endpoint without body.',
-    example: 'When the user sends a "GET" request to "/books"'
+    categoria: "api-req",
+    patron: 'When the user sends a "{method}" request to "{endpoint}"',
+    descripcion: 'Envía una petición HTTP con cualquier verbo a cualquier ruta sin cuerpo.',
+    ejemplo: 'When the user sends a "GET" request to "/books"'
   },
   {
-    category: "api-req",
-    pattern: 'When the user sends a "{method}" request to "{endpoint}" with body:',
-    desc: 'Dispatches an HTTP request with multiline JSON docstring payload.',
-    example: 'When the user sends a "POST" request to "/books" with body:\n  """\n  { "title": "Microservices", "price": 39.99 }\n  """'
+    categoria: "api-req",
+    patron: 'When the user sends a "{method}" request to "{endpoint}" with body:',
+    descripcion: 'Envía una petición HTTP con payload JSON multilínea (DocString).',
+    ejemplo: 'When the user sends a "POST" request to "/books" with body:\n  """\n  { "title": "Microservices", "price": 39.99 }\n  """'
   },
   {
-    category: "api-json",
-    pattern: 'When the user sets JSONPath "{path}" to "{value}"',
-    desc: 'Dynamically mutates or injects a string into the prepared JSON payload.',
-    example: 'When the user sets JSONPath "$.title" to "Advanced Playwright Architecture"'
+    categoria: "api-json",
+    patron: 'When the user sets JSONPath "{path}" to "{value}"',
+    descripcion: 'Modifica o inyecta dinámicamente un valor string en el payload preparado.',
+    ejemplo: 'When the user sets JSONPath "$.title" to "Arquitectura Limpia"'
   },
   {
-    category: "api-json",
-    pattern: 'When the user sets JSONPath "{path}" to the number {float}',
-    desc: 'Dynamically sets a numeric float or integer at a specific JSONPath.',
-    example: 'When the user sets JSONPath "$.price" to the number 49.99'
+    categoria: "api-json",
+    patron: 'When the user sets JSONPath "{path}" to the number {float}',
+    descripcion: 'Modifica o inyecta dinámicamente un valor numérico en el JSONPath objetivo.',
+    ejemplo: 'When the user sets JSONPath "$.price" to the number 49.99'
   },
   {
-    category: "api-json",
-    pattern: 'When the user removes JSONPath "{path}"',
-    desc: 'Deletes a key/node from the payload to test schema required field errors.',
-    example: 'When the user removes JSONPath "$.author"'
+    categoria: "api-json",
+    patron: 'When the user removes JSONPath "{path}"',
+    descripcion: 'Elimina una propiedad del payload para pruebas negativas de campos requeridos.',
+    ejemplo: 'When the user removes JSONPath "$.isbn"'
   },
   {
-    category: "api-json",
-    pattern: 'When the user saves the response JSONPath "{path}" as "{alias}"',
-    desc: 'Extracts a response property into scenario context for variable chaining.',
-    example: 'When the user saves the response JSONPath "$.id" as "createdId"'
+    categoria: "api-json",
+    patron: 'When the user saves the response JSONPath "{path}" as "{alias}"',
+    descripcion: 'Extrae un valor de la respuesta y lo almacena para encadenar llamadas.',
+    ejemplo: 'When the user saves the response JSONPath "$.id" as "createdId"'
   },
   {
-    category: "api-assert",
-    pattern: 'Then the response status code should be {int}',
-    desc: 'Verifies the HTTP status code of the last API response.',
-    example: 'Then the response status code should be 201'
+    categoria: "api-assert",
+    patron: 'Then the response status code should be {int}',
+    descripcion: 'Comprueba el código de estado HTTP recibido en la última llamada.',
+    ejemplo: 'Then the response status code should be 201'
   },
   {
-    category: "api-assert",
-    pattern: 'Then the response JSONPath "{path}" should equal "{expected}"',
-    desc: 'Asserts the exact string value at a target JSONPath node.',
-    example: 'Then the response JSONPath "$.title" should equal "Advanced Playwright Architecture"'
+    categoria: "api-assert",
+    patron: 'Then the response JSONPath "{path}" should equal "{expected}"',
+    descripcion: 'Verifica la igualdad de valor de texto en un nodo específico de la respuesta.',
+    ejemplo: 'Then the response JSONPath "$.title" should equal "Arquitectura Limpia"'
   },
   {
-    category: "api-assert",
-    pattern: 'Then the response should match the "{schemaName}" contract',
-    desc: 'Validates response against OpenAPI schema via runtime Zod SchemaRegistry.',
-    example: 'Then the response should match the "Book" contract'
+    categoria: "api-assert",
+    patron: 'Then the response should match the "{schemaName}" contract',
+    descripcion: 'Valida la respuesta completa contra el contrato OpenAPI Zod en runtime.',
+    ejemplo: 'Then the response should match the "Book" contract'
   },
   {
-    category: "ui-nav",
-    pattern: 'Given the user navigates to "{path}"',
-    desc: 'Navigates browser directly to relative or absolute URL path.',
-    example: 'Given the user navigates to "/login"'
+    categoria: "ui-nav",
+    patron: 'Given the user navigates to "{path}"',
+    descripcion: 'Navega en navegador a la ruta relativa con sincronización DOM automática.',
+    ejemplo: 'Given the user navigates to "/login"'
   },
   {
-    category: "ui-nav",
-    pattern: 'Given the user opens "{path}" with preloaded API session',
-    desc: 'Infers authentication via API, injects JWT token into localStorage and navigates.',
-    example: 'Given the user opens "/books" with preloaded API session'
+    categoria: "ui-nav",
+    patron: 'Given the user opens "{path}" with preloaded API session',
+    descripcion: 'Inyecta token JWT en localStorage vía API y accede a la vista autenticada.',
+    ejemplo: 'Given the user opens "/books" with preloaded API session'
   },
   {
-    category: "ui-form",
-    pattern: 'When the user enters "{value}" into the "{identifier}" field',
-    desc: 'Locates input/textarea by testid, aria-label, placeholder or name and fills it.',
-    example: 'When the user enters "admin@sandbox.com" into the "email" field'
+    categoria: "ui-form",
+    patron: 'When the user enters "{value}" into the "{identifier}" field',
+    descripcion: 'Resuelve un campo por testid, etiqueta accesible, placeholder o name.',
+    ejemplo: 'When the user enters "admin@sandbox.com" into the "email" field'
   },
   {
-    category: "ui-form",
-    pattern: 'When the user clicks the "{identifier}" button',
-    desc: 'Locates button by role, accessible text, testid or id and clicks it.',
-    example: 'When the user clicks the "Add Book" button'
+    categoria: "ui-form",
+    patron: 'When the user clicks the "{identifier}" button',
+    descripcion: 'Localiza un botón por accesibilidad, testid o texto y ejecuta el clic.',
+    ejemplo: 'When the user clicks the "Add Book" button'
   },
   {
-    category: "ui-modal",
-    pattern: 'When in the active modal, the user enters "{value}" into the "{field}" field',
-    desc: 'Scopes field search to current visible dialog/modal container.',
-    example: 'When in the active modal, the user enters "Clean Code" into the "title" field'
+    categoria: "ui-modal",
+    patron: 'When in the active modal, the user enters "{value}" into the "{field}" field',
+    descripcion: 'Acota la resolución del campo estrictamente al contenedor modal visible.',
+    ejemplo: 'When in the active modal, the user enters "Clean Code" into the "title" field'
   },
   {
-    category: "ui-modal",
-    pattern: 'When in the active modal, the user clicks the "{buttonText}" button',
-    desc: 'Finds and clicks button strictly inside active modal container.',
-    example: 'When in the active modal, the user clicks the "Save" button'
+    categoria: "ui-modal",
+    patron: 'When in the active modal, the user clicks the "{buttonText}" button',
+    descripcion: 'Busca y pulsa un botón ubicado exclusivamente dentro del diálogo activo.',
+    ejemplo: 'When in the active modal, the user clicks the "Save" button'
   },
   {
-    category: "ui-modal",
-    pattern: 'When in the table, the user finds the row containing "{text}" and clicks the "{button}" button',
-    desc: 'Locates table row matching text and clicks action button within that row.',
-    example: 'When in the table, the user finds the row containing "Clean Code" and clicks the "Delete" button'
+    categoria: "ui-modal",
+    patron: 'When in the table, the user finds the row containing "{text}" and clicks the "{button}" button',
+    descripcion: 'Localiza una fila por texto y pulsa el botón de acción en esa fila.',
+    ejemplo: 'When in the table, the user finds the row containing "Clean Code" and clicks the "Delete" button'
   },
   {
-    category: "ui-modal",
-    pattern: 'Then the table should display at least {int} row(s)',
-    desc: 'Verifies the row count of the primary active table.',
-    example: 'Then the table should display at least 5 rows'
+    categoria: "ui-modal",
+    patron: 'Then the table should display at least {int} row(s)',
+    descripcion: 'Verifica el recuento mínimo de filas en la tabla principal.',
+    ejemplo: 'Then the table should display at least 5 rows'
   }
 ];
 
 // ============================================================================
-// 3. Simulator Templates
+// 3. Plantillas del Simulador
 // ============================================================================
-const TEMPLATES = {
+const PLANTILLAS = {
   api: `@api @atomic @regression
 Feature: Dynamic API CRUD with JSONPath Mutation
   Scenario: Create book, update price dynamically, and verify
@@ -278,7 +278,7 @@ Feature: Dynamic API CRUD with JSONPath Mutation
     When the user prepares a JSON payload:
       """
       {
-        "title": "Mastering Playwright in Verisure",
+        "title": "Clean Architecture in TypeScript",
         "author": "Sergio Cañete",
         "isbn": "{{random_isbn}}",
         "price": 29.99,
@@ -295,19 +295,19 @@ Feature: Dynamic API CRUD with JSONPath Mutation
     And the response JSONPath "$.price" should equal the number 45.00`,
 
   ui: `@ui @atomic @regression
-Feature: Page-Agnostic UI Modal & Table Journey
+Feature: Page-Agnostic UI Modal and Table Journey
   Scenario: Open catalog, create item via modal and delete row
     Given the user opens "/books" with preloaded API session
     Then the current URL should contain "/books"
     When the user clicks the "Add Book" button
     Then the modal should be visible
-    When in the active modal, the user enters "Cloud Architecture Handbook" into the "title" field
+    When in the active modal, the user enters "Cloud Testing Handbook" into the "title" field
     And in the active modal, the user enters "Sergio Cañete" into the "author" field
     And in the active modal, the user enters "9788424115549" into the "isbn" field
     And in the active modal, the user enters "39.90" into the "price" field
     And in the active modal, the user clicks the "Save" button
     Then the modal should not be visible
-    And in the table, the row containing "Cloud Architecture Handbook" should be visible`,
+    And in the table, the row containing "Cloud Testing Handbook" should be visible`,
 
   hybrid: `@ui @hybrid @smoke
 Feature: Hybrid Fast State Injection and Instant UI Search
@@ -330,286 +330,273 @@ Feature: Hybrid Fast State Injection and Instant UI Search
 };
 
 // ============================================================================
-// 4. Initializer & Event Listeners
+// 4. Inicialización
 // ============================================================================
 document.addEventListener("DOMContentLoaded", () => {
-  renderScenarios(SCENARIOS);
-  renderSteps(STEPS);
-  loadTemplate("api");
-
-  // Quickstart copy button in navbar
-  const btnCopyQuickstart = document.getElementById("btn-copy-quickstart");
-  if (btnCopyQuickstart) {
-    btnCopyQuickstart.addEventListener("click", () => {
-      const cli = "docker load -i bookstore-images.tar && docker compose up -d && npm test";
-      copyText(cli);
-    });
-  }
+  renderizarEscenarios(ESCENARIOS);
+  renderizarPasos(PASOS);
+  cargarPlantilla("api");
 });
 
-// ============================================================================
-// 5. Template Loading & Simulator Execution
-// ============================================================================
-function loadTemplate(type) {
+function cargarPlantilla(tipo) {
   const editor = document.getElementById("gherkin-editor");
   if (!editor) return;
 
-  editor.value = TEMPLATES[type] || TEMPLATES.api;
+  editor.value = PLANTILLAS[tipo] || PLANTILLAS.api;
 
-  // Update active state in buttons
-  const buttons = document.querySelectorAll(".template-btns .btn");
-  buttons.forEach(btn => btn.classList.remove("active"));
-  const activeBtn = document.getElementById(`btn-tpl-${type}`);
-  if (activeBtn) activeBtn.classList.add("active");
+  const botones = document.querySelectorAll(".toolbar-group .btn-tab");
+  botones.forEach(b => b.classList.remove("active"));
+  const btnActivo = document.getElementById(`btn-tpl-${tipo}`);
+  if (btnActivo) btnActivo.classList.add("active");
 
-  const terminal = document.getElementById("terminal-output");
-  if (terminal) {
-    terminal.innerHTML = `
-      <div class="term-line info">[Template Loaded: ${type.toUpperCase()}]</div>
-      <div class="term-line text-muted">Ready. Click 'Simulate Step Execution' below to run live parsing.</div>
+  const consola = document.getElementById("console-view");
+  if (consola) {
+    consola.innerHTML = `
+      <div class="log-row info">[Plantilla cargada: ${tipo.toUpperCase()}]</div>
+      <div class="log-row muted">Listo. Pulsa "Ejecutar Simulación" para ver la traza de ejecución del motor.</div>
     `;
   }
-  const status = document.getElementById("terminal-status");
-  if (status) status.textContent = "Ready";
+
+  const status = document.getElementById("console-status");
+  if (status) {
+    status.textContent = "Listo";
+    status.className = "console-badge";
+  }
 }
 
-function resetGherkin() {
-  loadTemplate("api");
-  showToast("Simulator reset to default API template");
+function restablecerGherkin() {
+  cargarPlantilla("api");
+  mostrarNotificacion("Simulador restablecido a la plantilla inicial.");
 }
 
-let isSimulating = false;
-async function runSimulation() {
-  if (isSimulating) return;
-  isSimulating = true;
+// ============================================================================
+// 5. Ejecución del Simulador
+// ============================================================================
+let ejecutando = false;
+
+async function ejecutarSimulacion() {
+  if (ejecutando) return;
+  ejecutando = true;
 
   const editor = document.getElementById("gherkin-editor");
-  const terminal = document.getElementById("terminal-output");
-  const status = document.getElementById("terminal-status");
-  const runBtn = document.getElementById("btn-run-simulation");
+  const consola = document.getElementById("console-view");
+  const status = document.getElementById("console-status");
+  const runBtn = document.getElementById("btn-run-sim");
 
-  if (!editor || !terminal) return;
+  if (!editor || !consola) return;
 
   runBtn.disabled = true;
-  runBtn.innerHTML = "⏳ Running Engine Simulation...";
-  status.textContent = "Executing...";
-  status.style.color = "var(--accent-amber)";
-  terminal.innerHTML = "";
+  runBtn.textContent = "Ejecutando...";
+  status.textContent = "En progreso";
+  status.style.color = "#f59e0b";
+  consola.innerHTML = "";
 
-  const lines = editor.value.split("\n").filter(l => l.trim().length > 0 && !l.trim().startsWith("#"));
-  const addLine = (text, type = "info") => {
+  const lineas = editor.value.split("\n").filter(l => l.trim().length > 0 && !l.trim().startsWith("#"));
+  const agregarLog = (texto, clase = "info") => {
     const div = document.createElement("div");
-    div.className = `term-line ${type}`;
-    div.textContent = text;
-    terminal.appendChild(div);
-    terminal.scrollTop = terminal.scrollHeight;
+    div.className = `log-row ${clase}`;
+    div.textContent = texto;
+    consola.appendChild(div);
+    consola.scrollTop = consola.scrollHeight;
   };
 
-  addLine("🚀 [OmniSpec Engine] Initializing execution context...", "info");
-  await sleep(250);
+  agregarLog("[OmniSpec Engine] Inicializando contexto de ejecución...", "info");
+  await delay(200);
 
-  let mockVariables = {
-    random_isbn: "978-" + Math.floor(100000000 + Math.random() * 900000000),
-    bookId: "b" + Math.floor(1000 + Math.random() * 9000)
-  };
+  const mockId = "res-" + Math.floor(1000 + Math.random() * 9000);
 
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (line.startsWith("@") || line.startsWith("Feature:") || line.startsWith("Scenario:")) {
-      addLine(`📌 ${line}`, "text-muted");
+  for (let i = 0; i < lineas.length; i++) {
+    const linea = lineas[i].trim();
+    if (linea.startsWith("@") || linea.startsWith("Feature:") || linea.startsWith("Scenario:")) {
+      agregarLog(`• ${linea}`, "muted");
       continue;
     }
 
-    await sleep(180);
+    await delay(160);
 
-    // Dynamic checks
-    if (line.includes("the user is authenticated as an admin")) {
-      addLine(`🔑 [Auth Engine] Authenticating admin via GenericHttpClient -> POST /auth/login (200 OK)`, "success");
-      addLine(`   └─ JWT Token acquired & saved to ScenarioContext.token`, "text-muted");
-    } else if (line.includes("prepares a JSON payload")) {
-      addLine(`📦 [Payload Engine] Initializing dynamic payload template`, "info");
-    } else if (line.includes("sets JSONPath")) {
-      const match = line.match(/sets JSONPath "([^"]+)" to (?:the number )?([^"]+)/);
-      if (match) {
-        addLine(`🧩 [JSONPath Engine] Mutating ${match[1]} => ${match[2]}`, "info");
-      } else {
-        addLine(`🧩 [JSONPath Engine] Dynamic mutation applied`, "info");
-      }
-    } else if (line.includes("sends a \"POST\" request to \"/books\"")) {
-      addLine(`🌐 [GenericHttpClient] POST http://localhost:5000/api/books (Latency: 28ms)`, "info");
-      addLine(`   └─ Headers: { Authorization: Bearer eyJhbG... }`, "text-muted");
-      addLine(`   └─ Response Status: 201 Created`, "success");
-    } else if (line.includes("the response status code should be")) {
-      const code = line.match(/\d+/)?.[0] || "200";
-      addLine(`✔ [Assertion] Asserting Status Code == ${code} [PASSED]`, "success");
-    } else if (line.includes("the response should match the")) {
-      const schema = line.match(/"([^"]+)"/)?.[1] || "Book";
-      addLine(`🛡️ [Zod SchemaRegistry] Validating runtime OpenAPI contract for '${schema}' [PASSED in 3ms]`, "success");
-    } else if (line.includes("saves the response JSONPath")) {
-      addLine(`💾 [State Extractor] Extracting $.id => ${mockVariables.bookId} saved as 'bookId'`, "info");
-    } else if (line.includes("opens \"/books\" with preloaded API session")) {
-      addLine(`⚡ [Hybrid Accelerator] Injecting localStorage { token: "eyJ...", user: { role: "admin" } }`, "info");
-      addLine(`   └─ Page goto: http://localhost:3000/books [DOM Content Loaded in 42ms]`, "success");
-    } else if (line.includes("clicks the")) {
-      const btn = line.match(/"([^"]+)"/)?.[1] || "Button";
-      addLine(`👆 [ElementResolver] Resolving button "${btn}" -> Locator: button:has-text("${btn}") [CLICKED]`, "info");
-    } else if (line.includes("in the active modal, the user enters")) {
-      const match = line.match(/enters "([^"]+)" into the "([^"]+)" field/);
-      if (match) {
-        addLine(`✍️ [Modal Form] Found input[name="${match[2]}"] in active dialog -> Filled "${match[1]}"`, "info");
-      }
-    } else if (line.includes("in the table, the row containing")) {
-      const text = line.match(/"([^"]+)"/)?.[1] || "item";
-      addLine(`🔎 [ElementResolver] Table row with text "${text}" is visible [PASSED]`, "success");
-    } else if (line.includes("Then the current URL should contain")) {
-      addLine(`✔ [Assertion] Current browser URL matches expected route [PASSED]`, "success");
-    } else if (line.includes("Then the modal should")) {
-      addLine(`✔ [Assertion] Modal visibility state confirmed [PASSED]`, "success");
+    if (linea.includes("the user is authenticated as an admin")) {
+      agregarLog("  [Auth] POST /auth/login -> 200 OK (JWT guardado en context.token)", "success");
+    } else if (linea.includes("prepares a JSON payload")) {
+      agregarLog("  [JSON Engine] Plantilla base cargada en context.preparedPayload", "info");
+    } else if (linea.includes("sets JSONPath")) {
+      const m = linea.match(/sets JSONPath "([^"]+)" to (?:the number )?([^"]+)/);
+      const ruta = m ? m[1] : "$.campo";
+      const val = m ? m[2] : "valor";
+      agregarLog(`  [JSONPath] Mutación dinámica: ${ruta} => ${val}`, "info");
+    } else if (linea.includes('sends a "POST" request to "/books"')) {
+      agregarLog("  [GenericHttpClient] POST http://localhost:5000/api/books (28ms) -> 201 Created", "success");
+    } else if (linea.includes("the response status code should be")) {
+      const cod = linea.match(/\d+/)?.[0] || "200";
+      agregarLog(`  [Aserción] Status Code == ${cod} [CORRECTO]`, "success");
+    } else if (linea.includes("the response should match the")) {
+      const sch = linea.match(/"([^"]+)"/)?.[1] || "Book";
+      agregarLog(`  [SchemaRegistry] Validación Zod en runtime para '${sch}' [CORRECTO en 2ms]`, "success");
+    } else if (linea.includes("saves the response JSONPath")) {
+      agregarLog(`  [State] Extraído $.id (${mockId}) asignado al alias 'bookId'`, "info");
+    } else if (linea.includes('sends a "GET" request')) {
+      agregarLog(`  [GenericHttpClient] GET http://localhost:5000/api/books/${mockId} (14ms) -> 200 OK`, "success");
+    } else if (linea.includes("opens") && linea.includes("preloaded API session")) {
+      agregarLog("  [Session] Token inyectado en localStorage vía addInitScript -> DOM cargado en 42ms", "info");
+    } else if (linea.includes("clicks the")) {
+      const btn = linea.match(/"([^"]+)"/)?.[1] || "Botón";
+      agregarLog(`  [ElementResolver] Botón "${btn}" resuelto y pulsado`, "info");
+    } else if (linea.includes("in the active modal, the user enters")) {
+      const m = linea.match(/enters "([^"]+)" into the "([^"]+)" field/);
+      if (m) agregarLog(`  [ElementResolver] Modal: campo "${m[2]}" completado con "${m[1]}"`, "info");
+    } else if (linea.includes("in the table, the row containing")) {
+      const txt = linea.match(/"([^"]+)"/)?.[1] || "item";
+      agregarLog(`  [ElementResolver] Fila con texto "${txt}" visible en tabla [CORRECTO]`, "success");
+    } else if (linea.includes("the current URL should contain")) {
+      agregarLog("  [Aserción] URL verificada según patrón esperado [CORRECTO]", "success");
+    } else if (linea.includes("the modal should")) {
+      agregarLog("  [Aserción] Estado de visibilidad del modal confirmado [CORRECTO]", "success");
     } else {
-      addLine(`▶ Step: ${line} [EXECUTED]`, "text-muted");
+      agregarLog(`  [Paso] ${linea}`, "muted");
     }
   }
 
-  await sleep(250);
-  addLine(`\n✨ ========================================================`, "success");
-  addLine(`🎯 Scenario Execution Completed Successfully! (0 Failures)`, "success");
-  addLine(`📊 100% Generic Execution — 0 Lines of Code Generated`, "success");
+  await delay(200);
+  agregarLog("[OmniSpec Engine] Escenario completado exitosamente. 0 fallos, 0 código generado.", "success");
 
-  status.textContent = "Passed (100%)";
-  status.style.color = "var(--accent-emerald)";
+  status.textContent = "Aprobado (100%)";
+  status.style.color = "#10b981";
   runBtn.disabled = false;
-  runBtn.innerHTML = "▶ Simulate Step Execution";
-  isSimulating = false;
+  runBtn.textContent = "Ejecutar Simulación";
+  ejecutando = false;
 }
 
 // ============================================================================
-// 6. Scenario Matrix Renderer & Filter
+// 6. Matriz de Escenarios y Filtros
 // ============================================================================
-function renderScenarios(list) {
+function renderizarEscenarios(lista) {
   const tbody = document.getElementById("scenario-tbody");
   if (!tbody) return;
 
-  tbody.innerHTML = list.map(s => {
-    const layerClass = s.layer.includes("API") ? "tag-api" : "tag-ui";
-    const tagBadges = s.tags.map(t => {
-      let cls = "tag-istqb";
-      if (t.includes("smoke")) cls = "tag-smoke";
-      else if (t.includes("security") || t.includes("negative")) cls = "tag-security";
-      return `<span class="tag-badge ${cls}">${t}</span>`;
+  tbody.innerHTML = lista.map(e => {
+    const claseCapa = e.capa.includes("API") ? "tag-api" : "tag-ui";
+    const badgesTags = e.tags.map(t => {
+      let c = "tag-istqb";
+      if (t.includes("smoke")) c = "tag-smoke";
+      else if (t.includes("security") || t.includes("negative")) c = "tag-sec";
+      return `<span class="tag ${c}">${t}</span>`;
     }).join(" ");
 
     return `
       <tr>
-        <td><strong>${s.id}</strong></td>
-        <td><code>${s.file}</code></td>
-        <td>${s.title}</td>
-        <td><span class="tag-badge ${layerClass}">${s.layer}</span></td>
-        <td>${tagBadges}</td>
+        <td><strong>${e.id}</strong></td>
+        <td><code>${e.archivo}</code></td>
+        <td>${e.titulo}</td>
+        <td><span class="tag ${claseCapa}">${e.capa}</span></td>
+        <td>${badgesTags}</td>
       </tr>
     `;
   }).join("");
 }
 
-function filterScenarios(category) {
-  const buttons = document.querySelectorAll(".matrix-filters .filter-btn");
-  buttons.forEach(btn => btn.classList.remove("active"));
-  event.target.classList.add("active");
+function filtrarMatriz(categoria) {
+  const botones = document.querySelectorAll(".filter-chips .chip");
+  botones.forEach(b => b.classList.remove("active"));
+  if (event && event.target) event.target.classList.add("active");
 
-  if (category === "all") {
-    renderScenarios(SCENARIOS);
-  } else if (category === "api") {
-    renderScenarios(SCENARIOS.filter(s => s.layer.includes("API")));
-  } else if (category === "ui") {
-    renderScenarios(SCENARIOS.filter(s => s.layer.includes("UI")));
-  } else if (category === "smoke") {
-    renderScenarios(SCENARIOS.filter(s => s.tags.some(t => t.includes("smoke"))));
-  } else if (category === "security") {
-    renderScenarios(SCENARIOS.filter(s => s.tags.some(t => t.includes("security"))));
-  } else if (category === "boundary") {
-    renderScenarios(SCENARIOS.filter(s => s.tags.some(t => t.includes("boundary") || t.includes("equivalence"))));
+  if (categoria === "todos") {
+    renderizarEscenarios(ESCENARIOS);
+  } else if (categoria === "api") {
+    renderizarEscenarios(ESCENARIOS.filter(e => e.capa.includes("API")));
+  } else if (categoria === "ui") {
+    renderizarEscenarios(ESCENARIOS.filter(e => e.capa.includes("UI")));
+  } else if (categoria === "smoke") {
+    renderizarEscenarios(ESCENARIOS.filter(e => e.tags.some(t => t.includes("smoke"))));
+  } else if (categoria === "seguridad") {
+    renderizarEscenarios(ESCENARIOS.filter(e => e.tags.some(t => t.includes("security"))));
+  } else if (categoria === "limites") {
+    renderizarEscenarios(ESCENARIOS.filter(e => e.tags.some(t => t.includes("boundary") || t.includes("equivalence"))));
   }
 }
 
 // ============================================================================
-// 7. Steps Dictionary Renderer & Search
+// 7. Catálogo de Pasos y Búsqueda
 // ============================================================================
-function renderSteps(list) {
-  const grid = document.getElementById("steps-grid");
-  if (!grid) return;
+function renderizarPasos(lista) {
+  const cont = document.getElementById("steps-container");
+  if (!cont) return;
 
-  if (list.length === 0) {
-    grid.innerHTML = `<div class="term-line text-muted" style="grid-column: 1/-1; text-align: center; padding: 2rem;">No matching steps found. Try another keyword.</div>`;
+  if (lista.length === 0) {
+    cont.innerHTML = `<div class="log-row muted" style="grid-column: 1/-1; text-align: center; padding: 2rem;">No se encontraron pasos coincidentes.</div>`;
     return;
   }
 
-  grid.innerHTML = list.map(step => `
+  cont.innerHTML = lista.map(p => `
     <div class="step-card">
-      <div class="step-pattern">${escapeHtml(step.pattern)}</div>
-      <p style="font-size: 0.8rem; color: var(--text-muted);">${step.desc}</p>
-      <div class="step-meta">
-        <span class="step-badge">${step.category}</span>
-        <button class="btn-copy-step" onclick="copyText('${escapeQuotes(step.pattern)}')">Copy Gherkin</button>
+      <div class="step-code">${escapeHtml(p.patron)}</div>
+      <p class="step-description">${p.descripcion}</p>
+      <div class="step-actions">
+        <span class="step-cat-label">${p.categoria}</span>
+        <button class="btn-copy-mini" onclick="copiarTexto('${escapeQuotes(p.patron)}')">Copiar</button>
       </div>
     </div>
   `).join("");
 }
 
-function searchSteps() {
-  const query = document.getElementById("step-search-input").value.toLowerCase().trim();
-  if (!query) {
-    renderSteps(STEPS);
+function buscarPasos() {
+  const q = document.getElementById("input-buscar-step").value.toLowerCase().trim();
+  if (!q) {
+    renderizarPasos(PASOS);
     return;
   }
-  const filtered = STEPS.filter(s => 
-    s.pattern.toLowerCase().includes(query) || 
-    s.desc.toLowerCase().includes(query) ||
-    s.category.toLowerCase().includes(query)
+  const filtrados = PASOS.filter(p => 
+    p.patron.toLowerCase().includes(q) || 
+    p.descripcion.toLowerCase().includes(q) ||
+    p.categoria.toLowerCase().includes(q)
   );
-  renderSteps(filtered);
+  renderizarPasos(filtrados);
 }
 
-function filterStepsByCategory(cat) {
-  const chips = document.querySelectorAll(".dict-tags .tag-chip");
-  chips.forEach(c => c.classList.remove("active"));
-  event.target.classList.add("active");
+function filtrarCategoriaPasos(cat) {
+  const pills = document.querySelectorAll(".catalog-categories .cat-pill");
+  pills.forEach(p => p.classList.remove("active"));
+  if (event && event.target) event.target.classList.add("active");
 
-  if (cat === "all") {
-    renderSteps(STEPS);
+  if (cat === "todos") {
+    renderizarPasos(PASOS);
   } else {
-    renderSteps(STEPS.filter(s => s.category === cat));
+    renderizarPasos(PASOS.filter(p => p.categoria === cat));
   }
 }
 
 // ============================================================================
-// 8. Helper Utilities
+// 8. Utilidades
 // ============================================================================
-function copyText(text) {
-  navigator.clipboard.writeText(text).then(() => {
-    showToast(`Copied to clipboard: ${text.substring(0, 40)}...`);
+function copiarComandoRapido() {
+  const cmd = "docker load -i bookstore-images.tar && docker compose up -d && npm test";
+  copiarTexto(cmd);
+}
+
+function copiarTexto(texto) {
+  navigator.clipboard.writeText(texto).then(() => {
+    mostrarNotificacion(`Copiado: ${texto.substring(0, 45)}...`);
   }).catch(() => {
-    // Fallback
     const input = document.createElement("input");
-    input.value = text;
+    input.value = texto;
     document.body.appendChild(input);
     input.select();
     document.execCommand("copy");
     document.body.removeChild(input);
-    showToast("Copied to clipboard!");
+    mostrarNotificacion("Copiado al portapapeles.");
   });
 }
 
-function showToast(msg) {
-  const toast = document.getElementById("toast");
+function mostrarNotificacion(msg) {
+  const toast = document.getElementById("toast-notice");
   if (!toast) return;
   toast.textContent = msg;
   toast.classList.add("show");
   setTimeout(() => {
     toast.classList.remove("show");
-  }, 3200);
+  }, 2800);
 }
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+function delay(ms) {
+  return new Promise(res => setTimeout(res, ms));
 }
 
 function escapeHtml(str) {
