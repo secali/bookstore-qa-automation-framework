@@ -1,18 +1,17 @@
-# language: es
 @api @books @search @regression
-Característica: Búsqueda y Filtrado en el Catálogo de Libros vía API
-  Como usuario del sistema
-  Quiero realizar búsquedas y filtros en la API
-  Para localizar libros específicos con rapidez
+Feature: Book Catalog Search and Filtering via REST API
+  As a BookStore user
+  I want to search and filter the catalog via API
+  In order to locate specific books quickly
 
-  Antecedentes:
-    Dado que estoy autenticado como administrador en la API
+  Background:
+    Given the user is authenticated as an admin in the API
 
-  Escenario: Búsqueda de libros por término coincidente
-    Dado que registro un nuevo libro con los siguientes datos:
-      | title                       | author        | isbn          | price | category |
-      | Patrones de Diseño GoF 2026 | Erich Gamma   | 9780201633610 | 54.00 | Software |
-    Cuando busco libros en la API con el término "Patrones de Diseño"
-    Entonces la respuesta de la API tiene código de estado 200
-    Y la respuesta cumple con el contrato "BookList"
-    Y la lista de libros contiene al menos 1 libro
+  Scenario: Search books by matching title term
+    Given a new book is created via API with the following data:
+      | title                 | author      | isbn          | price | category |
+      | Design Patterns 2026  | Erich Gamma | 9780201633610 | 54.00 | Software |
+    When the user searches books in the API with term "Design Patterns"
+    Then the API response status code should be 200
+    And the response should match the "BookList" contract
+    And the books list should contain at least 1 book

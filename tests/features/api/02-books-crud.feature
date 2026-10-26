@@ -1,40 +1,39 @@
-# language: es
 @api @books @regression
-Característica: Gestión del Catálogo de Libros (CRUD vía API REST)
-  Como administrador autenticado en BookStore
-  Quiero realizar operaciones CRUD sobre los libros
-  Para mantener actualizado y consistente el catálogo
+Feature: Book Catalog Management (Full REST API CRUD)
+  As an authenticated BookStore administrator
+  I want to perform CRUD operations on books via REST API
+  In order to maintain a consistent catalog inventory
 
-  Antecedentes:
-    Dado que estoy autenticado como administrador en la API
-
-  @smoke @p1
-  Escenario: Consultar el listado de libros y verificar libros semilla
-    Cuando solicito el listado completo de libros a la API
-    Entonces la respuesta de la API tiene código de estado 200
-    Y la respuesta cumple con el contrato "BookList"
-    Y la lista de libros contiene al menos 5 libros
+  Background:
+    Given the user is authenticated as an admin in the API
 
   @smoke @p1
-  Escenario: Creación exitosa de un libro con payload válido
-    Cuando registro un nuevo libro con los siguientes datos:
-      | title                     | author         | isbn          | price | category |
-      | Architecture with Kafka   | Sergio Cañete  | 9780132350884 | 45.50 | Tech     |
-    Entonces la respuesta de la API tiene código de estado 201
-    Y la respuesta cumple con el contrato "Book"
-    Y el libro registrado contiene los datos enviados
+  Scenario: Retrieve books catalog and verify initial seed books
+    When the user requests all books from the API
+    Then the API response status code should be 200
+    And the response should match the "BookList" contract
+    And the books list should contain at least 5 books
+
+  @smoke @p1
+  Scenario: Successfully create a book with valid complete payload
+    When the user creates a new book via API with the following data:
+      | title                   | author        | isbn          | price | category |
+      | Architecture with Kafka | Sergio Cañete | 9780132350884 | 45.50 | Tech     |
+    Then the API response status code should be 201
+    And the response should match the "Book" contract
+    And the created book should match the submitted payload
 
   @p1
-  Escenario: Ciclo de vida completo: Crear, Consultar por ID, Modificar y Eliminar
-    Dado que registro un libro con datos válidos aleatorios
-    Y la respuesta de la API tiene código de estado 201
-    Cuando consulto el libro por su identificador recién creado
-    Entonces la respuesta de la API tiene código de estado 200
-    Y la respuesta cumple con el contrato "Book"
-    Cuando actualizo el precio del libro recién creado a 89.99
-    Entonces la respuesta de la API tiene código de estado 200
-    Y el precio del libro obtenido es 89.99
-    Cuando elimino el libro recién creado
-    Entonces la respuesta de la API tiene código de estado 200
-    Cuando reintento eliminar el mismo libro recién borrado
-    Entonces la respuesta de la API tiene código de estado 404
+  Scenario: Full entity lifecycle: Create, Retrieve by ID, Update and Delete
+    Given a book is created via API with random valid data
+    And the API response status code should be 201
+    When the user retrieves the book by its newly created id
+    Then the API response status code should be 200
+    And the response should match the "Book" contract
+    When the user updates the price of the newly created book to 89.99
+    Then the API response status code should be 200
+    And the retrieved book price should be 89.99
+    When the user deletes the newly created book
+    Then the API response status code should be 200
+    When the user attempts to delete the same already deleted book
+    Then the API response status code should be 404

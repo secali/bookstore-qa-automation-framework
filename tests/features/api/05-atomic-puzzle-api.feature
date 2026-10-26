@@ -1,16 +1,15 @@
-# language: es
 @api @atomic @lego @regression
-Característica: Gestión Atómica de Recursos API (Piezas de Puzzle)
-  Como ingeniero SDET
-  Quiero contar con steps genéricos parametrizables
-  Para probar cualquier recurso o endpoint sin tener que escribir nuevo código TypeScript
+Feature: Atomic API Resource Management (Lego Puzzle Pieces)
+  As an SDET Automation Engineer
+  I want to assemble reusable generic steps as puzzle pieces
+  In order to test any entity or endpoint without writing new TypeScript code
 
-  Antecedentes:
-    Dado que estoy autenticado como administrador en la API
+  Background:
+    Given the user is authenticated as an admin in the API
 
   @smoke
-  Escenario: Crear un recurso mediante payload JSON y recuperarlo usando variables en contexto
-    Cuando envío una petición "POST" a "/books" con el siguiente payload JSON:
+  Scenario: Create a resource via dynamic JSON payload and retrieve it using stored context variables
+    When the user sends a "POST" request to "/books" with JSON payload:
       """
       {
         "title": "{{random_title}}",
@@ -20,22 +19,22 @@ Característica: Gestión Atómica de Recursos API (Piezas de Puzzle)
         "category": "Architecture"
       }
       """
-    Entonces la respuesta de la API tiene código de estado 201
-    Y el campo "title" de la respuesta no es nulo ni vacío
-    Y el campo "price" de la respuesta es igual al número 49.99
-    Cuando guardo el valor de la respuesta "id" con el alias "createdItemId"
-    Y envío una petición "GET" a "/books/{{createdItemId}}"
-    Entonces la respuesta de la API tiene código de estado 200
-    Y el campo "id" de la respuesta es igual a "{{createdItemId}}"
+    Then the API response status code should be 201
+    And the response field "title" should not be null or empty
+    And the response field "price" should equal the number 49.99
+    When the user saves the response field "id" as "createdItemId"
+    And the user sends a "GET" request to "/books/{{createdItemId}}"
+    Then the API response status code should be 200
+    And the response field "id" should equal "{{createdItemId}}"
 
-  Escenario: Actualizar y eliminar recurso usando referencias dinámicas
-    Dado que registro un libro con datos válidos aleatorios
-    Cuando guardo el valor de la respuesta "id" con el alias "targetId"
-    Y envío una petición "PUT" a "/books/{{targetId}}" con los siguientes campos:
+  Scenario: Update and delete resource using chainable context references
+    Given a book is created via API with random valid data
+    When the user saves the response field "id" as "targetId"
+    And the user sends a "PUT" request to "/books/{{targetId}}" with fields:
       | price | 75.50 |
-    Entonces la respuesta de la API tiene código de estado 200
-    Y el campo "price" de la respuesta es igual al número 75.50
-    Cuando envío una petición "DELETE" a "/books/{{targetId}}"
-    Entonces la respuesta de la API tiene código de estado 200
-    Cuando envío una petición "GET" a "/books/{{targetId}}"
-    Entonces la respuesta de la API tiene código de estado 404
+    Then the API response status code should be 200
+    And the response field "price" should equal the number 75.50
+    When the user sends a "DELETE" request to "/books/{{targetId}}"
+    Then the API response status code should be 200
+    When the user sends a "GET" request to "/books/{{targetId}}"
+    Then the API response status code should be 404

@@ -5,6 +5,7 @@ import { ApiResponse } from '../api/types/api.types';
 import { LoginPage } from '../ui/pages/login.page';
 import { RegisterPage } from '../ui/pages/register.page';
 import { BooksPage } from '../ui/pages/books.page';
+import { ElementResolver } from '../ui/support/element-resolver';
 import { ENV } from '../../config/env.config';
 
 export interface ScenarioContext {
@@ -19,6 +20,9 @@ export class CustomWorld extends World {
   public apiClient!: BookStoreApiClient;
   public browserContext?: BrowserContext;
   public page?: Page;
+
+  // Resolutor agnóstico de páginas y elementos UI
+  public elementResolver?: ElementResolver;
 
   // Page Objects tipados
   public loginPage?: LoginPage;
@@ -48,6 +52,7 @@ export class CustomWorld extends World {
 
   initPageObjects(page: Page): void {
     this.page = page;
+    this.elementResolver = new ElementResolver(page);
     this.loginPage = new LoginPage(page);
     this.registerPage = new RegisterPage(page);
     this.booksPage = new BooksPage(page);

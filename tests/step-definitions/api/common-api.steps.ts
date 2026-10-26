@@ -5,16 +5,16 @@ import { BookSchema, BookListSchema } from '../../../src/api/schemas/book.schema
 import { ErrorResponseSchema } from '../../../src/api/schemas/error.schema';
 import { AuthSuccessSchema } from '../../../src/api/schemas/auth.schema';
 
-// Verificación genérica y parametrizable de códigos de respuesta HTTP
-Then('la respuesta de la API tiene código de estado {int}', function (this: CustomWorld, expectedStatus: number) {
+// Generic status code assertions (English & Spanish aliases)
+const assertStatusCode = function (this: CustomWorld, expectedStatus: number) {
   const actualStatus = this.context.lastResponse?.status;
-  expect(actualStatus, `Código de estado esperado ${expectedStatus} pero se obtuvo ${actualStatus}`).toBe(
-    expectedStatus
-  );
-});
+  expect(actualStatus, `Expected status code ${expectedStatus} but received ${actualStatus}`).toBe(expectedStatus);
+};
+Then('the API response status code should be {int}', assertStatusCode);
+Then('la respuesta de la API tiene código de estado {int}', assertStatusCode);
 
-// Verificación genérica de contratos contra esquemas Zod
-Then('la respuesta cumple con el contrato {string}', function (this: CustomWorld, schemaName: string) {
+// Generic contract validation with Zod schemas
+const assertContract = function (this: CustomWorld, schemaName: string) {
   const body = this.context.lastResponse?.body;
   let validationResult: any;
 
@@ -24,6 +24,7 @@ Then('la respuesta cumple con el contrato {string}', function (this: CustomWorld
       validationResult = BookSchema.safeParse(body);
       break;
     case 'booklist':
+    case 'bookslist':
     case 'listadelibros':
       validationResult = BookListSchema.safeParse(body);
       break;
@@ -36,30 +37,38 @@ Then('la respuesta cumple con el contrato {string}', function (this: CustomWorld
       validationResult = AuthSuccessSchema.safeParse(body);
       break;
     default:
-      throw new Error(`Contrato desconocido: ${schemaName}. Opciones válidas: Book, BookList, Error, Auth.`);
+      throw new Error(`Unknown contract schema: '${schemaName}'. Valid options: Book, BookList, Error, Auth.`);
   }
 
   if (!validationResult.success) {
     throw new Error(
-      `Fallo de contrato OpenAPI/Zod en '${schemaName}':\n${JSON.stringify(validationResult.error.format(), null, 2)}`
+      `OpenAPI/Zod contract violation in '${schemaName}':\n${JSON.stringify(validationResult.error.format(), null, 2)}`
     );
   }
   expect(validationResult.success).toBe(true);
-});
+};
+Then('the response should match the {string} contract', assertContract);
+Then('la respuesta cumple con el contrato {string}', assertContract);
 
-// Verificación genérica de errores estándar envelope { code, message, errors }
-Then('la respuesta contiene el código de error {string}', function (this: CustomWorld, expectedCode: string) {
+// Generic error envelope validation { code, message, errors }
+const assertErrorCode = function (this: CustomWorld, expectedCode: string) {
   const body = this.context.lastResponse?.body;
-  expect(body?.code, `Se esperaba código de error '${expectedCode}' pero se obtuvo '${body?.code}'`).toBe(expectedCode);
-});
+  expect(body?.code, `Expected error code '${expectedCode}' but received '${body?.code}'`).toBe(expectedCode);
+};
+Then('the response should contain error code {string}', assertErrorCode);
+Then('la respuesta contiene el código de error {string}', assertErrorCode);
 
-Then('el detalle del error indica fallo en el campo {string}', function (this: CustomWorld, fieldName: string) {
+const assertErrorField = function (this: CustomWorld, fieldName: string) {
   const errors = this.context.lastResponse?.body?.errors;
-  expect(errors, 'El objeto de errores no está presente en la respuesta').toBeDefined();
-  expect(errors[fieldName], `Se esperaba detalle de error para el campo '${fieldName}'`).toBeDefined();
-});
+  expect(errors, 'The error envelope does not contain an errors map').toBeDefined();
+  expect(errors[fieldName], `Expected error details for field '${fieldName}'`).toBeDefined();
+};
+Then('the error details should indicate a failure in field {string}', assertErrorField);
+Then('el detalle del error indica fallo en el campo {string}', assertErrorField);
 
-Then('la respuesta contiene el campo {string}', function (this: CustomWorld, fieldPath: string) {
+const assertFieldPresent = function (this: CustomWorld, fieldPath: string) {
   const body = this.context.lastResponse?.body;
-  expect(body?.[fieldPath], `El campo '${fieldPath}' no está presente en la respuesta`).toBeDefined();
-});
+  expect(body?.[fieldPath], `Field '${fieldPath}' is missing in the response`).toBeDefined();
+};
+Then('the response should contain field {string}', assertFieldPresent);
+Then('la respuesta contiene el campo {string}', assertFieldPresent);

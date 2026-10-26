@@ -1,37 +1,36 @@
-# language: es
 @api @auth @regression
-Característica: Autenticación y Gestión de Usuarios en la API
-  Como usuario de la plataforma BookStore QA Sandbox
-  Quiero autenticarme y registrarme a través de la API REST
-  Para obtener acceso a las operaciones del catálogo
+Feature: Authentication and User Management via REST API
+  As a BookStore QA Sandbox user
+  I want to register and authenticate via the REST API
+  In order to obtain a secure JWT token for catalog operations
 
   @smoke @p1
-  Escenario: Inicio de sesión exitoso con credenciales de administrador seed
-    Cuando inicio sesión en la API con credenciales válidas de administrador
-    Entonces la respuesta de la API tiene código de estado 200
-    Y la respuesta cumple con el contrato "AuthResponse"
-    Y la respuesta contiene el campo "token"
+  Scenario: Successful login with default seed administrator credentials
+    When the user logs in via API with valid admin credentials
+    Then the API response status code should be 200
+    And the response should match the "AuthResponse" contract
+    And the response should contain field "token"
 
   @negative @security
-  Esquema del escenario: Rechazo de autenticación con credenciales inválidas
-    Cuando inicio sesión en la API con el email "<email>" y la contraseña "<password>"
-    Entonces la respuesta de la API tiene código de estado 401
-    Y la respuesta contiene el código de error "INVALID_CREDENTIALS"
+  Scenario Outline: Authentication rejected with invalid credentials
+    When the user logs in via API with email "<email>" and password "<password>"
+    Then the API response status code should be 401
+    And the response should contain error code "INVALID_CREDENTIALS"
 
-    Ejemplos:
-      | email              | password       |
-      | admin@sandbox.com  | clave_erronea  |
-      | noexiste@test.com  | admin123       |
+    Examples:
+      | email              | password         |
+      | admin@sandbox.com  | wrong_password   |
+      | nonexist@test.com  | admin123         |
 
   @smoke @p1
-  Escenario: Registro exitoso de un nuevo usuario con datos aleatorios válidos
-    Cuando registro un nuevo usuario con datos aleatorios válidos
-    Entonces la respuesta de la API tiene código de estado 201
-    Y la respuesta cumple con el contrato "AuthResponse"
+  Scenario: Successful registration of a new user with valid dynamic data
+    When the user registers via API with random valid data
+    Then the API response status code should be 201
+    And the response should match the "AuthResponse" contract
 
   @negative @contracts
-  Escenario: Rechazo de registro ante colisión de email ya existente
-    Dado que registro un nuevo usuario con datos aleatorios válidos
-    Cuando intento registrar un usuario con el mismo email ya utilizado
-    Entonces la respuesta de la API tiene código de estado 409
-    Y la respuesta contiene el código de error "EMAIL_ALREADY_EXISTS"
+  Scenario: Registration rejected when email address is already taken
+    Given a new user is registered via API with random valid data
+    When the user attempts to register with the same email address
+    Then the API response status code should be 409
+    And the response should contain error code "EMAIL_ALREADY_EXISTS"

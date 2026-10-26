@@ -1,33 +1,32 @@
-# language: es
 @api @contracts @negative @regression
-Característica: Validación de Contratos OpenAPI y Envelope de Error Estandarizado
-  Como arquitecto de pruebas
-  Quiero asegurar que la API devuelve la estructura estándar de error
-  Para garantizar la estabilidad del contrato con clientes web y móviles
+Feature: OpenAPI Contracts Validation and Standard Error Envelope
+  As a QA Automation Architect
+  I want to ensure the API strictly adheres to standard contract structures
+  In order to guarantee stability for consuming web and mobile clients
 
-  Antecedentes:
-    Dado que estoy autenticado como administrador en la API
+  Background:
+    Given the user is authenticated as an admin in the API
 
   @contracts
-  Esquema del escenario: Rechazo ante creación de libros con datos que violan el contrato
-    Cuando intento registrar un libro con "<isbn>" y precio <price>
-    Entonces la respuesta de la API tiene código de estado 400
-    Y la respuesta cumple con el contrato "Error"
-    Y la respuesta contiene el código de error "VALIDATION_ERROR"
-    Y el detalle del error indica fallo en el campo "<campo_esperado>"
+  Scenario Outline: Rejection when attempting to create a book with invalid schema data
+    When the user attempts to create a book with isbn "<isbn>" and price <price>
+    Then the API response status code should be 400
+    And the response should match the "Error" contract
+    And the response should contain error code "VALIDATION_ERROR"
+    And the error details should indicate a failure in field "<expected_field>"
 
-    Ejemplos:
-      | isbn             | price  | campo_esperado |
-      | isbn_incorrecto  | 25.00  | isbn           |
-      | 9780132350884    | -15.00 | price          |
+    Examples:
+      | isbn            | price  | expected_field |
+      | invalid_isbn    | 25.00  | isbn           |
+      | 9780132350884   | -15.00 | price          |
 
   @security
-  Escenario: Rechazo ante creación de libro sin cabecera de autenticación
-    Cuando intento registrar un libro sin token de autenticación
-    Entonces la respuesta de la API tiene código de estado 401
-    Y la respuesta cumple con el contrato "Error"
+  Scenario: Rejection when attempting to create a book without authorization header
+    When the user attempts to create a book without authentication token
+    Then the API response status code should be 401
+    And the response should match the "Error" contract
 
-  Escenario: Consulta de un libro con identificador inexistente
-    Cuando consulto un libro con identificador inexistente "64f1a2b3c4d5e6f7a8b9c0d1"
-    Entonces la respuesta de la API tiene código de estado 404
-    Y la respuesta cumple con el contrato "Error"
+  Scenario: Retrieval of a book with non-existent identifier returns 404
+    When the user retrieves a book with non-existent id "64f1a2b3c4d5e6f7a8b9c0d1"
+    Then the API response status code should be 404
+    And the response should match the "Error" contract
