@@ -232,13 +232,34 @@ Atendiendo a la instrucción explícita del evaluador para reforzar la filosofí
 
 ---
 
-## 🗂️ Índice de Artefactos Creados
+## 🚀 FASE 11: Purificación de la Arquitectura: Cero Steps de Dominio y Motor Universal JSONPath
+
+En respuesta al análisis arquitectónico planteado por el evaluador, se ejecutó la consolidación definitiva hacia la arquitectura pura de **piezas de puzzle genéricas**:
+
+1. **Eliminación Total de Step Definitions de Dominio Específico**:
+   - Se auditaron y eliminaron los archivos `auth.steps.ts`, `books.steps.ts`, `login-ui.steps.ts` y `books-ui.steps.ts`, erradicando el acoplamiento a entidades y pantallas individuales.
+   - La suite queda estructurada exclusivamente en 4 motores universales:
+     - `tests/step-definitions/api/atomic-api.steps.ts`
+     - `tests/step-definitions/api/common-api.steps.ts`
+     - `tests/step-definitions/ui/atomic-ui.steps.ts`
+     - `tests/step-definitions/ui/common-ui.steps.ts`
+2. **Implementación del Motor Universal JSONPath ([src/support/jsonpath.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/support/jsonpath.ts))**:
+   - Módulo tipado en TypeScript con cero dependencias externas para resolver, mutar y eliminar propiedades por ruta JSONPath (`$.title`, `$.data[0].id`, `$.errors.isbn`).
+   - Permite preparar plantillas JSON base (`Given the user prepares a JSON payload:`) y mutar atributos dinámicamente (`When the user sets JSONPath "$.price" to 49.99` o `When the user removes JSONPath "$.isbn"`).
+   - Valida respuestas complejas sin acoplamiento a DTOs (`Then the response JSONPath "$.token" should not be null or empty`).
+3. **Refactorización Coherente de los 21 Escenarios BDD**:
+   - Todas las features (`01-auth.feature`, `02-books-crud.feature`, `03-books-search.feature`, `04-contracts-and-errors.feature`, etc.) fueron reescritas para invocar exclusivamente peticiones HTTP con cuerpos multilínea (`body:`), mutaciones JSONPath y elementos de UI agnósticos.
+   - **Quality Gate:** 21 escenarios (21 skipped), 150 pasos (150 skipped), 0 pasos indefinidos, 0 ambigüedades, compilación estricta al 100%.
+
+---
+
+## 🗂️ Índice de Artefactos Creados y Vigentes
 
 | Archivo | Propósito |
 |---|---|
 | [BITACORA_PASO_A_PASO.md](file:///c:/Users/PC/Documents/LogNext-Verisure/BITACORA_PASO_A_PASO.md) | Registro cronológico y detallado de toda la solución (este documento). |
-| [AUDITORIA_CALIDAD_SDET.md](file:///c:/Users/PC/Documents/LogNext-Verisure/AUDITORIA_CALIDAD_SDET.md) | Informe de auditoría técnica y cumplimiento de la filosofía SDET genérica. |
-| [STEPS_DICTIONARY.md](file:///c:/Users/PC/Documents/LogNext-Verisure/STEPS_DICTIONARY.md) | Diccionario oficial de steps genéricos y convenciones Cucumber + Playwright. |
+| [AUDITORIA_CALIDAD_SDET.md](file:///c:/Users/PC/Documents/LogNext-Verisure/AUDITORIA_CALIDAD_SDET.md) | Informe de auditoría técnica y dictamen sobre la eliminación de steps de dominio. |
+| [STEPS_DICTIONARY.md](file:///c:/Users/PC/Documents/LogNext-Verisure/STEPS_DICTIONARY.md) | Diccionario universal de steps genéricos, motor JSONPath y taxonomía ISTQB. |
 | [.agents/pipeline/ORCHESTRATOR.md](file:///c:/Users/PC/Documents/LogNext-Verisure/.agents/pipeline/ORCHESTRATOR.md) | Orquestador del pipeline de QA multi-agente end-to-end. |
 | [.agents/pipeline/agents/](file:///c:/Users/PC/Documents/LogNext-Verisure/.agents/pipeline/agents/) | Especificaciones de Agente 1 (Analyst), Agente 2 (QA Lead) y Agente 3 (SDET). |
 | [requirements.md](file:///c:/Users/PC/Documents/LogNext-Verisure/requirements.md) | Análisis funcional y técnico de los servicios, modelos y endpoints. |
@@ -247,15 +268,11 @@ Atendiendo a la instrucción explícita del evaluador para reforzar la filosofí
 | [AGENTS.md](file:///c:/Users/PC/Documents/LogNext-Verisure/AGENTS.md) | Reglas obligatorias de ingeniería y calidad del espacio de trabajo. |
 | [.github/workflows/ci.yml](file:///c:/Users/PC/Documents/LogNext-Verisure/.github/workflows/ci.yml) | Pipeline de CI/CD para GitHub Actions con Docker local y polling activo. |
 | [.agents/skills/sdet-sergio-canete/](file:///c:/Users/PC/Documents/LogNext-Verisure/.agents/skills/sdet-sergio-canete/) | Skill de IA con referencias y directrices de arquitectura. |
-| [package.json](file:///c:/Users/PC/Documents/LogNext-Verisure/package.json) | Scripts de ejecución paralela y dependencias de testing. |
-| [cucumber.js](file:///c:/Users/PC/Documents/LogNext-Verisure/cucumber.js) | Configuración del runner BDD Cucumber con TypeScript. |
-| [playwright.config.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/playwright.config.ts) | Configuración de Playwright para pruebas E2E. |
-| [tsconfig.json](file:///c:/Users/PC/Documents/LogNext-Verisure/tsconfig.json) | Configuración del compilador TypeScript con path aliases. |
-| [eslint.config.mjs](file:///c:/Users/PC/Documents/LogNext-Verisure/eslint.config.mjs) | Configuración de ESLint en formato Flat Config. |
-| [.prettierrc](file:///c:/Users/PC/Documents/LogNext-Verisure/.prettierrc) | Configuración de formato de código Prettier. |
-| [src/api/](file:///c:/Users/PC/Documents/LogNext-Verisure/src/api/) | Capa de clientes REST, contratos Zod y tipos TypeScript. |
-| [src/ui/](file:///c:/Users/PC/Documents/LogNext-Verisure/src/ui/) | Capa de Page Objects y componentes para React Frontend. |
-| [src/support/](file:///c:/Users/PC/Documents/LogNext-Verisure/src/support/) | CustomWorld (DI), hooks de ciclo de vida y generador de reportes. |
-| [tests/features/](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/features/) | 9 features BDD en Gherkin (5 de API y 4 de UI) con tags ISTQB completos. |
-| [tests/step-definitions/](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/step-definitions/) | Step definitions genéricas, atómicas y modulares tipadas en TypeScript. |
+| [src/support/jsonpath.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/support/jsonpath.ts) | Motor nativo de extracción y mutación por JSONPath en runtime. |
+| [src/support/template-resolver.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/support/template-resolver.ts) | Generador de tokens aleatorios dinámicos (`{{random_*}}`, `{{token}}`, `{{alias}}`). |
+| [src/ui/support/element-resolver.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/ui/support/element-resolver.ts) | Resolutor agnóstico de páginas, modales, campos, botones y tablas. |
+| [src/api/clients/generic-http.client.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/api/clients/generic-http.client.ts) | Cliente HTTP desacoplado para cualquier verbo y endpoint. |
+| [tests/features/](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/features/) | 9 features BDD expresadas exclusivamente en pasos genéricos con JSONPath y tags ISTQB. |
+| [tests/step-definitions/](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/step-definitions/) | 4 archivos únicos de steps 100% genéricos y agnósticos (2 API + 2 UI). |
+
 

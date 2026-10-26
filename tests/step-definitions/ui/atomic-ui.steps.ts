@@ -243,3 +243,15 @@ const uncheckCheckbox = async function (this: CustomWorld, checkboxIdentifier: s
 };
 When('the user unchecks the {string} checkbox', uncheckCheckbox);
 When('desmarca la casilla {string}', uncheckCheckbox);
+
+// 10. Generic Table Row Count Assertions
+const assertTableMinRows = async function (this: CustomWorld, minRows: number) {
+  expect(this.page).toBeDefined();
+  const table = this.elementResolver!.getTable();
+  const rows = table.locator('tbody tr, [role="row"]');
+  const count = await rows.count();
+  expect(count).toBeGreaterThanOrEqual(minRows);
+};
+Then('the table should display at least {int} row(s)', assertTableMinRows);
+Then('the books table should display at least {int} row(s)', assertTableMinRows);
+Then('la tabla muestra al menos {int} fila(s)', assertTableMinRows);

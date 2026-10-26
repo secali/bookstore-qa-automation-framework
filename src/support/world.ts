@@ -13,6 +13,7 @@ export interface ScenarioContext {
   lastResponse?: ApiResponse<any>;
   createdBookIds: string[];
   storedData: Record<string, any>;
+  preparedPayload?: any;
 }
 
 export class CustomWorld extends World {

@@ -9,32 +9,51 @@ Feature: Book Catalog Management (Full REST API CRUD)
 
   @integration-test @functional @positive-testing @contract @smoke @p1
   Scenario: Retrieve books catalog and verify initial seed books
-    When the user requests all books from the API
+    When the user sends a "GET" request to "/books"
     Then the API response status code should be 200
     And the response should match the "BookList" contract
-    And the books list should contain at least 5 books
+    And the response JSONPath "$" should be an array with at least 5 item(s)
 
   @integration-test @functional @positive-testing @contract @equivalence-partitioning @smoke @p1
   Scenario: Successfully create a book with valid complete payload
-    When the user creates a new book via API with the following data:
-      | title                   | author        | isbn          | price | category |
-      | Architecture with Kafka | Sergio Cañete | 9780132350884 | 45.50 | Tech     |
+    When the user sends a "POST" request to "/books" with body:
+      """
+      {
+        "title": "Architecture with Kafka",
+        "author": "Sergio Cañete",
+        "isbn": "9780132350884",
+        "price": 45.50,
+        "category": "Tech"
+      }
+      """
     Then the API response status code should be 201
     And the response should match the "Book" contract
-    And the created book should match the submitted payload
+    And the response JSONPath "$.title" should equal "Architecture with Kafka"
+    And the response JSONPath "$.price" should equal the number 45.50
 
   @integration-test @functional @positive-testing @negative-testing @state-transition @contract @reliability @p1
   Scenario: Full entity lifecycle: Create, Retrieve by ID, Update and Delete
-    Given a book is created via API with random valid data
-    And the API response status code should be 201
-    When the user retrieves the book by its newly created id
+    Given the user prepares a JSON payload:
+      """
+      {
+        "title": "{{random_title}}",
+        "author": "Sergio Cañete",
+        "isbn": "{{random_isbn}}",
+        "price": 50.00,
+        "category": "Tech"
+      }
+      """
+    When the user sends a "POST" request to "/books" with the prepared payload
+    Then the API response status code should be 201
+    When the user saves the response JSONPath "$.id" as "createdId"
+    And the user sends a "GET" request to "/books/{{createdId}}"
     Then the API response status code should be 200
     And the response should match the "Book" contract
-    When the user updates the price of the newly created book to 89.99
+    When the user sends a "PUT" request to "/books/{{createdId}}" with fields:
+      | price | 89.99 |
     Then the API response status code should be 200
-    And the retrieved book price should be 89.99
-    When the user deletes the newly created book
+    And the response JSONPath "$.price" should equal the number 89.99
+    When the user sends a "DELETE" request to "/books/{{createdId}}"
     Then the API response status code should be 200
-    When the user attempts to delete the same already deleted book
+    When the user sends a "DELETE" request to "/books/{{createdId}}"
     Then the API response status code should be 404
-

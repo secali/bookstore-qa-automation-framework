@@ -9,11 +9,18 @@ Feature: Book Catalog Search and Filtering via REST API
 
   @integration-test @functional @positive-testing @contract @search @equivalence-partitioning @smoke @p1
   Scenario: Search books by matching title term
-    Given a new book is created via API with the following data:
-      | title                 | author      | isbn          | price | category |
-      | Design Patterns 2026  | Erich Gamma | 9780201633610 | 54.00 | Software |
-    When the user searches books in the API with term "Design Patterns"
+    Given the user sends a "POST" request to "/books" with body:
+      """
+      {
+        "title": "Design Patterns 2026",
+        "author": "Erich Gamma",
+        "isbn": "9780201633610",
+        "price": 54.00,
+        "category": "Software"
+      }
+      """
+    Then the API response status code should be 201
+    When the user sends a "GET" request to "/books?search=Design%20Patterns"
     Then the API response status code should be 200
     And the response should match the "BookList" contract
-    And the books list should contain at least 1 book
-
+    And the response JSONPath "$" should be an array with at least 1 item(s)

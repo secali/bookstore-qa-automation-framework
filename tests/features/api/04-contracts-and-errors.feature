@@ -9,7 +9,17 @@ Feature: OpenAPI Contracts Validation and Standard Error Envelope
 
   @integration-test @contract @negative-testing @boundary-value-analysis @equivalence-partitioning @reliability @p1
   Scenario Outline: Rejection when attempting to create a book with invalid schema data
-    When the user attempts to create a book with isbn "<isbn>" and price <price>
+    Given the user prepares a JSON payload:
+      """
+      {
+        "title": "Invalid Contract Book",
+        "author": "QA Architect",
+        "isbn": "<isbn>",
+        "price": <price>,
+        "category": "Testing"
+      }
+      """
+    When the user sends a "POST" request to "/books" with the prepared payload
     Then the API response status code should be 400
     And the response should match the "Error" contract
     And the response should contain error code "VALIDATION_ERROR"
@@ -22,13 +32,21 @@ Feature: OpenAPI Contracts Validation and Standard Error Envelope
 
   @integration-test @security @authorization @negative-testing @contract @reliability @p1
   Scenario: Rejection when attempting to create a book without authorization header
-    When the user attempts to create a book without authentication token
+    When the user removes the authorization token
+    And the user sends a "POST" request to "/books" with body:
+      """
+      {
+        "title": "Unauthorized Book",
+        "author": "Anonymous",
+        "isbn": "9780132350884",
+        "price": 20.00
+      }
+      """
     Then the API response status code should be 401
     And the response should match the "Error" contract
 
   @integration-test @functional @negative-testing @error-guessing @reliability
   Scenario: Retrieval of a book with non-existent identifier returns 404
-    When the user retrieves a book with non-existent id "64f1a2b3c4d5e6f7a8b9c0d1"
+    When the user sends a "GET" request to "/books/64f1a2b3c4d5e6f7a8b9c0d1"
     Then the API response status code should be 404
     And the response should match the "Error" contract
-

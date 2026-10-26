@@ -6,8 +6,18 @@ Feature: Hybrid E2E Flow (Fast API Injection and UI Verification)
 
   @system-integration-test @functional @positive-testing @hybrid @usability @equivalence-partitioning @smoke @p1
   Scenario: Book created via API is immediately visible and searchable on the UI
-    Given a book has been previously created via API with title "Multi-Agent QA Architecture" and price 49.99
-    And the user accesses the books dashboard with an active authenticated session
-    When the user searches the catalog for "Multi-Agent QA Architecture"
-    Then the books table should display a book with title "Multi-Agent QA Architecture"
-
+    Given the user is authenticated as an admin in the API
+    And the user sends a "POST" request to "/books" with body:
+      """
+      {
+        "title": "Multi-Agent QA Architecture",
+        "author": "Sergio Cañete",
+        "isbn": "{{random_isbn}}",
+        "price": 49.99,
+        "category": "Architecture"
+      }
+      """
+    Then the API response status code should be 201
+    Given the user opens the "Books" page with preloaded API session
+    When on the "Books" page, the user enters "Multi-Agent QA Architecture" into the "search" field
+    Then in the table, the row containing "Multi-Agent QA Architecture" should be visible
