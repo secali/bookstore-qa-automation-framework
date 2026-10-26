@@ -6,7 +6,7 @@ Feature: Page-Agnostic UI Interaction via Atomic Puzzle Pieces
 
   @system-test @functional @positive-testing @state-transition @usability @atomic @generic @smoke @p1
   Scenario: Full user journey: Navigation, modal form submission, and table row deletion
-    Given the user opens the "Books" page with preloaded API session
+    Given the user opens "/books" with preloaded API session
     Then the current URL should contain "/books"
     When the user clicks the "Add Book" button
     Then the modal should be visible

@@ -1,9 +1,7 @@
 import { Then } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 import { CustomWorld } from '../../../src/support/world';
-import { BookSchema, BookListSchema } from '../../../src/api/schemas/book.schema';
-import { ErrorResponseSchema } from '../../../src/api/schemas/error.schema';
-import { AuthSuccessSchema } from '../../../src/api/schemas/auth.schema';
+import { SchemaRegistry } from '../../../src/api/schemas/registry';
 
 // Generic status code assertions (English & Spanish aliases)
 const assertStatusCode = function (this: CustomWorld, expectedStatus: number) {
@@ -13,33 +11,18 @@ const assertStatusCode = function (this: CustomWorld, expectedStatus: number) {
 Then('the API response status code should be {int}', assertStatusCode);
 Then('la respuesta de la API tiene código de estado {int}', assertStatusCode);
 
-// Generic contract validation with Zod schemas
+// Generic contract validation with Zod schemas via SchemaRegistry
 const assertContract = function (this: CustomWorld, schemaName: string) {
   const body = this.context.lastResponse?.body;
-  let validationResult: any;
+  const schema = SchemaRegistry.get(schemaName);
 
-  switch (schemaName.toLowerCase()) {
-    case 'book':
-    case 'bookresponse':
-      validationResult = BookSchema.safeParse(body);
-      break;
-    case 'booklist':
-    case 'bookslist':
-    case 'listadelibros':
-      validationResult = BookListSchema.safeParse(body);
-      break;
-    case 'error':
-    case 'errorresponse':
-      validationResult = ErrorResponseSchema.safeParse(body);
-      break;
-    case 'auth':
-    case 'authresponse':
-      validationResult = AuthSuccessSchema.safeParse(body);
-      break;
-    default:
-      throw new Error(`Unknown contract schema: '${schemaName}'. Valid options: Book, BookList, Error, Auth.`);
+  if (!schema) {
+    throw new Error(
+      `Unknown contract schema: '${schemaName}'. Available schemas: ${SchemaRegistry.getAvailableSchemas().join(', ')}`
+    );
   }
 
+  const validationResult = schema.safeParse(body);
   if (!validationResult.success) {
     throw new Error(
       `OpenAPI/Zod contract violation in '${schemaName}':\n${JSON.stringify(validationResult.error.format(), null, 2)}`

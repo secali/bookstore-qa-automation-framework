@@ -129,7 +129,7 @@ Operates across ANY page, form, modal or table by supplying the page/modal name 
 | `Then in the table, the row containing {string} should be visible` | Row text | Asserts that a row with the given text exists in the table. |
 | `Then in the table, the row containing {string} should not be visible` | Row text | Asserts row absence in the table. |
 | `Then the table should display at least {int} row(s)` | Min rows integer | Asserts minimum number of rows in the active table. |
-| `Then the books table should display at least {int} row(s)` | Min rows integer | Table row count alias. |
+| `Then the {string} table should display at least {int} row(s)` | Table identifier, Min rows integer | Asserts minimum rows in a specific table identified by testid or selector. |
 | `Then an alert message should be displayed on screen` | *None* | Universal assertion for any toast, error, or alert notification. |
 | `Then an error alert message should be displayed on screen` | *None* | Asserts error message presence across any page or view. |
 | `Then an alert message containing {string} should be visible` | Substring text | Asserts text within any alert/notification container. |

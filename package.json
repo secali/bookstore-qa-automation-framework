@@ -14,6 +14,7 @@
     "test:contracts": "cucumber-js --tags \"@contracts\"",
     "test:hybrid": "cucumber-js --tags \"@hybrid\"",
     "report": "node src/support/generate-report.js",
+    "dashboard": "cmd /c start dashboard/index.html",
     "lint": "eslint \"{src,tests}/**/*.ts\"",
     "format": "prettier --write \"{src,tests}/**/*.ts\""
   },

@@ -11,14 +11,21 @@ import { ENV } from '../../../config/env.config';
 const authenticateWithCredentials = async function (this: CustomWorld, rawEmail: string, rawPass: string) {
   const email = resolveTemplate(rawEmail, this);
   const password = resolveTemplate(rawPass, this);
-  const res = await this.apiClient.auth.login(email, password);
+  const res = await this.apiClient.http.send('POST', '/auth/login', {
+    data: { email, password }
+  });
   expect(res.status, `Failed to authenticate: ${JSON.stringify(res.body)}`).toBe(200);
   expect(res.body.token, 'Token was not returned in login response').toBeDefined();
   this.context.token = res.body.token;
+  this.context.storedData['userEmail'] = email;
+  this.context.storedData['userRole'] = res.body.user?.role || 'admin';
   this.apiClient.http.setAuthToken(res.body.token!);
 };
 When('the user is authenticated with email {string} and password {string}', authenticateWithCredentials);
 When('the user is authenticated as an admin in the API', async function (this: CustomWorld) {
+  await authenticateWithCredentials.call(this, ENV.DEFAULT_ADMIN.email, ENV.DEFAULT_ADMIN.password);
+});
+When('the user is authenticated with admin credentials', async function (this: CustomWorld) {
   await authenticateWithCredentials.call(this, ENV.DEFAULT_ADMIN.email, ENV.DEFAULT_ADMIN.password);
 });
 

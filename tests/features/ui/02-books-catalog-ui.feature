@@ -5,11 +5,11 @@ Feature: Book Catalog Management in Web Dashboard
   In order to visually manage the inventory
 
   Background:
-    Given the user opens the "Books" page with preloaded API session
+    Given the user opens "/books" with preloaded API session
 
   @system-test @functional @positive-testing @usability @smoke @p1
   Scenario: Initial table load displays pre-seeded books
-    Then the books table should display at least 5 rows
+    Then the table should display at least 5 rows
 
   @system-test @functional @positive-testing @state-transition @boundary-value-analysis @usability @p1
   Scenario: Create a book via modal in UI and delete it from the table

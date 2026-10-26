@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OmniSpec SDET Engine | Enterprise Test Automation Framework</title>
+  <meta name="description" content="OmniSpec SDET Engine: Generic Zero-Code QA Automation Architecture by Sergio Cañete Linares for Playwright, TypeScript, Cucumber BDD, and Docker.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark-theme">
+  <!-- Top Background Ambient Glows -->
+  <div class="ambient-glow glow-cyan"></div>
+  <div class="ambient-glow glow-violet"></div>
+
+  <!-- Navigation Bar -->
+  <header class="navbar" id="main-header">
+    <div class="nav-container">
+      <div class="brand-group">
+        <div class="brand-logo">
+          <span class="logo-symbol">⚡</span>
+        </div>
+        <div class="brand-meta">
+          <span class="brand-name">OmniSpec <span class="gradient-text">Engine</span></span>
+          <span class="brand-tag">SDET Enterprise Core v2.4</span>
+        </div>
+      </div>
+
+      <nav class="nav-links" id="nav-links">
+        <a href="#pitch" class="nav-link active">⚡ Elevator Pitch</a>
+        <a href="#architecture" class="nav-link">🧩 Lego Architecture</a>
+        <a href="#simulator" class="nav-link">🎮 Live Simulator</a>
+        <a href="#pyramid" class="nav-link">📊 70/30 & ISTQB</a>
+        <a href="#pipeline" class="nav-link">🤖 AI Multi-Agent</a>
+        <a href="#dictionary" class="nav-link">📖 Steps Catalog</a>
+        <a href="#quickstart" class="nav-link">🚀 Quick Start</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="#simulator" class="btn btn-sm btn-glow" id="btn-demo-nav">Interactive Demo</a>
+        <button class="btn btn-sm btn-outline" id="btn-copy-quickstart" title="Copy CLI Quickstart">
+          <span class="icon">📋</span> Quickstart CLI
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="main-content">
+
+    <!-- HERO SECTION -->
+    <section class="hero-section" id="hero">
+      <div class="hero-badge">
+        <span class="badge-pulse"></span>
+        <span>Architected by <strong>Sergio Cañete Linares</strong> &bull; Senior QA Automation Engineer / SDET</span>
+      </div>
+
+      <h1 class="hero-title">
+        The Generic Zero-Code<br>
+        <span class="gradient-text">Test Automation Engine</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        A reusable, lego-piece test framework designed for <strong>BookStore QA Sandbox (LogNext-Verisure)</strong>.
+        Engineered with <strong>Playwright, TypeScript, Cucumber BDD & Zod</strong>, eliminating POM maintenance through universal step engines, dynamic JSONPath mutation, and resilient element resolution.
+      </p>
+
+      <!-- Key Metrics Strip -->
+      <div class="metrics-grid" id="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-value gradient-cyan" id="metric-code">0</div>
+          <div class="metric-label">Lines of TS per New Test</div>
+          <div class="metric-detail">Pure declarative Gherkin orchestration</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value gradient-violet" id="metric-generic">100%</div>
+          <div class="metric-label">Generic & Page-Agnostic</div>
+          <div class="metric-detail">Zero page or endpoint-dedicated steps</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value gradient-emerald" id="metric-pyramid">70 / 30</div>
+          <div class="metric-label">API / UI Distribution</div>
+          <div class="metric-detail">15 API & 6 UI automated scenarios</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value gradient-amber" id="metric-hermetic">100%</div>
+          <div class="metric-label">Hermetic Docker CI/CD</div>
+          <div class="metric-detail">Zero public registry leak compliance</div>
+        </div>
+      </div>
+
+      <div class="hero-cta-group">
+        <a href="#simulator" class="btn btn-lg btn-primary" id="btn-hero-simulator">
+          <span>🎮 Launch Live Puzzle Simulator</span>
+        </a>
+        <a href="#pitch" class="btn btn-lg btn-secondary" id="btn-hero-pitch">
+          <span>⚡ 2-Minute Interview Pitch</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- SECTION 1: 2-MINUTE ELEVATOR PITCH -->
+    <section class="section-container" id="pitch">
+      <div class="section-header">
+        <span class="section-tag">Executive Summary</span>
+        <h2 class="section-title">The 2-Minute Interview Elevator Pitch</h2>
+        <p class="section-desc">Key architectural differentiators to present directly to your interviewers and engineering directors.</p>
+      </div>
+
+      <div class="pitch-grid">
+        <div class="pitch-card">
+          <div class="pitch-icon">🎯</div>
+          <h3>1. Shift-Left & Spec-Driven Quality</h3>
+          <p>
+            Validates REST API contracts in real-time against OpenAPI specifications using <strong>Zod runtime schemas</strong>.
+            Catches breaking payload anomalies, missing fields, and type regressions in &lt;15ms before hitting UI layers.
+          </p>
+          <ul class="pitch-bullets">
+            <li>Zero dependency on frontend UI stability for business rules.</li>
+            <li>Dynamic contract registry for instant schema lookups.</li>
+          </ul>
+        </div>
+
+        <div class="pitch-card">
+          <div class="pitch-icon">🧩</div>
+          <h3>2. Universal Lego Architecture</h3>
+          <p>
+            Eliminates the legacy <em>Page Object Model explosion</em>. Instead of coding 50 classes for 50 pages, 
+            QA engineers compose tests as puzzle pieces using universal HTTP steps, <strong>JSONPath mutations</strong>, and <strong>ElementResolver</strong>.
+          </p>
+          <ul class="pitch-bullets">
+            <li>New features automated in minutes without touching TypeScript.</li>
+            <li>Zero duplicate or orphaned step definitions.</li>
+          </ul>
+        </div>
+
+        <div class="pitch-card">
+          <div class="pitch-icon">⚡</div>
+          <h3>3. Smart Hybrid UI Acceleration</h3>
+          <p>
+            Bypasses slow, repetitive browser logins by injecting JWT tokens directly into <code>localStorage</code> via Playwright's <code>addInitScript</code>.
+            Complex preconditions are pre-seeded via API in milliseconds and instantly validated on UI.
+          </p>
+          <ul class="pitch-bullets">
+            <li>Saves up to <strong>85% execution time</strong> across test suites.</li>
+            <li>Eliminates flakiness caused by login form race conditions.</li>
+          </ul>
+        </div>
+
+        <div class="pitch-card">
+          <div class="pitch-icon">🔒</div>
+          <h3>4. Hermetic Offline CI/CD Compliance</h3>
+          <p>
+            Strictly respects the confidentiality constraint: <strong>never pushes images to public registries</strong>.
+            CI/CD in GitHub Actions extracts <code>bookstore-images.tar</code> locally via <code>docker load</code>, polls <code>/api/health</code>, and runs parallel headless tests.
+          </p>
+          <ul class="pitch-bullets">
+            <li>Complete air-gapped container readiness.</li>
+            <li>Automatic HTML and JSON test reporting artifacts.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: ARCHITECTURE & LEGO PHILOSOPHY -->
+    <section class="section-container" id="architecture">
+      <div class="section-header">
+        <span class="section-tag">Engineering Design</span>
+        <h2 class="section-title">Lego-Piece Architecture vs Traditional POM</h2>
+        <p class="section-desc">Why the industry is abandoning high-maintenance Page Object explosion in favor of universal atomic engines.</p>
+      </div>
+
+      <div class="comparison-container">
+        <!-- Traditional POM Column -->
+        <div class="comparison-card traditional">
+          <div class="card-badge badge-warning">Traditional Approach (High Tech Debt)</div>
+          <h3>❌ Legacy Page Object Model</h3>
+          <div class="comparison-content">
+            <div class="code-preview">
+              <span class="code-comment">// 50 pages = 50 classes + 50 step files</span>
+              <code>loginPage.enterEmail("admin@...");</code>
+              <code>loginPage.enterPassword("...");</code>
+              <code>loginPage.clickLoginButton();</code>
+              <code>catalogPage.verifyBookPresent("...");</code>
+            </div>
+            <ul class="comparison-list">
+              <li>Requires writing new TypeScript/Java classes for every single screen.</li>
+              <li>Tightly coupled locators break when UI undergoes minor design changes.</li>
+              <li>Dozens of near-duplicate steps like <code>the user enters X in login</code> vs <code>the user enters X in profile</code>.</li>
+              <li>High onboarding ramp-up for manual QA or business analysts.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- OmniSpec Engine Column -->
+        <div class="comparison-card modern">
+          <div class="card-badge badge-success">OmniSpec SDET Engine (Zero Code)</div>
+          <h3>✅ Universal Atomic Engines</h3>
+          <div class="comparison-content">
+            <div class="code-preview">
+              <span class="code-comment"># Reusable across ANY page, modal, table or endpoint</span>
+              <code>When the user enters "admin@..." into the "email" field</code>
+              <code>And the user clicks the "Login" button</code>
+              <code>And in the table, the row containing "..." should be visible</code>
+            </div>
+            <ul class="comparison-list">
+              <li><strong>ElementResolver Engine:</strong> Resolves elements by testid, aria-label, placeholder, text, or ID automatically.</li>
+              <li><strong>JSONPath Engine:</strong> Mutates request payloads dynamically (<code>sets JSONPath "$.price" to 49.99</code>).</li>
+              <li><strong>Chaining & Variable State:</strong> Extracts response IDs into <code>{{createdId}}</code> without hardcoded variables.</li>
+              <li><strong>Zero Step Redefinition:</strong> Add 10 new pages tomorrow; 0 lines of framework code needed.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Architecture Stack Diagram -->
+      <div class="arch-diagram-card">
+        <h3>Architecture Layers & Execution Flow</h3>
+        <div class="flow-steps">
+          <div class="flow-box">
+            <span class="flow-step">1. Specification</span>
+            <strong>Gherkin BDD Feature</strong>
+            <small>Universal English Steps & ISTQB Tags</small>
+          </div>
+          <div class="flow-arrow">➔</div>
+          <div class="flow-box">
+            <span class="flow-step">2. Step Router</span>
+            <strong>4 Universal Engines</strong>
+            <small>atomic-api / common-api / atomic-ui / common-ui</small>
+          </div>
+          <div class="flow-arrow">➔</div>
+          <div class="flow-box">
+            <span class="flow-step">3. Smart Resolvers</span>
+            <strong>ElementResolver & JSONPath</strong>
+            <small>Semantic Locators & Dynamic Mutation</small>
+          </div>
+          <div class="flow-arrow">➔</div>
+          <div class="flow-box">
+            <span class="flow-step">4. Runtime Execution</span>
+            <strong>Playwright & Zod Validator</strong>
+            <small>Chromium Headless & Schema Contracts</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: LIVE INTERACTIVE SIMULATOR (SHOWROOM) -->
+    <section class="section-container" id="simulator">
+      <div class="section-header">
+        <span class="section-tag">Interactive Demo</span>
+        <h2 class="section-title">Live Puzzle Step Simulator</h2>
+        <p class="section-desc">Experience how OmniSpec resolves Gherkin steps in real time without writing a single line of test code.</p>
+      </div>
+
+      <div class="simulator-wrapper">
+        <div class="simulator-controls">
+          <label for="template-select"><strong>Choose Scenario Template:</strong></label>
+          <div class="template-btns">
+            <button class="btn btn-sm btn-outline active" id="btn-tpl-api" onclick="loadTemplate('api')">
+              🧩 API CRUD + JSONPath
+            </button>
+            <button class="btn btn-sm btn-outline" id="btn-tpl-ui" onclick="loadTemplate('ui')">
+              🖥️ UI Modal & Table
+            </button>
+            <button class="btn btn-sm btn-outline" id="btn-tpl-hybrid" onclick="loadTemplate('hybrid')">
+              ⚡ Hybrid Fast State
+            </button>
+          </div>
+        </div>
+
+        <div class="simulator-workspace">
+          <!-- Gherkin Input Pane -->
+          <div class="editor-pane">
+            <div class="pane-header">
+              <span class="pane-title">📝 Gherkin BDD Input (Editable)</span>
+              <button class="btn btn-xs btn-outline" id="btn-reset-gherkin" onclick="resetGherkin()">Reset</button>
+            </div>
+            <textarea id="gherkin-editor" class="code-textarea" spellcheck="false"></textarea>
+            <div class="editor-footer">
+              <button class="btn btn-primary btn-block" id="btn-run-simulation" onclick="runSimulation()">
+                ▶ Simulate Step Execution
+              </button>
+            </div>
+          </div>
+
+          <!-- Live Terminal Output Pane -->
+          <div class="terminal-pane">
+            <div class="pane-header">
+              <span class="pane-title">💻 Execution Terminal & Engine Logs</span>
+              <span class="terminal-status" id="terminal-status">Ready</span>
+            </div>
+            <div class="terminal-body" id="terminal-output">
+              <div class="term-line info">[OmniSpec Engine v2.4.0 initialized]</div>
+              <div class="term-line text-muted">Select a template above and click "Simulate Step Execution".</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: 70/30 PYRAMID & ISTQB TAXONOMY -->
+    <section class="section-container" id="pyramid">
+      <div class="section-header">
+        <span class="section-tag">Quality Engineering Standards</span>
+        <h2 class="section-title">The 70/30 Test Pyramid & ISTQB Matrix</h2>
+        <p class="section-desc">Strict compliance with the Verisure QA architectural guidelines and international test design taxonomy.</p>
+      </div>
+
+      <div class="pyramid-showcase">
+        <!-- Visual Pyramid Graphical Component -->
+        <div class="pyramid-visual">
+          <div class="pyramid-level level-ui">
+            <div class="level-content">
+              <strong>30% UI Layer (6 Scenarios)</strong>
+              <span>User journeys, visual tables, modal forms & hybrid E2E</span>
+            </div>
+          </div>
+          <div class="pyramid-level level-api">
+            <div class="level-content">
+              <strong>70% API Layer (15 Scenarios)</strong>
+              <span>REST contracts, CRUD, Zod schema validation, boundary & auth testing</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filterable ISTQB Scenario Matrix -->
+        <div class="matrix-card">
+          <div class="matrix-header">
+            <h3>Automated Scenario Matrix (21 Scenarios)</h3>
+            <div class="matrix-filters">
+              <button class="btn btn-xs filter-btn active" onclick="filterScenarios('all')">All (21)</button>
+              <button class="btn btn-xs filter-btn" onclick="filterScenarios('api')">API (15)</button>
+              <button class="btn btn-xs filter-btn" onclick="filterScenarios('ui')">UI (6)</button>
+              <button class="btn btn-xs filter-btn" onclick="filterScenarios('smoke')">Smoke (12)</button>
+              <button class="btn btn-xs filter-btn" onclick="filterScenarios('security')">Security (6)</button>
+              <button class="btn btn-xs filter-btn" onclick="filterScenarios('boundary')">BVA/EP (8)</button>
+            </div>
+          </div>
+
+          <div class="scenario-table-container">
+            <table class="scenario-table" id="scenario-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Feature File</th>
+                  <th>Scenario Title</th>
+                  <th>Layer</th>
+                  <th>ISTQB Taxonomy Tags</th>
+                </tr>
+              </thead>
+              <tbody id="scenario-tbody">
+                <!-- Populated dynamically via app.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: AI MULTI-AGENT QA PIPELINE -->
+    <section class="section-container" id="pipeline">
+      <div class="section-header">
+        <span class="section-tag">AI-Driven Testing Architecture</span>
+        <h2 class="section-title">Autonomous 3-Agent QA Pipeline</h2>
+        <p class="section-desc">From raw Jira User Story to production-ready automated BDD tests in under 3 minutes.</p>
+      </div>
+
+      <div class="pipeline-grid">
+        <div class="agent-card">
+          <div class="agent-step">Agent 01</div>
+          <div class="agent-avatar">🔍</div>
+          <h3>Story & Code Analyst</h3>
+          <p class="agent-role">Analyzes ACs, investigates repo code, checks existing schemas and endpoints.</p>
+          <div class="agent-meta">
+            <span class="meta-label">Artifact:</span>
+            <code>requirements.md</code>
+          </div>
+          <div class="agent-detail">Extracts boundary values, HTTP status codes, and database invariants.</div>
+        </div>
+
+        <div class="pipeline-connector">➔</div>
+
+        <div class="agent-card">
+          <div class="agent-step">Agent 02</div>
+          <div class="agent-avatar">📋</div>
+          <h3>Senior QA Test Planner</h3>
+          <p class="agent-role">Designs test matrix using ISTQB black-box techniques (EP, BVA, State Transition).</p>
+          <div class="agent-meta">
+            <span class="meta-label">Artifact:</span>
+            <code>test-plan.md</code>
+          </div>
+          <div class="agent-detail">Enforces 70% API / 30% UI balance and tags scenarios for regression.</div>
+        </div>
+
+        <div class="pipeline-connector">➔</div>
+
+        <div class="agent-card">
+          <div class="agent-step">Agent 03</div>
+          <div class="agent-avatar">⚡</div>
+          <h3>SDET Implementer</h3>
+          <p class="agent-role">Consults STEPS_DICTIONARY.md and implements zero-code BDD features.</p>
+          <div class="agent-meta">
+            <span class="meta-label">Artifact:</span>
+            <code>tests/features/*.feature</code>
+          </div>
+          <div class="agent-detail">Chains JSONPath mutations and runs quality gates (tsc, eslint, dry-run).</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6: STEPS CATALOG & DICTIONARY -->
+    <section class="section-container" id="dictionary">
+      <div class="section-header">
+        <span class="section-tag">Zero-Code Catalog</span>
+        <h2 class="section-title">Universal Step Definitions Catalog</h2>
+        <p class="section-desc">Searchable collection of reusable English steps. Copy and paste directly into your Gherkin features.</p>
+      </div>
+
+      <div class="dictionary-wrapper">
+        <div class="search-bar-group">
+          <input type="text" id="step-search-input" class="search-input" placeholder="Search steps by keyword (e.g. JSONPath, modal, table, POST, status code)..." onkeyup="searchSteps()">
+          <div class="dict-tags">
+            <span class="tag-chip active" onclick="filterStepsByCategory('all')">All Steps</span>
+            <span class="tag-chip" onclick="filterStepsByCategory('api-req')">HTTP Dispatch</span>
+            <span class="tag-chip" onclick="filterStepsByCategory('api-json')">JSONPath</span>
+            <span class="tag-chip" onclick="filterStepsByCategory('api-assert')">API Assertions</span>
+            <span class="tag-chip" onclick="filterStepsByCategory('ui-nav')">UI Navigation</span>
+            <span class="tag-chip" onclick="filterStepsByCategory('ui-form')">UI Forms & Buttons</span>
+            <span class="tag-chip" onclick="filterStepsByCategory('ui-modal')">UI Modals & Tables</span>
+          </div>
+        </div>
+
+        <div class="steps-grid" id="steps-grid">
+          <!-- Populated dynamically via app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 7: QUICK START & OFFLINE DOCKER -->
+    <section class="section-container" id="quickstart">
+      <div class="section-header">
+        <span class="section-tag">CI/CD & DevOps Readiness</span>
+        <h2 class="section-title">Offline Docker & Local Execution Guide</h2>
+        <p class="section-desc">Strict compliance with confidentiality requirements: zero public container registry uploads.</p>
+      </div>
+
+      <div class="quickstart-grid">
+        <div class="cli-card">
+          <div class="cli-step">Step 1: Load Air-Gapped Docker Archive</div>
+          <div class="cli-box">
+            <code>docker load -i bookstore-images.tar</code>
+            <button class="btn-copy-code" onclick="copyText('docker load -i bookstore-images.tar')">Copy</button>
+          </div>
+          <small>Extracts backend, frontend, and mongo images locally without internet access.</small>
+        </div>
+
+        <div class="cli-card">
+          <div class="cli-step">Step 2: Orchestrate Sandbox Stack</div>
+          <div class="cli-box">
+            <code>docker compose up -d</code>
+            <button class="btn-copy-code" onclick="copyText('docker compose up -d')">Copy</button>
+          </div>
+          <small>Spins up API on port 5000, UI on port 3000, and Mongo 7 on port 27017.</small>
+        </div>
+
+        <div class="cli-card">
+          <div class="cli-step">Step 3: Execute Automated Test Suite</div>
+          <div class="cli-box">
+            <code>npm test</code>
+            <button class="btn-copy-code" onclick="copyText('npm test')">Copy</button>
+          </div>
+          <small>Runs 21 BDD scenarios in parallel with Playwright and Cucumber.</small>
+        </div>
+
+        <div class="cli-card">
+          <div class="cli-step">Step 4: Generate Allure / HTML Report</div>
+          <div class="cli-box">
+            <code>npm run report</code>
+            <button class="btn-copy-code" onclick="copyText('npm run report')">Copy</button>
+          </div>
+          <small>Compiles consolidated HTML report with execution metrics and failure traces.</small>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-info">
+        <strong>OmniSpec SDET Engine</strong> &bull; Developed by <strong>Sergio Cañete Linares</strong>
+        <p>Senior QA Automation Engineer / SDET &amp; Test Automation Architect | LogNext - Verisure Technical Assessment</p>
+      </div>
+      <div class="footer-links">
+        <a href="#hero">Back to Top ↑</a>
+        <a href="file:///c:/Users/PC/Documents/LogNext-Verisure/STEPS_DICTIONARY.md" target="_blank">Steps Dictionary MD</a>
+        <a href="file:///c:/Users/PC/Documents/LogNext-Verisure/AUDITORIA_CALIDAD_SDET.md" target="_blank">Quality Audit MD</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Notification Container -->
+  <div id="toast" class="toast">Action copied to clipboard!</div>
+
+  <script src="app.js"></script>
+</body>
+</html>

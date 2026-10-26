@@ -18,6 +18,6 @@ Feature: Hybrid E2E Flow (Fast API Injection and UI Verification)
       }
       """
     Then the API response status code should be 201
-    Given the user opens the "Books" page with preloaded API session
-    When on the "Books" page, the user enters "Multi-Agent QA Architecture" into the "search" field
+    Given the user opens "/books" with preloaded API session
+    When the user enters "Multi-Agent QA Architecture" into the "search" field
     Then in the table, the row containing "Multi-Agent QA Architecture" should be visible

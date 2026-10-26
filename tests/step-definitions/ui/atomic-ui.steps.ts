@@ -10,21 +10,31 @@ const openPageWithSession = async function (this: CustomWorld, rawPathOrPage: st
   expect(this.elementResolver, 'ElementResolver is not initialized').toBeDefined();
 
   const resolvedPath = this.elementResolver!.resolvePagePath(resolveTemplate(rawPathOrPage, this));
+  const email = (this.context.storedData['userEmail'] as string) || ENV.DEFAULT_ADMIN.email;
+  const role = (this.context.storedData['userRole'] as string) || 'admin';
 
   if (!this.context.token) {
-    const loginRes = await this.apiClient.auth.login(ENV.DEFAULT_ADMIN.email, ENV.DEFAULT_ADMIN.password);
+    const loginRes = await this.apiClient.http.send('POST', '/auth/login', {
+      data: { email: ENV.DEFAULT_ADMIN.email, password: ENV.DEFAULT_ADMIN.password }
+    });
     this.context.token = loginRes.body.token;
   }
+  expect(this.context.token, 'Token was not set in scenario context').toBeDefined();
 
-  await this.page!.addInitScript((jwt) => {
-    localStorage.setItem('token', jwt);
-    localStorage.setItem('user', JSON.stringify({ email: 'admin@sandbox.com', role: 'admin' }));
-  }, this.context.token);
+  await this.page!.addInitScript(
+    ({ jwt, email, role }) => {
+      localStorage.setItem('token', jwt);
+      localStorage.setItem('user', JSON.stringify({ email, role }));
+    },
+    { jwt: this.context.token!, email, role }
+  );
 
   await this.page!.goto(resolvedPath);
   await this.page!.waitForLoadState('domcontentloaded');
 };
 Given('the user opens the {string} page with preloaded API session', openPageWithSession);
+Given('the user opens {string} with preloaded API session', openPageWithSession);
+Given('the user navigates to {string} with preloaded API session', openPageWithSession);
 Given('que el usuario accede a la vista {string} con sesión precargada vía API', openPageWithSession);
 
 // 2. Page-agnostic element interactions on a specific page
@@ -253,5 +263,14 @@ const assertTableMinRows = async function (this: CustomWorld, minRows: number) {
   expect(count).toBeGreaterThanOrEqual(minRows);
 };
 Then('the table should display at least {int} row(s)', assertTableMinRows);
-Then('the books table should display at least {int} row(s)', assertTableMinRows);
+Then(
+  'the {string} table should display at least {int} row(s)',
+  async function (this: CustomWorld, tableId: string, minRows: number) {
+    expect(this.page).toBeDefined();
+    const table = this.elementResolver!.getTable(tableId);
+    const rows = table.locator('tbody tr, [role="row"]');
+    const count = await rows.count();
+    expect(count).toBeGreaterThanOrEqual(minRows);
+  }
+);
 Then('la tabla muestra al menos {int} fila(s)', assertTableMinRows);

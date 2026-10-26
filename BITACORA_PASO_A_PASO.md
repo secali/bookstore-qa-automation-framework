@@ -253,10 +253,38 @@ En respuesta al análisis arquitectónico planteado por el evaluador, se ejecut�
 
 ---
 
+## 🎨 FASE 12: Purificación Exhaustiva de Lógica de Steps y Dashboard Interactivo "OmniSpec"
+
+1. **Purificación de Lógica de Steps Residuales**:
+   - Se auditaron y eliminaron steps con pseudocobertura o texto de dominio específico:
+     - En UI: se eliminó `Then the books table should display at least {int} row(s)` sustituyéndolo por el step universal `Then the table should display at least {int} row(s)` y el parametrizado `Then the {string} table should display at least {int} row(s)`.
+     - En UI: se eliminaron los prefijos artificiales `on the "Login" page` y `on the "Books" page` en `01-login-ui.feature` y `03-hybrid-e2e.feature`, adoptando los steps universales `When the user enters {string} into the {string} field` y `When the user clicks the {string} button`.
+     - En UI: se flexibilizó la inyección de sesión con `addInitScript` en `atomic-ui.steps.ts` para leer dinámicamente las credenciales y rol desde el contexto en vez de valores hardcodeados.
+     - En API: se creó [src/api/schemas/registry.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/api/schemas/registry.ts) (`SchemaRegistry`) desacoplando completamente `common-api.steps.ts` de sentencias `switch` y esquemas estáticos.
+     - En API: la autenticación en `atomic-api.steps.ts` pasó a realizarse mediante `GenericHttpClient` (`POST /auth/login`), eliminando cualquier dependencia de métodos de cliente dedicados.
+2. **Creación del Dashboard Interactivo de Defensa ([dashboard/index.html](file:///c:/Users/PC/Documents/LogNext-Verisure/dashboard/index.html))**:
+   - Se bautizó el framework como **OmniSpec SDET Engine** (*The Generic Zero-Code QA Automation Engine for Playwright & TypeScript*).
+   - Implementado en Vanilla HTML5, Vanilla CSS3 (diseño glassmorphic dark, fuentes Outfit/Inter/JetBrains Mono, gradientes cyber) y Vanilla JavaScript (sin frameworks pesados).
+   - **Módulos Interactivos Incorporados:**
+     - **Hero & Metrics Strip:** Métricas en vivo (0 líneas de TS por test, 100% genérico, 70/30 pirámide, 100% Docker hermético).
+     - **2-Minute Interview Elevator Pitch:** 4 tarjetas ejecutivas listas para deslumbrar al entrevistador (Shift-Left, Lego Core, Hybrid Acceleration, Hermetic CI/CD).
+     - **Lego vs POM Visualizer:** Comparador interactivo entre la explosión tradicional de Page Objects y el motor atómico de OmniSpec.
+     - **Live Puzzle Step Simulator:** Simulador ejecutable en tiempo real con 3 plantillas (API CRUD + JSONPath, UI Modal & Table, Hybrid Fast State) y terminal animado con logs de resolución en milisegundos.
+     - **Pirámide 70/30 & Matriz ISTQB:** Pirámide visual y tabla filtrable de los 21 escenarios por nivel, tipo, técnicas de diseño y tags.
+     - **Pipeline Multi-Agente:** Diagrama visual de los 3 agentes autónomos de QA.
+     - **Catálogo Interactivo de Steps:** Buscador con chips de categoría y botón de copiado de Gherkin con un solo clic.
+     - **Guía Rápida de Docker Offline:** Comandos CLI copiables para auditoría y ejecución local.
+   - Script npm agregado en `package.json`: `npm run dashboard` para lanzamiento directo.
+
+---
+
 ## 🗂️ Índice de Artefactos Creados y Vigentes
 
 | Archivo | Propósito |
 |---|---|
+| [dashboard/index.html](file:///c:/Users/PC/Documents/LogNext-Verisure/dashboard/index.html) | Dashboard interactivo visual para defender el framework ante entrevistadores. |
+| [dashboard/styles.css](file:///c:/Users/PC/Documents/LogNext-Verisure/dashboard/styles.css) | Sistema de diseño visual glassmorphic y paleta cyber dark en Vanilla CSS. |
+| [dashboard/app.js](file:///c:/Users/PC/Documents/LogNext-Verisure/dashboard/app.js) | Lógica interactiva del simulador, filtros ISTQB, diccionario y portapapeles. |
 | [BITACORA_PASO_A_PASO.md](file:///c:/Users/PC/Documents/LogNext-Verisure/BITACORA_PASO_A_PASO.md) | Registro cronológico y detallado de toda la solución (este documento). |
 | [AUDITORIA_CALIDAD_SDET.md](file:///c:/Users/PC/Documents/LogNext-Verisure/AUDITORIA_CALIDAD_SDET.md) | Informe de auditoría técnica y dictamen sobre la eliminación de steps de dominio. |
 | [STEPS_DICTIONARY.md](file:///c:/Users/PC/Documents/LogNext-Verisure/STEPS_DICTIONARY.md) | Diccionario universal de steps genéricos, motor JSONPath y taxonomía ISTQB. |
@@ -264,15 +292,13 @@ En respuesta al análisis arquitectónico planteado por el evaluador, se ejecut�
 | [.agents/pipeline/agents/](file:///c:/Users/PC/Documents/LogNext-Verisure/.agents/pipeline/agents/) | Especificaciones de Agente 1 (Analyst), Agente 2 (QA Lead) y Agente 3 (SDET). |
 | [requirements.md](file:///c:/Users/PC/Documents/LogNext-Verisure/requirements.md) | Análisis funcional y técnico de los servicios, modelos y endpoints. |
 | [test-plan.md](file:///c:/Users/PC/Documents/LogNext-Verisure/test-plan.md) | Plan maestro de pruebas con desglose por niveles N1-N4 y matriz de trazabilidad. |
-| [README.md](file:///c:/Users/PC/Documents/LogNext-Verisure/README.md) | Documentación técnica y ejecutiva del framework para el evaluador. |
-| [AGENTS.md](file:///c:/Users/PC/Documents/LogNext-Verisure/AGENTS.md) | Reglas obligatorias de ingeniería y calidad del espacio de trabajo. |
-| [.github/workflows/ci.yml](file:///c:/Users/PC/Documents/LogNext-Verisure/.github/workflows/ci.yml) | Pipeline de CI/CD para GitHub Actions con Docker local y polling activo. |
-| [.agents/skills/sdet-sergio-canete/](file:///c:/Users/PC/Documents/LogNext-Verisure/.agents/skills/sdet-sergio-canete/) | Skill de IA con referencias y directrices de arquitectura. |
+| [src/api/schemas/registry.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/api/schemas/registry.ts) | Registro dinámico universal de esquemas OpenAPI / Zod. |
 | [src/support/jsonpath.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/support/jsonpath.ts) | Motor nativo de extracción y mutación por JSONPath en runtime. |
 | [src/support/template-resolver.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/support/template-resolver.ts) | Generador de tokens aleatorios dinámicos (`{{random_*}}`, `{{token}}`, `{{alias}}`). |
 | [src/ui/support/element-resolver.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/ui/support/element-resolver.ts) | Resolutor agnóstico de páginas, modales, campos, botones y tablas. |
 | [src/api/clients/generic-http.client.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/api/clients/generic-http.client.ts) | Cliente HTTP desacoplado para cualquier verbo y endpoint. |
 | [tests/features/](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/features/) | 9 features BDD expresadas exclusivamente en pasos genéricos con JSONPath y tags ISTQB. |
 | [tests/step-definitions/](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/step-definitions/) | 4 archivos únicos de steps 100% genéricos y agnósticos (2 API + 2 UI). |
+
 
 

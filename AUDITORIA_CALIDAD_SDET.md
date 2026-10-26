@@ -43,9 +43,14 @@ Sin embargo, bajo la mentalidad de un **Senior SDET / Test Automation Architect*
     - ❌ `tests/step-definitions/ui/books-ui.steps.ts`
   - Se consolidó la suite en **únicamente 4 motores universales**:
     - 🟢 [atomic-api.steps.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/step-definitions/api/atomic-api.steps.ts) (Peticiones HTTP arbitrarias, DocStrings de body, mutación y validación JSONPath).
-    - 🟢 [common-api.steps.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/step-definitions/api/common-api.steps.ts) (Códigos de estado HTTP, contratos Zod OpenAPI y envelope de error).
-    - 🟢 [atomic-ui.steps.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/step-definitions/ui/atomic-ui.steps.ts) (Interacción agnóstica de página, campos, botones, modales, tablas, alertas y checkboxes).
+    - 🟢 [common-api.steps.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/step-definitions/api/common-api.steps.ts) (Códigos de estado HTTP, contratos Zod OpenAPI desacoplados vía `SchemaRegistry` y envelope de error).
+    - 🟢 [atomic-ui.steps.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/step-definitions/ui/atomic-ui.steps.ts) (Interacción agnóstica de página, campos, botones, modales, tablas universales sin prefijo de entidad, alertas y checkboxes).
     - 🟢 [common-ui.steps.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/step-definitions/ui/common-ui.steps.ts) (Navegación base, URLs y comprobación de textos).
+  - **Purificación Final de Steps de UI y Dominio Residual:**
+    - Se eliminó el step acoplado `the books table should display at least {int} row(s)` adoptando el step genérico `the table should display at least {int} row(s)` y el parametrizado `the {string} table should display at least {int} row(s)`.
+    - Se eliminaron los prefijos artificiales de página `on the "Login" page` y `on the "Books" page` de los escenarios BDD, utilizando los steps universales directos.
+    - Se implementó [src/api/schemas/registry.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/api/schemas/registry.ts) (`SchemaRegistry`) para registrar esquemas en tiempo de inicialización sin modificar los step definitions.
+    - Se diseñó el dashboard interactivo de defensa [dashboard/index.html](file:///c:/Users/PC/Documents/LogNext-Verisure/dashboard/index.html) para exponer la arquitectura y ejecutar simulaciones en vivo ante evaluadores técnicos.
   - **Resultado:** Los 21 escenarios BDD en las 9 features se refactorizaron hacia este paradigma coherente, logrando **100% de steps mapeados, 0 steps huérfanos y 0 ambigüedades**.
 
 ---

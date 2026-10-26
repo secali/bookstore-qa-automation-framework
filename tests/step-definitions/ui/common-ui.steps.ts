@@ -56,6 +56,17 @@ const assertButtonEnabled = async function (this: CustomWorld, buttonText: strin
 Then('the {string} button should be enabled', assertButtonEnabled);
 Then('el botón {string} está habilitado', assertButtonEnabled);
 
+// Button disabled
+const assertButtonDisabled = async function (this: CustomWorld, buttonText: string) {
+  expect(this.page).toBeDefined();
+  const btn = this.elementResolver
+    ? this.elementResolver.findButton(buttonText)
+    : this.page!.getByRole('button', { name: new RegExp(buttonText, 'i') }).first();
+  await expect(btn).toBeDisabled({ timeout: 5000 });
+};
+Then('the {string} button should be disabled', assertButtonDisabled);
+Then('el botón {string} está deshabilitado', assertButtonDisabled);
+
 // Field filling
 const enterField = async function (this: CustomWorld, rawValue: string, fieldName: string) {
   expect(this.page).toBeDefined();
