@@ -125,20 +125,73 @@
 
 ---
 
+## 🧩 8. Piezas Atómicas del Puzzle (Lego Steps para Cualquier API o UI)
+
+Estas step definitions están **completamente desacopladas de cualquier entidad de negocio**. Si mañana la aplicación pasa de gestionar *Libros* (`/books`) a *Vehículos* (`/cars`), *Pedidos* (`/orders`) o *Usuarios* (`/users`), puedes probar el 100% de los flujos ensamblando estas piezas sin escribir nuevo código TypeScript.
+
+### 8.1. Piezas Atómicas para Cualquier API REST
+**Archivos:** `tests/step-definitions/api/atomic-api.steps.ts`
+
+| Step Gherkin (Sintaxis Exacta) | Parámetros / Ejemplos | Descripción / Uso |
+|---|---|---|
+| `Cuando envío una petición {string} a {string}` | `"GET"`, `"DELETE"`, `"/recurso/{{alias}}"` | Dispara cualquier método HTTP a cualquier endpoint con soporte de variables dinámicas. |
+| `Cuando envío una petición {string} a {string} con el siguiente payload JSON:` | Método, Endpoint + DocString multilínea JSON | Envía cuerpo JSON arbitrario (admite `{{random_email}}`, `{{random_title}}`, etc.). |
+| `Cuando envío una petición {string} a {string} con los siguientes campos:` | Método, Endpoint + DataTable clave-valor | Envía un objeto JSON tipado (autodetecta números, booleanos y strings). |
+| `Cuando envío una petición {string} a {string} con parámetros:` | Método, Endpoint + DataTable query params | Envía query strings (ej: `page=1`, `search=test`). |
+| `Cuando configuro la cabecera HTTP {string} con el valor {string}` | Header, Valor (ej: `"X-Custom"`, `"Valor"`) | Inyecta headers HTTP personalizados para la siguiente petición. |
+| `Cuando guardo el valor de la respuesta {string} con el alias {string}` | Ruta JSON (dot-notation), Nombre de alias | Extrae cualquier propiedad (ej: `"id"`, `"data[0].token"`) y la guarda en contexto. |
+| `Entonces el campo {string} de la respuesta es igual a {string}` | Ruta JSON, Valor esperado | Compara cualquier campo string (soporta variables `{{alias}}`). |
+| `Entonces el campo {string} de la respuesta es igual al número {float}` | Ruta JSON, Número esperado | Compara cualquier campo numérico. |
+| `Entonces el campo {string} de la respuesta contiene {string}` | Ruta JSON, Subcadena | Comprueba si un texto o array contiene el fragmento. |
+| `Entonces el campo {string} de la respuesta no es nulo ni vacío` | Ruta JSON | Comprueba presencia y contenido válido. |
+| `Entonces la respuesta contiene un array con al menos {int} elemento(s)` | Cantidad mínima | Valida longitud mínima de listas en la respuesta. |
+
+### 8.2. Piezas Atómicas para Cualquier Interfaz Web (Playwright)
+**Archivos:** `tests/step-definitions/ui/atomic-ui.steps.ts` y `common-ui.steps.ts`
+
+| Step Gherkin (Sintaxis Exacta) | Parámetros / Ejemplos | Acción Playwright |
+|---|---|---|
+| `Dado que el usuario accede a la vista {string} con sesión precargada vía API` | `"/dashboard"`, `"/orders"` | Pre-autentica vía API y navega a la URL con sesión inyectada en `localStorage`. |
+| `Cuando en la tabla localiza la fila con texto {string} y hace clic en el botón {string}` | Texto identificador de fila, Nombre de botón | Localiza la fila en cualquier tabla HTML y pulsa el botón (`"Eliminar"`, `"Editar"`). |
+| `Entonces en la tabla la fila con texto {string} está visible` | Texto de la fila | Comprueba que una fila con ese contenido existe y está visible. |
+| `Entonces en la tabla la fila con texto {string} no está visible` | Texto de la fila | Comprueba que la fila no existe o desapareció tras un borrado. |
+| `Entonces el modal está visible` | *Ninguno* | Valida que cualquier diálogo o modal (`.modal`, `[role="dialog"]`) esté en pantalla. |
+| `Entonces el modal no está visible` | *Ninguno* | Valida que el diálogo o modal se haya cerrado. |
+| `Cuando en el modal activo escribe {string} en el campo {string}` | Valor, Nombre/Etiqueta | Escribe en inputs dentro del modal activo sin colisionar con el fondo. |
+| `Cuando en el modal activo hace clic en el botón {string}` | Nombre del botón | Hace clic en botones del modal (`"Guardar"`, `"Confirmar"`, `"Cancelar"`). |
+| `Cuando limpia el campo {string}` | Nombre/Etiqueta | Vacía el contenido de un input. |
+| `Cuando selecciona la opción {string} en el selector {string}` | Opción, Nombre de `<select>` | Selecciona una opción en un desplegable nativo. |
+| `Entonces el campo {string} tiene el valor {string}` | Nombre/Etiqueta, Valor esperado | Valida el atributo `value` del campo. |
+
+### 8.3. Variables y Generadores Dinámicos Soportados
+Puedes usar estas etiquetas dentro de cualquier step, string o JSON:
+- `{{random_email}}`: Email aleatorio único en minúsculas.
+- `{{random_name}}`: Nombre de persona aleatorio.
+- `{{random_title}}`: Título de producto/entidad con prefijo y sufijo alfanumérico.
+- `{{random_uuid}}`: Identificador UUID v4 único.
+- `{{random_isbn}}`: Código ISBN-13 válido generado con Faker.
+- `{{random_price}}`: Precio numérico aleatorio entre 10 y 150.
+- `{{token}}`: Token JWT activo en el escenario.
+- `{{lastId}}`: Último ID registrado en base de datos.
+- `{{<cualquier_alias>}}`: Cualquier valor guardado previamente con el step `guardo el valor de la respuesta...`.
+
+---
+
 ## 🛠️ Convenciones de Código para el Agente 3 al Crear Nuevos Steps
 
 Si una nueva historia de usuario requiere crear un step no cubierto:
 1. **Ubicación:**
-   - Si es de API genérica ➔ `src/step-definitions/api/common-api.steps.ts`
+   - Si es de API genérica ➔ `src/step-definitions/api/common-api.steps.ts` o `atomic-api.steps.ts`
    - Si es de API de entidad ➔ `src/step-definitions/api/<entidad>.steps.ts`
-   - Si es de UI genérica ➔ `src/step-definitions/ui/common-ui.steps.ts`
+   - Si es de UI genérica ➔ `src/step-definitions/ui/common-ui.steps.ts` o `atomic-ui.steps.ts`
    - Si es de UI de vista ➔ `src/step-definitions/ui/<vista>.steps.ts`
 2. **Estructura del Step:**
    ```typescript
    When('acción genérica con {string} y {int}', async function (this: CustomWorld, texto: string, numero: number) {
      // 1. Acceder a this.apiClient o this.page / Page Object
-     // 2. Ejecutar la acción
+     // 2. Ejecutar la acción usando resolveTemplate() si aplica
      // 3. Almacenar el resultado en this.context si otro paso lo necesita
    });
    ```
 3. **Validación:** Ejecuta `npm run format && npm run lint && npx tsc --noEmit && npx cucumber-js --dry-run` para garantizar cero roturas en la suite.
+

@@ -1,10 +1,12 @@
 import { Given, Then, When } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 import { CustomWorld } from '../../../src/support/world';
+import { resolveTemplate } from '../../../src/support/template-resolver';
 
 // Navegación genérica
-Given('que el usuario navega a la página {string}', async function (this: CustomWorld, path: string) {
+Given('que el usuario navega a la página {string}', async function (this: CustomWorld, rawPath: string) {
   expect(this.page, 'El navegador no está inicializado. ¿Olvidaste el tag @ui?').toBeDefined();
+  const path = resolveTemplate(rawPath, this);
   await this.page!.goto(path);
   await this.page!.waitForLoadState('domcontentloaded');
 });
@@ -38,8 +40,9 @@ Then('el botón {string} está habilitado', async function (this: CustomWorld, b
 });
 
 // Interacción genérica con campos de formulario (inputs y textareas)
-When('escribe {string} en el campo {string}', async function (this: CustomWorld, value: string, fieldName: string) {
+When('escribe {string} en el campo {string}', async function (this: CustomWorld, rawValue: string, fieldName: string) {
   expect(this.page).toBeDefined();
+  const value = resolveTemplate(rawValue, this);
   const regex = new RegExp(fieldName, 'i');
   const input = this.page!.getByLabel(regex)
     .or(this.page!.getByPlaceholder(regex))
@@ -50,8 +53,9 @@ When('escribe {string} en el campo {string}', async function (this: CustomWorld,
 });
 
 // Verificación genérica de visibilidad de textos en pantalla
-Then('visualiza el texto {string} en la pantalla', async function (this: CustomWorld, expectedText: string) {
+Then('visualiza el texto {string} en la pantalla', async function (this: CustomWorld, rawExpectedText: string) {
   expect(this.page).toBeDefined();
+  const expectedText = resolveTemplate(rawExpectedText, this);
   const locator = this.page!.getByText(new RegExp(expectedText, 'i')).first();
   await expect(locator).toBeVisible({ timeout: 5000 });
 });
