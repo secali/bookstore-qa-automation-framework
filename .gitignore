@@ -1,0 +1,22 @@
+# Dependencias
+node_modules/
+
+# Compilación y builds
+dist/
+*.tsbuildinfo
+
+# Reportes y artefactos efímeros de pruebas
+reports/
+test-results/
+playwright-report/
+blob-report/
+screenshots/
+
+# Entorno local
+.env
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*

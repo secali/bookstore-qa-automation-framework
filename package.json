@@ -1,0 +1,37 @@
+{
+  "name": "bookstore-qa-automation",
+  "version": "1.0.0",
+  "description": "Test Automation Framework for BookStore QA Sandbox (API-First 70% & UI 30%) with Playwright, Cucumber and TypeScript",
+  "author": "Sergio Cañete Linares <sergio13896@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "cucumber-js",
+    "test:parallel": "cucumber-js --parallel 4",
+    "test:api": "cucumber-js --tags \"@api\"",
+    "test:ui": "cucumber-js --tags \"@ui\"",
+    "test:smoke": "cucumber-js --tags \"@smoke\"",
+    "test:regression": "cucumber-js --tags \"@regression\"",
+    "test:contracts": "cucumber-js --tags \"@contracts\"",
+    "test:hybrid": "cucumber-js --tags \"@hybrid\"",
+    "report": "node src/support/generate-report.js",
+    "lint": "eslint \"{src,tests}/**/*.ts\"",
+    "format": "prettier --write \"{src,tests}/**/*.ts\""
+  },
+  "dependencies": {
+    "@cucumber/cucumber": "^10.3.1",
+    "@faker-js/faker": "^8.4.1",
+    "@playwright/test": "^1.42.1",
+    "dotenv": "^16.4.5",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "@typescript-eslint/eslint-plugin": "^8.72.0",
+    "@typescript-eslint/parser": "^8.72.0",
+    "cucumber-html-reporter": "^5.5.0",
+    "prettier": "^3.9.10",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.3.3"
+  }
+}

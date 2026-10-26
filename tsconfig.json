@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "paths": {
+      "@api/*": ["src/api/*"],
+      "@ui/*": ["src/ui/*"],
+      "@support/*": ["src/support/*"],
+      "@config/*": ["config/*"]
+    }
+  },
+  "include": ["src/**/*", "tests/**/*", "config/**/*"]
+}

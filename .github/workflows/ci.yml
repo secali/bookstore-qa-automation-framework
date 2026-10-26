@@ -1,0 +1,91 @@
+name: BookStore QA Automation CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master, 'feat/**', 'fix/**' ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  test-automation:
+    name: Execute BDD Test Suites (70% API / 30% UI)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: 📥 1. Checkout Repository (with Git LFS support)
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: ⚙️ 2. Setup Node.js 20 Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: 📦 3. Install NPM Dependencies
+        run: npm ci
+
+      - name: 🎭 4. Install Playwright Chromium & System Dependencies
+        run: npx playwright install --with-deps chromium
+
+      - name: 🐳 5. Load Local Docker Images (Confidentiality Compliant)
+        run: |
+          echo "Cargando imágenes locales desde bookstore-images.tar en el daemon Docker..."
+          docker load -i bookstore-images.tar
+          docker images
+
+      - name: 🚀 6. Start Sandbox Containers (Mongo, Backend, Frontend)
+        run: |
+          docker compose up -d
+          docker compose ps
+
+      - name: 🩺 7. Active Healthcheck Polling on /api/health
+        run: |
+          echo "Esperando disponibilidad de la API REST..."
+          MAX_RETRIES=30
+          RETRY_COUNT=0
+          until curl -s -f http://localhost:5000/api/health | grep -q "ok" || [ $RETRY_COUNT -eq $MAX_RETRIES ]; do
+            echo "Esperando a que la API alcance estado healthy ($RETRY_COUNT/$MAX_RETRIES)..."
+            sleep 2
+            RETRY_COUNT=$((RETRY_COUNT + 1))
+          done
+
+          if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
+            echo "❌ Timeout esperando estado healthy. Mostrando logs de los contenedores:"
+            docker compose logs
+            exit 1
+          fi
+
+          echo "✅ Infraestructura BookStore Sandbox lista y respondiendo en http://localhost:5000/api/health"
+
+      - name: 🧪 8. Run Cucumber BDD Test Suite in Parallel
+        run: |
+          echo "Iniciando ejecución paralela de pruebas (70% API / 30% UI)..."
+          npx cucumber-js --parallel 4
+        env:
+          API_BASE_URL: http://localhost:5000/api
+          UI_BASE_URL: http://localhost:3000
+          HEADLESS: "true"
+
+      - name: 📊 9. Generate HTML Test Report
+        if: always()
+        run: |
+          mkdir -p reports
+          npm run report || true
+
+      - name: 📤 10. Archive HTML Reports and Traces as Workflow Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports-${{ github.run_id }}
+          path: |
+            reports/
+          retention-days: 14
+
+      - name: 🧹 11. Cleanup Docker Infrastructure
+        if: always()
+        run: |
+          docker compose down -v
