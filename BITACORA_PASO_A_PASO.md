@@ -191,11 +191,28 @@ Se actualizó el [README.md](file:///c:/Users/PC/Documents/LogNext-Verisure/READ
 
 ---
 
+## 🤖 FASE 9: Diccionario de Steps y Pipeline de QA Multi-Agente End-to-End
+
+Inspirado en los proyectos de arquitectura de IA de Sergio Cañete (Orquestador de Pipeline QA Multi-Agente con Copilot y MCP):
+
+1. **Diccionario de Steps y Convenciones BDD ([STEPS_DICTIONARY.md](file:///c:/Users/PC/Documents/LogNext-Verisure/STEPS_DICTIONARY.md))**:
+   - Catálogo oficial que indexa todos los steps de API y UI existentes, parámetros admitidos, selectores accesibles y reglas de reusabilidad.
+   - Establece la política estricta de *Zero Orphan Steps* para que nuevos desarrolladores y agentes nunca dupliquen código.
+2. **Pipeline de 3 Agentes de QA ([.agents/pipeline/ORCHESTRATOR.md](file:///c:/Users/PC/Documents/LogNext-Verisure/.agents/pipeline/ORCHESTRATOR.md))**:
+   - **Agente 1: Story & Codebase Analyst** (`.agents/pipeline/agents/01-story-and-code-analyst.md`): Analiza historias de usuario, examina rutas, modelos Mongoose, controladores y componentes React en el repositorio para emitir el `ANALYSIS_REPORT.md` (Shift-Left).
+   - **Agente 2: QA Test Strategist & BDD Architect** (`.agents/pipeline/agents/02-qa-test-planner.md`): Transforma el análisis en un plan de pruebas 70% API / 30% UI (niveles N1-N4) y redacta features Gherkin declarativos de negocio.
+   - **Agente 3: SDET Automation Implementer** (`.agents/pipeline/agents/03-sdet-implementer.md`): Conoce el framework Playwright + TypeScript a fondo, consume `STEPS_DICTIONARY.md` para reutilizar steps existentes, implementa nuevos steps tipados sólo si es indispensable y ejecuta validación automática con `tsc` y `cucumber-js --dry-run`.
+
+---
+
 ## 🗂️ Índice de Artefactos Creados
 
 | Archivo | Propósito |
 |---|---|
 | [BITACORA_PASO_A_PASO.md](file:///c:/Users/PC/Documents/LogNext-Verisure/BITACORA_PASO_A_PASO.md) | Registro cronológico y detallado de toda la solución (este documento). |
+| [STEPS_DICTIONARY.md](file:///c:/Users/PC/Documents/LogNext-Verisure/STEPS_DICTIONARY.md) | Diccionario oficial de steps genéricos y convenciones Cucumber + Playwright. |
+| [.agents/pipeline/ORCHESTRATOR.md](file:///c:/Users/PC/Documents/LogNext-Verisure/.agents/pipeline/ORCHESTRATOR.md) | Orquestador del pipeline de QA multi-agente end-to-end. |
+| [.agents/pipeline/agents/](file:///c:/Users/PC/Documents/LogNext-Verisure/.agents/pipeline/agents/) | Especificaciones de Agente 1 (Analyst), Agente 2 (QA Lead) y Agente 3 (SDET). |
 | [requirements.md](file:///c:/Users/PC/Documents/LogNext-Verisure/requirements.md) | Análisis funcional y técnico de los servicios, modelos y endpoints. |
 | [test-plan.md](file:///c:/Users/PC/Documents/LogNext-Verisure/test-plan.md) | Plan maestro de pruebas con desglose por niveles N1-N4 y matriz de trazabilidad. |
 | [README.md](file:///c:/Users/PC/Documents/LogNext-Verisure/README.md) | Documentación técnica y ejecutiva del framework para el evaluador. |
@@ -206,6 +223,8 @@ Se actualizó el [README.md](file:///c:/Users/PC/Documents/LogNext-Verisure/READ
 | [cucumber.js](file:///c:/Users/PC/Documents/LogNext-Verisure/cucumber.js) | Configuración del runner BDD Cucumber con TypeScript. |
 | [playwright.config.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/playwright.config.ts) | Configuración de Playwright para pruebas E2E. |
 | [tsconfig.json](file:///c:/Users/PC/Documents/LogNext-Verisure/tsconfig.json) | Configuración del compilador TypeScript con path aliases. |
+| [eslint.config.mjs](file:///c:/Users/PC/Documents/LogNext-Verisure/eslint.config.mjs) | Configuración de ESLint en formato Flat Config. |
+| [.prettierrc](file:///c:/Users/PC/Documents/LogNext-Verisure/.prettierrc) | Configuración de formato de código Prettier. |
 | [src/api/](file:///c:/Users/PC/Documents/LogNext-Verisure/src/api/) | Capa de clientes REST, contratos Zod y tipos TypeScript. |
 | [src/ui/](file:///c:/Users/PC/Documents/LogNext-Verisure/src/ui/) | Capa de Page Objects y componentes para React Frontend. |
 | [src/support/](file:///c:/Users/PC/Documents/LogNext-Verisure/src/support/) | CustomWorld (DI), hooks de ciclo de vida y generador de reportes. |

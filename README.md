@@ -144,8 +144,11 @@ Las instrucciones del reto estipulan:
 
 ---
 
-## 📂 7. Documentación Adicional del Proyecto
+## 📂 7. Documentación Adicional y Ecosistema de IA
 
+- [STEPS_DICTIONARY.md](file:///c:/Users/PC/Documents/LogNext-Verisure/STEPS_DICTIONARY.md): Diccionario oficial de steps genéricos y convenciones Cucumber + Playwright (cero steps huérfanos).
+- [.agents/pipeline/ORCHESTRATOR.md](file:///c:/Users/PC/Documents/LogNext-Verisure/.agents/pipeline/ORCHESTRATOR.md): Orquestador del pipeline de QA multi-agente end-to-end (Story Analyst, QA Planner, SDET Implementer).
+- [BITACORA_PASO_A_PASO.md](file:///c:/Users/PC/Documents/LogNext-Verisure/BITACORA_PASO_A_PASO.md): Registro cronológico y detallado de todas las fases del desarrollo.
 - [requirements.md](file:///c:/Users/PC/Documents/LogNext-Verisure/requirements.md): Análisis exhaustivo funcional y técnico de los servicios, modelos y endpoints.
 - [test-plan.md](file:///c:/Users/PC/Documents/LogNext-Verisure/test-plan.md): Plan maestro de pruebas con desglose por niveles N1-N4 y matriz de trazabilidad.
 - [.agents/skills/sdet-sergio-canete/](file:///c:/Users/PC/Documents/LogNext-Verisure/.agents/skills/sdet-sergio-canete/): Skill de IA personalizada para continuar la evolución arquitectónica del framework.
