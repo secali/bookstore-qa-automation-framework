@@ -11,6 +11,7 @@ import { ENV } from '../../config/env.config';
 export interface ScenarioContext {
   token?: string;
   lastResponse?: ApiResponse<any>;
+  lastEndpoint?: string;
   createdBookIds: string[];
   storedData: Record<string, any>;
   preparedPayload?: any;
@@ -41,8 +42,9 @@ export class CustomWorld extends World {
   }
 
   async initApiContext(): Promise<void> {
+    const baseHost = ENV.API_BASE_URL.replace(/\/api\/?$/, '').replace(/\/$/, '');
     this.apiContext = await request.newContext({
-      baseURL: ENV.API_BASE_URL,
+      baseURL: baseHost,
       extraHTTPHeaders: {
         'Content-Type': 'application/json',
         Accept: 'application/json'
@@ -57,6 +59,26 @@ export class CustomWorld extends World {
     this.loginPage = new LoginPage(page);
     this.registerPage = new RegisterPage(page);
     this.booksPage = new BooksPage(page);
+
+    // Auto-teardown listener: Intercepta cualquier creación de libro en la UI
+    // para registrar su ID y garantizar su eliminación en el hook After si el test falla
+    page.on('response', async (response) => {
+      if (
+        response.url().includes('/api/books') &&
+        response.request().method() === 'POST' &&
+        response.status() === 201
+      ) {
+        try {
+          const json = await response.json();
+          const id = json.id || json._id || json.data?.id || json.data?._id;
+          if (id && !this.context.createdBookIds.includes(String(id))) {
+            this.context.createdBookIds.push(String(id));
+          }
+        } catch {
+          // Ignore non-JSON responses
+        }
+      }
+    });
   }
 }
 

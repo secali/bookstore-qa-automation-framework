@@ -9,14 +9,14 @@ export class AuthClient {
   ) {}
 
   async login(email: string, password: string): Promise<ApiResponse<AuthResponseDto>> {
-    const res = await this.request.post('/auth/login', {
+    const res = await this.request.post('/api/auth/login', {
       data: { email, password }
     });
     return this.captureResponse<AuthResponseDto>(res);
   }
 
   async register(name: string, email: string, password: string): Promise<ApiResponse<AuthResponseDto>> {
-    const res = await this.request.post('/auth/register', {
+    const res = await this.request.post('/api/users', {
       data: { name, email, password }
     });
     return this.captureResponse<AuthResponseDto>(res);

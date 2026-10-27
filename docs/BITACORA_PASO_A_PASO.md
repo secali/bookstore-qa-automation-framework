@@ -61,7 +61,7 @@ Se realizó una extrapolación directa de los patrones de diseño de **Java SDET
 
 ## 📋 FASE 3: Análisis Funcional y Técnico (`requirements.md`)
 
-Se redactó el documento maestro [requirements.md](file:///c:/Users/PC/Documents/LogNext-Verisure/requirements.md) estructurando:
+Se redactó el documento maestro [requirements.md](./requirements.md) estructurando:
 - **Arquitectura de red**: Mapeo de puertos (3000 Frontend, 5000 Backend, 27017 Mongo).
 - **Sembrado y Persistencia**: Credenciales por defecto (`admin@sandbox.com` / `admin123`) y 5 libros de ejemplo iniciales.
 - **Envelope de Error Estandarizado**:
@@ -75,7 +75,7 @@ Se redactó el documento maestro [requirements.md](file:///c:/Users/PC/Documents
 
 ## 📑 FASE 4: Plan Maestro de Pruebas (`test-plan.md`)
 
-Se redactó el documento [test-plan.md](file:///c:/Users/PC/Documents/LogNext-Verisure/test-plan.md) definiendo:
+Se redactó el documento [test-plan.md](./test-plan.md) definiendo:
 - **Alcance 70% Backend / 30% UI**:
   - **Nivel N1**: Pruebas de contrato y esquema Zod contra OpenAPI (`/api/docs.json`).
   - **Nivel N2**: Pruebas funcionales aisladas de componentes y CRUD.
@@ -278,27 +278,126 @@ En respuesta al análisis arquitectónico planteado por el evaluador, se ejecut�
 
 ---
 
-## 🗂️ Índice de Artefactos Creados y Vigentes
+---
 
-| Archivo | Propósito |
-|---|---|
-| [dashboard/index.html](file:///c:/Users/PC/Documents/LogNext-Verisure/dashboard/index.html) | Dashboard interactivo visual para defender el framework ante entrevistadores. |
-| [dashboard/styles.css](file:///c:/Users/PC/Documents/LogNext-Verisure/dashboard/styles.css) | Sistema de diseño visual glassmorphic y paleta cyber dark en Vanilla CSS. |
-| [dashboard/app.js](file:///c:/Users/PC/Documents/LogNext-Verisure/dashboard/app.js) | Lógica interactiva del simulador, filtros ISTQB, diccionario y portapapeles. |
-| [BITACORA_PASO_A_PASO.md](file:///c:/Users/PC/Documents/LogNext-Verisure/BITACORA_PASO_A_PASO.md) | Registro cronológico y detallado de toda la solución (este documento). |
-| [AUDITORIA_CALIDAD_SDET.md](file:///c:/Users/PC/Documents/LogNext-Verisure/AUDITORIA_CALIDAD_SDET.md) | Informe de auditoría técnica y dictamen sobre la eliminación de steps de dominio. |
-| [STEPS_DICTIONARY.md](file:///c:/Users/PC/Documents/LogNext-Verisure/STEPS_DICTIONARY.md) | Diccionario universal de steps genéricos, motor JSONPath y taxonomía ISTQB. |
-| [.agents/pipeline/ORCHESTRATOR.md](file:///c:/Users/PC/Documents/LogNext-Verisure/.agents/pipeline/ORCHESTRATOR.md) | Orquestador del pipeline de QA multi-agente end-to-end. |
-| [.agents/pipeline/agents/](file:///c:/Users/PC/Documents/LogNext-Verisure/.agents/pipeline/agents/) | Especificaciones de Agente 1 (Analyst), Agente 2 (QA Lead) y Agente 3 (SDET). |
-| [requirements.md](file:///c:/Users/PC/Documents/LogNext-Verisure/requirements.md) | Análisis funcional y técnico de los servicios, modelos y endpoints. |
-| [test-plan.md](file:///c:/Users/PC/Documents/LogNext-Verisure/test-plan.md) | Plan maestro de pruebas con desglose por niveles N1-N4 y matriz de trazabilidad. |
-| [src/api/schemas/registry.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/api/schemas/registry.ts) | Registro dinámico universal de esquemas OpenAPI / Zod. |
-| [src/support/jsonpath.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/support/jsonpath.ts) | Motor nativo de extracción y mutación por JSONPath en runtime. |
-| [src/support/template-resolver.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/support/template-resolver.ts) | Generador de tokens aleatorios dinámicos (`{{random_*}}`, `{{token}}`, `{{alias}}`). |
-| [src/ui/support/element-resolver.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/ui/support/element-resolver.ts) | Resolutor agnóstico de páginas, modales, campos, botones y tablas. |
-| [src/api/clients/generic-http.client.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/api/clients/generic-http.client.ts) | Cliente HTTP desacoplado para cualquier verbo y endpoint. |
-| [tests/features/](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/features/) | 9 features BDD expresadas exclusivamente en pasos genéricos con JSONPath y tags ISTQB. |
-| [tests/step-definitions/](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/step-definitions/) | 4 archivos únicos de steps 100% genéricos y agnósticos (2 API + 2 UI). |
+## 🏗️ FASE 13: Reorganización Estructural del Proyecto, Unificación Definitiva de Steps y Fusión de Features
+
+En respuesta a la optimización solicitada por el evaluador para profesionalizar la estructura del proyecto y unificar la filosofía de steps atómicos de forma transversal:
+
+1. **Reorganización Estructural de la Documentación en `docs/`**:
+   - Se trasladaron todos los documentos de análisis, planes, diccionarios e informes desde la raíz del workspace al directorio estructurado `docs/`:
+     - `docs/requirements.md`
+     - `docs/test-plan.md`
+     - `docs/STEPS_DICTIONARY.md`
+     - `docs/AUDITORIA_CALIDAD_SDET.md`
+     - `docs/BITACORA_PASO_A_PASO.md`
+     - `docs/INFORME_REVISION_TECNICA_EXPERTOS.md`
+     - `docs/CANDIDATE_INSTRUCTIONS.md`
+   - Se actualizaron todos los enlaces relativos y absolutos en `README.md`, `INFORME_REVISION_TECNICA_EXPERTOS.md` y `BITACORA_PASO_A_PASO.md`.
+
+2. **Unificación y Consolidación de Step Definitions**:
+   - Se fusionaron los archivos divididos (`common-api.steps.ts`, `atomic-api.steps.ts`, `common-ui.steps.ts`, `atomic-ui.steps.ts`) en **dos únicos módulos cohesivos y estructurados por secciones**:
+     - `tests/step-definitions/api/api.steps.ts`: Autenticación, envío genérico HTTP (cuerpo JSON, tablas y parámetros), mutación JSONPath en memoria, captura de alias y validaciones de esquema Zod OpenAPI y envelope de errores.
+     - `tests/step-definitions/ui/ui.steps.ts`: Navegación, inyección de sesión vía API (`addInitScript`), resolución universal de elementos (`getByRole`, `data-testid`, etc.), gestión de modales, tablas reactivas, alertas y esperas seguras.
+   - Se eliminaron definitivamente las versiones antiguas divididas para garantizar **0 colisiones o duplicidades**.
+
+3. **Estandarización Transversal de Features (Adopción de la Filosofía Atómica)**:
+   - Se eliminaron los archivos demo artificiales `05-atomic-puzzle-api.feature` y `04-atomic-puzzle-ui.feature`.
+   - Se integraron los escenarios de mutación dinámica JSONPath (`Given the user prepares a JSON payload:`, `And the user sets JSONPath "$.price" to the number 49.99`) directamente en los flujos principales de negocio (`02-books-crud.feature`).
+   - La suite completa opera de manera nativa y homogénea bajo el paradigma de piezas de puzzle atómicas sin requerir una feature de muestra separada.
+
+4. **Ejecución y Verificación 100% Exitosa**:
+   - **Comando:** `npm test`
+   - **Resultado:**
+     ```text
+     19 scenarios (19 passed)
+     125 steps (125 passed)
+     0m30.270s (executing steps: 0m25.494s)
+     ```
+   - **Reporte Visual HTML:** Generado exitosamente en `reports/cucumber-html-report.html`.
+
+---
+
+## 🛡️ FASE 14: Incorporación del Feedback de Expertos, Blindaje de Confidencialidad y Fábricas de Datos
+
+Atendiendo a la revisión técnica por pares (*Peer Review*), se blindaron los aspectos críticos de confidencialidad, robustez en el teardown y separación de responsabilidades:
+
+1. **Blindaje de Confidencialidad de las Imágenes Docker**:
+   - Se retiró el archivo `bookstore-images.tar` del seguimiento de Git (`git rm --cached bookstore-images.tar`).
+   - Se añadió la regla explícita en `.gitignore` para bloquear archivos `.tar`, `.zip` y `.gz`.
+   - Se actualizó `.github/workflows/ci.yml` y `README.md` documentando el aprovisionamiento hermético en 3 modalidades (runner local, self-hosted pre-cacheado o descarga autenticada con GitHub Secret).
+   - De este modo, al hacer push al repositorio público en GitHub, **nunca se expone el binario propietario de la prueba**.
+
+2. **Soporte Universal de DataTables (`datatable-parser.ts`)**:
+   - Implementado el parser genérico en `src/support/datatable-parser.ts` con tests unitarios en `tests/unit/datatable-parser.test.ts`.
+   - Permite validación multi-campo en un único paso sin sintaxis repetitiva:
+     ```gherkin
+     And the response FROM "/books" is validated with data:
+       | jsonPath | Value                   |
+       | $.title  | Architecture with Kafka |
+       | $.price  | 45.50                   |
+     ```
+   - Extendido a payloads API (`When the user updates the prepared payload with data:`) y formularios UI (`When in the active modal, the user fills the form with data:`).
+
+3. **Auto-Teardown con Playwright Network Listener**:
+   - En `src/support/world.ts`, se incorporó un listener síncrono sobre el evento `response` del navegador que detecta peticiones `POST /api/books` con código `201 Created` en la UI y registra automáticamente los IDs en `this.context.createdBookIds`.
+   - Si un test de UI falla a mitad del escenario, el hook `After` (en `src/support/hooks.ts`) ejecuta el borrado vía API (`DELETE /api/books/:id`), garantizando que la base de datos no acumule registros huérfanos.
+
+4. **Fábricas de Datos de Prueba Aisladas (`tests/fixtures/factories/`)**:
+   - Se crearon `book.factory.ts` y `user.factory.ts` bajo `tests/fixtures/factories/`, independizando la generación de datos de prueba dinámicos (con `@faker-js/faker`) tanto de los clientes API como de los selectores UI.
+
+5. **Resultados de Verificación Final**:
+   - Pruebas unitarias: 3 suites aprobadas (JSONPath, TemplateResolver, DataTableParser).
+   - Compilación TypeScript: 0 errores (`tsc --noEmit`).
+   - Linters: 0 errores (`npm run lint`).
+   - Suite BDD completa: **19 escenarios aprobados (100% verde) / 118 pasos aprobados en ~30s**.
+
+355: ---
+356: 
+357: ## 🚀 FASE 15: Preparación de Rama de Entrega, Plantilla de PR y Finalización del Proyecto
+358: 
+359: Con todas las observaciones del revisor técnico resueltas, la arquitectura homogeneizada y la suite pasando al 100%:
+360: 
+361: 1. **Estrategia de Ramas Git**:
+362:    - Se crea la rama de entrega técnica `feat/qa-automation-framework` a partir de `main`.
+363:    - Todos los cambios se empaquetan en commits atómicos bajo la convención *Conventional Commits*.
+364: 2. **Documentación de Pull Request**:
+365:    - Se genera [docs/PULL_REQUEST.md](file:///c:/Users/PC/Documents/LogNext-Verisure/docs/PULL_REQUEST.md): Informe formal y completo de la Pull Request con desglose de requerimientos, decisiones de arquitectura, comandos de reproducción y evidencias de prueba.
+366:    - Se crea [.github/pull_request_template.md](file:///c:/Users/PC/Documents/LogNext-Verisure/.github/pull_request_template.md): Plantilla predeterminada de PR en GitHub con checklist de calidad SDET (confidencialidad Docker, 70/30, zero-orphans, aislamiento, 100% verde).
+367: 3. **Instrucciones para Conexión con Remoto y Disparo de CI/CD**:
+368:    - Dado que el repositorio local no posee un origen remoto configurado por confidencialidad, se proporcionan los comandos exactos para asociar el repositorio privado/público del candidato (`git remote add origin ...`), publicar las ramas y abrir el Pull Request en GitHub para activar el workflow `.github/workflows/ci.yml`.
+369: 
+370: ---
+371: 
+372: ## 🗂️ Índice de Artefactos Creados y Vigentes
+373: 
+374: | Archivo | Propósito |
+375: |---|---|
+376: | [dashboard/index.html](file:///c:/Users/PC/Documents/LogNext-Verisure/dashboard/index.html) | Dashboard interactivo visual para defender el framework ante entrevistadores. |
+377: | [dashboard/styles.css](file:///c:/Users/PC/Documents/LogNext-Verisure/dashboard/styles.css) | Sistema de diseño visual glassmorphic y paleta cyber dark en Vanilla CSS. |
+378: | [dashboard/app.js](file:///c:/Users/PC/Documents/LogNext-Verisure/dashboard/app.js) | Lógica interactiva del simulador, filtros ISTQB, diccionario y portapapeles. |
+379: | [docs/PULL_REQUEST.md](file:///c:/Users/PC/Documents/LogNext-Verisure/docs/PULL_REQUEST.md) | Informe formal y completo de la Pull Request para evaluación técnica. |
+380: | [.github/pull_request_template.md](file:///c:/Users/PC/Documents/LogNext-Verisure/.github/pull_request_template.md) | Plantilla estándar de GitHub para Pull Requests con checklist de calidad SDET. |
+381: | [docs/BITACORA_PASO_A_PASO.md](file:///c:/Users/PC/Documents/LogNext-Verisure/docs/BITACORA_PASO_A_PASO.md) | Registro cronológico y detallado de toda la solución (este documento). |
+382: | [docs/INFORME_REVISION_TECNICA_EXPERTOS.md](file:///c:/Users/PC/Documents/LogNext-Verisure/docs/INFORME_REVISION_TECNICA_EXPERTOS.md) | Informe de revisión por pares, trade-offs, limitaciones y mitigaciones. |
+383: | [docs/AUDITORIA_CALIDAD_SDET.md](file:///c:/Users/PC/Documents/LogNext-Verisure/docs/AUDITORIA_CALIDAD_SDET.md) | Informe de auditoría técnica y dictamen sobre la eliminación de steps de dominio. |
+384: | [docs/STEPS_DICTIONARY.md](file:///c:/Users/PC/Documents/LogNext-Verisure/docs/STEPS_DICTIONARY.md) | Diccionario universal de steps genéricos, motor JSONPath, DataTables y taxonomía ISTQB. |
+385: | [.agents/pipeline/ORCHESTRATOR.md](file:///c:/Users/PC/Documents/LogNext-Verisure/.agents/pipeline/ORCHESTRATOR.md) | Orquestador del pipeline de QA multi-agente end-to-end. |
+386: | [.agents/pipeline/agents/](file:///c:/Users/PC/Documents/LogNext-Verisure/.agents/pipeline/agents/) | Especificaciones de Agente 1 (Analyst), Agente 2 (QA Lead) y Agente 3 (SDET). |
+387: | [docs/requirements.md](file:///c:/Users/PC/Documents/LogNext-Verisure/docs/requirements.md) | Análisis funcional y técnico de los servicios, modelos y endpoints. |
+388: | [docs/test-plan.md](file:///c:/Users/PC/Documents/LogNext-Verisure/docs/test-plan.md) | Plan maestro de pruebas con desglose por niveles N1-N4 y matriz de trazabilidad. |
+389: | [src/api/schemas/registry.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/api/schemas/registry.ts) | Registro dinámico universal de esquemas OpenAPI / Zod. |
+390: | [src/support/jsonpath.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/support/jsonpath.ts) | Motor nativo de extracción y mutación por JSONPath en runtime. |
+391: | [src/support/datatable-parser.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/support/datatable-parser.ts) | Parser agnóstico para DataTables y validación multi-campo. |
+392: | [src/support/template-resolver.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/support/template-resolver.ts) | Generador de tokens aleatorios dinámicos (`{{random_*}}`, `{{token}}`, `{{alias}}`). |
+393: | [tests/fixtures/factories/](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/fixtures/factories/) | Fábricas aisladas de datos de prueba (`book.factory.ts`, `user.factory.ts`). |
+394: | [src/ui/support/element-resolver.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/ui/support/element-resolver.ts) | Resolutor agnóstico de páginas, modales, campos, botones y tablas. |
+395: | [src/api/clients/generic-http.client.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/api/clients/generic-http.client.ts) | Cliente HTTP desacoplado para cualquier verbo y endpoint. |
+396: | [tests/features/api/](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/features/api/) | Features BDD de API (Auth, Books CRUD, Search, Contracts & Errors). |
+397: | [tests/features/ui/](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/features/ui/) | Features BDD de UI (Login UI, Books Catalog UI, Hybrid E2E). |
+398: | [tests/step-definitions/api/api.steps.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/step-definitions/api/api.steps.ts) | Step definitions universales consolidadas para API y contratos Zod. |
+399: | [tests/step-definitions/ui/ui.steps.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/step-definitions/ui/ui.steps.ts) | Step definitions universales consolidadas para UI con ElementResolver. |
+400: | [reports/cucumber-html-report.html](file:///c:/Users/PC/Documents/LogNext-Verisure/reports/cucumber-html-report.html) | Reporte consolidado de ejecución de pruebas en HTML enriquecido. |
 
 
 

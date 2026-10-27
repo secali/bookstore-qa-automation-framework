@@ -20,3 +20,9 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+
+# Confidencialidad Docker y Paquetes de Entrega (PROHIBIDO SUBIR A REPOS PÚBLICOS)
+bookstore-images.tar
+*.tar
+*.zip
+*.gz

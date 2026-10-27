@@ -41,22 +41,20 @@ El entorno entregado consiste en un archivo empaquetado `bookstore-images.tar` q
 
 ## 🏗️ 2. Arquitectura del Framework: Componentes e Implementación Técnica
 
-### 2.1. Estructura de 4 Motores Universales
-En lugar de crear archivos de steps por cada entidad (`auth.steps.ts`, `books.steps.ts`, `login-ui.steps.ts`), se consolidó la ejecución en 4 motores modulares:
+### 2.1. Estructura Unificada de Motores de Steps
+En lugar de dispersar archivos de steps por cada entidad o pantalla, se consolidó la ejecución en **dos únicos motores modulares altamente cohesivos**:
 
 ```
 tests/step-definitions/
 ├── api/
-│   ├── atomic-api.steps.ts   # Peticiones HTTP arbitrarias, DocStrings, mutación JSON y aserciones
-│   └── common-api.steps.ts   # Códigos de estado HTTP, contratos Zod OpenAPI y envelope de errores
+│   └── api.steps.ts   # Peticiones HTTP genéricas, DataTables, mutación JSONPath, JWT y contratos Zod
 └── ui/
-    ├── atomic-ui.steps.ts    # Interacciones en modales, tablas, checkboxes, alertas y sesión
-    └── common-ui.steps.ts    # Navegación básica, validación de URLs y aserción de textos
+    └── ui.steps.ts    # ElementResolver universal, modales, tablas reactivas, DataTables y sesión rápida
 ```
 
 ---
 
-### 2.2. Motor de Rutas y Mutación de Payloads ([src/support/jsonpath.ts](./src/support/jsonpath.ts))
+### 2.2. Motor de Rutas y Mutación de Payloads ([src/support/jsonpath.ts](../src/support/jsonpath.ts))
 Para posibilitar la preparación de payloads dinámicos directamente en Gherkin sin depender de DTOs rígidos:
 - **Alcance Real del Módulo:** Implementa un subconjunto de acceso a rutas por notación de punto (`user.email`), corchetes (`items[0].id`) y prefijo raíz (`$.title`), complementado con operaciones de mutación (`setJsonPath`) y borrado (`deleteJsonPath`).
 - **Seguridad (Protección Anti-Polución de Prototipos):**
@@ -90,32 +88,29 @@ Para resolver elementos sin crear clases Page Object para cada pantalla:
 
 ---
 
-### 2.5. Gestión de Sesión e Inyección de JWT
-Para optimizar el tiempo de ejecución de la suite de UI:
-- En escenarios no centrados en el flujo de login, `openPageWithSession` obtiene el token vía API e inyecta la sesión en `localStorage` mediante `addInitScript`.
-- **Mitigación frente a Re-inyección en Logout:** Se incorporó control de estado idempotente (`sessionStorage.getItem('explicit_logout')`) para asegurar que, si un test ejecuta un logout deliberado, la recarga de página no reinyecte credenciales no deseadas.
-- **Tests dedicados de Login/Logout:** Los escenarios de autenticación gráfica ([01-login-ui.feature](./tests/features/ui/01-login-ui.feature)) utilizan el formulario real de la aplicación, verificando credenciales válidas y rechazo ante credenciales erróneas.
+### 2.5. Fábrica de Datos de Prueba Aislados ([tests/fixtures/factories/](../tests/fixtures/factories/))
+Para evitar el acoplamiento de datos a controladores o componentes de interfaz:
+- **`book.factory.ts`**: Genera payloads de libros válidos, dinámicos y únicos (`createBookPayload`), permitiendo sobrescrituras parciales (`overrides`) para pruebas de límites (`boundary-value-analysis`) y escenarios negativos.
+- **`user.factory.ts`**: Genera credenciales de usuario con emails únicos y no colisionables (`createUserPayload`).
+- **Independencia Arquitectónica:** Los clientes API solo transportan peticiones; los localizadores UI solo interactúan con controles; los datos residen en la capa de fixtures de prueba.
 
 ---
 
-### 2.6. Validación de Contratos con `SchemaRegistry` ([src/api/schemas/registry.ts](./src/api/schemas/registry.ts))
-- Desacopla los step definitions de los esquemas Zod concretos.
-- Los esquemas Zod (`BookSchema`, `ErrorResponseSchema`, `AuthSuccessSchema`) incorporan validación estricta de tipos numéricos y obligatoriedad de campos.
-- *Trade-off reconocido:* En proyectos donde el documento OpenAPI estático es la única fuente de verdad contractual, la solución ideal es generar automáticamente los esquemas Zod desde `openapi.yaml` o utilizar un validador AJV de respuestas. En este sandbox, `SchemaRegistry` aísla el mecanismo de validación permitiendo sustituir el motor sin alterar las pruebas en Gherkin.
+### 2.6. Aislamiento y Teardown Completo (UI + API)
+Para resolver la fuga potencial de datos creados en tests de interfaz gráfica:
+- **Playwright Network Response Listener ([src/support/world.ts](../src/support/world.ts)):** Al inicializar la página web, Playwright intercepta en segundo plano cualquier respuesta HTTP `POST /api/books` con código `201 Created` y añade su ID automáticamente a `this.context.createdBookIds`.
+- **Garantía de Auto-Limpieza en Hook `After` ([src/support/hooks.ts](../src/support/hooks.ts)):** Incluso si un test de UI falla antes de pulsar el botón de borrado en la tabla, el teardown detecta el ID y ejecuta la eliminación vía REST API (`DELETE /api/books/:id`), preservando intactos los 5 libros semilla.
+- **Aislamiento de Usuarios:** Dado que la API del SUT no expone borrado REST de usuarios (`DELETE /api/users`), el aislamiento se garantiza mediante emails dinámicos aleatorios de Faker.
 
 ---
 
-### 2.7. Pipeline de CI/CD Hermético ([.github/workflows/ci.yml](./.github/workflows/ci.yml))
-Diseñado para respetar la confidencialidad de `bookstore-images.tar`:
-1. **Node.js 22 LTS:** Actualizado desde Node 20 (que alcanza fin de soporte en 2026).
-2. **Quality Gate Estático Temprano:** Ejecuta `lint` y compilación estricta `tsc --noEmit` antes de inicializar contenedores.
-3. **Carga Local de Imágenes:** `docker load -i bookstore-images.tar` importa los contenedores en el daemon local sin conexión a Docker Hub ni GHCR.
-4. **Sonda de Salud Robusta:**
-   - Utiliza `curl -s -f --retry-connrefused` con tiempo límite estricto sobre `/api/health`.
-   - Comprueba la disponibilidad del frontend React en el puerto `3000`.
-5. **Ejecución Paralela y Reporte:**
-   - Ejecuta `npx cucumber-js --parallel 4`.
-   - Genera reportes HTML y archiva capturas de pantalla de fallos como artefactos del workflow (`reports/`).
+### 2.7. Pipeline de CI/CD Hermético y Confidencial ([.github/workflows/ci.yml](../.github/workflows/ci.yml))
+Diseñado para respetar estrictamente la confidencialidad de `bookstore-images.tar`:
+1. **Desvinculación Total de Git:** `bookstore-images.tar` está añadido a `.gitignore` y desvinculado del repositorio para evitar fugas de propiedad intelectual al publicar el repo en GitHub.
+2. **Aprovisionamiento Flexible en Runner:** Soporta runner local/self-hosted con imágenes cacheadas, carga condicional de archivo local o descarga privada autenticada mediante GitHub Secret (`DOCKER_IMAGES_SECURE_URL`).
+3. **Node.js 22 LTS & Quality Gates Tempranos:** `lint` y `tsc --noEmit` antes de arrancar Docker.
+4. **Sonda de Salud Activa:** Polling con `curl --retry-connrefused` sobre `/api/health`.
+5. **Ejecución y Artefactos:** Ejecución con `npm test` y archivado de reportes HTML enriquecidos en `reports/`.
 
 ---
 
@@ -125,29 +120,27 @@ Un aspecto distintivo de un perfil Senior SDET es el reconocimiento honesto de l
 
 | Decisión de Diseño | Beneficio Obtenido | Riesgo o Limitación | Mitigación Implementada |
 |---|---|---|---|
-| **Pasos Genéricos con JSONPath** | Cero código nuevo para cubrir nuevos endpoints o mutar payloads. | Gherkin puede volverse excesivamente técnico/imperativo. | Uso de *Scenario Outline*, tablas y *Backgrounds* para mantener la legibilidad de negocio. |
-| **Parser JSONPath Ligero Propio** | Cero dependencias externas en el entorno de evaluación. | No soporta sintaxis de consulta compleja RFC 9535 (`[?(@.price>10)]`). | Módulo acotado a dot-notation/índices, protegido contra polución de prototipos y con tests unitarios. En producción masiva se adoptaría `jsonpath-plus`. |
-| **ElementResolver en Cascada** | Resuelve elementos en cualquier pantalla sin crear decenas de clases POM. | Riesgo de coincidencia accidental si un selector desaparece. | Prioridad estricta a roles y etiquetas accesibles de Playwright, coincidencia exacta y registro de nombres lógicos. |
-| **Inyección de Sesión con JWT** | Ahorro masivo de tiempo en la suite UI (evita 3 interacciones de formulario por test). | Puede reinyectar credenciales en tests de cierre de sesión. | Control de bandera de logout explícito en sesión y mantenimiento de tests de login/logout por formulario real. |
-| **Métrica de Pirámide por Escenarios** | 15 API / 6 UI aproxima el ratio 71.4% / 28.6% (cercano al 70/30). | El recuento de escenarios no refleja por sí solo la profundidad de cobertura. | Trazabilidad exhaustiva: validación de contratos, CRUD, búsquedas, valores límite y códigos de error. |
-| **CI Hermético con GitHub Actions** | Simula el flujo air-gapped con `docker load`. | Los runners públicos de GitHub se conectan a internet para descargar dependencias. | En producción corporativa, esta arquitectura se despliega sobre runners *self-hosted* con imágenes y dependencias pre-cacheadas. |
+| **Pasos Genéricos con JSONPath y DataTables** | Cero código nuevo para cubrir nuevos endpoints o mutar payloads. | Gherkin puede volverse excesivamente técnico/imperativo. | Uso de *DataTables* (`And the response FROM "/books" is validated with data:`) para compactar pasos y mantener alta legibilidad. |
+| **Parser JSONPath y DataTable Propios** | Cero dependencias externas adicionales en tiempo de ejecución. | Mantenimiento de código utilitario interno. | Suites de pruebas unitarias dedicadas en `tests/unit/` (`npm run test:unit`) con validación de seguridad anti-prototipo. |
+| **ElementResolver en Cascada** | Resuelve elementos en cualquier pantalla sin crear decenas de clases POM. | Riesgo de coincidencia accidental si un selector desaparece. | Prioridad estricta a roles y etiquetas accesibles de Playwright (`getByRole`, `data-testid`). |
+| **Inyección de Sesión con JWT** | Ahorro masivo de tiempo en la suite UI (evita logins repetitivos por interfaz). | Podría interferir en tests específicos de logout. | Control de bandera de logout explícito en sesión y tests de login UI con formulario real. |
+| **Confidencialidad de Imágenes Docker** | Previene la exposición pública de `bookstore-images.tar` en GitHub. | El runner público de GitHub requiere aprovisionar las imágenes de forma segura. | Configuración condicional en `ci.yml`: soporte de runner local, runner self-hosted o endpoint privado seguro. |
+| **Auto-Teardown con Interceptor UI** | Garantiza la eliminación de recursos creados por UI aunque el test falle a mitad. | Depende de la interceptación de tráfico HTTP en el navegador. | Listener síncrono registrado en el evento `response` de Playwright sobre `/api/books`. |
 
 ---
 
 ## 📊 4. Estado Actual de Verificación y Quality Gates
 
-El framework cuenta con verificación estricta de compilación y pruebas unitarias de sus componentes base:
+El framework cuenta con verificación estricta de compilación, linters y ejecución funcional completa al 100%:
 
 | Puerta de Calidad | Comando | Evidencia / Resultado | Estado |
 |---|---|---|:---:|
-| **Tests Unitarios del Motor** | `npm run test:unit` | Tests de `jsonpath` y `template-resolver` aprobados (incluyendo polución de prototipo) | 🟢 APROBADO |
+| **Tests Unitarios del Motor** | `npm run test:unit` | 3 suites aprobadas (JSONPath, TemplateResolver, DataTableParser) | 🟢 APROBADO |
 | **Compilación Estricta** | `npx tsc --noEmit` | Exit code 0, 0 errores en modo TypeScript estricto | 🟢 APROBADO |
 | **Linters y Formato** | `npm run lint` | ESLint y Prettier aprobados sin advertencias | 🟢 APROBADO |
-| **Resolución de Steps** | `npx cucumber-js --dry-run` | **21 escenarios / 150 pasos**, 0 pasos indefinidos, 0 colisiones | 🟢 APROBADO |
-| **Control de Versiones** | `git status` | Repositorio limpio en rama `main` | 🟢 APROBADO |
-
-> **Nota de Transparencia Técnica sobre Ejecución Funcional:**  
-> La validación actual (`--dry-run`) certifica que la gramática Gherkin, las expresiones regulares de los steps, la resolución de tipos y los motores internos compilan y enlazan al 100%. La ejecución funcional completa (21/21 en verde contra el SUT) se ejecuta una vez levantados los contenedores mediante `docker compose up -d` y `npm test`.
+| **Ejecución Funcional BDD** | `npm test` | **19 escenarios aprobados / 118 pasos aprobados (100% verde)** | 🟢 APROBADO |
+| **Reportabilidad** | `npm run report` | Reporte visual HTML enriquecido en `reports/cucumber-html-report.html` | 🟢 APROBADO |
+| **Control de Versiones** | `git status` | Repositorio limpio, tarball ignorado en `.gitignore` | 🟢 APROBADO |
 
 ---
 

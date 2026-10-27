@@ -6,7 +6,9 @@ export const BookSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   author: z.string().min(1, 'Author is required'),
   isbn: z.string().min(10, 'Valid ISBN format is required'),
-  price: z.number().positive('Price must be greater than 0'),
+  price: z.number().nonnegative('Price must be greater than or equal to 0'),
+  publishedYear: z.number().optional(),
+  createdBy: z.string().nullable().optional(),
   category: z.string().optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional()

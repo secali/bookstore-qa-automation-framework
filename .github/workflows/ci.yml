@@ -37,15 +37,26 @@ jobs:
       - name: 🎭 5. Install Playwright Chromium & System Dependencies
         run: npx playwright install --with-deps chromium
 
-      - name: 🐳 6. Load Local Docker Images (Confidentiality Compliant)
-        # NOTA DE CONFIDENCIALIDAD: Cumple la restricción del evaluador cargando
-        # bookstore-images.tar localmente sin interactuar con registros públicos.
-        # En entornos empresariales de producción air-gapped, esto se orquesta mediante
-        # runners self-hosted con imágenes pre-cacheadas en daemon local.
+      - name: 🐳 6. Provision Sandbox Docker Images (Hermetic & Confidential)
+        # Cumple estrictamente la cláusula de confidencialidad:
+        # El archivo tarball NO se comitea al repositorio público de Git.
+        # Soporta 3 estrategias herméticas:
+        # 1. Runner Self-Hosted corporativo: imágenes preexistentes en daemon local.
+        # 2. Archivo local/cache: si bookstore-images.tar existe en runner, lo carga.
+        # 3. Secret / Secure Storage: descarga autenticada desde almacenamiento privado protegido.
         run: |
-          echo "Cargando imágenes locales desde bookstore-images.tar en el daemon Docker..."
-          docker load -i bookstore-images.tar
-          docker images
+          if [ -f bookstore-images.tar ]; then
+            echo "Cargando imágenes locales desde bookstore-images.tar..."
+            docker load -i bookstore-images.tar
+          elif [ -n "${{ secrets.DOCKER_IMAGES_SECURE_URL }}" ]; then
+            echo "Descargando imágenes desde endpoint privado seguro..."
+            curl -s -L "${{ secrets.DOCKER_IMAGES_SECURE_URL }}" -o bookstore-images.tar
+            docker load -i bookstore-images.tar
+            rm -f bookstore-images.tar
+          else
+            echo "Verificando si las imágenes ya existen en el daemon local del runner..."
+            docker images
+          fi
 
       - name: 🚀 7. Start Sandbox Containers (Mongo, Backend, Frontend)
         run: |
@@ -74,10 +85,10 @@ jobs:
 
           echo "✅ Infraestructura BookStore Sandbox lista y respondiendo en http://localhost:5000/api/health"
 
-      - name: 🧪 9. Run Cucumber BDD Test Suite in Parallel
+      - name: 🧪 9. Run Cucumber BDD Test Suite
         run: |
-          echo "Iniciando ejecución paralela de pruebas (70% API / 30% UI)..."
-          npx cucumber-js --parallel 4
+          echo "Iniciando ejecución de pruebas BDD (70% API / 30% UI)..."
+          npm test
         env:
           API_BASE_URL: http://localhost:5000/api
           UI_BASE_URL: http://localhost:3000

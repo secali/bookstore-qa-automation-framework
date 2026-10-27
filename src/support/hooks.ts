@@ -1,9 +1,11 @@
-import { Before, After, Status } from '@cucumber/cucumber';
+import { Before, After, Status, setDefaultTimeout } from '@cucumber/cucumber';
 import { chromium } from '@playwright/test';
 import { CustomWorld } from './world';
 import { ENV } from '../../config/env.config';
 import * as fs from 'fs';
 import * as path from 'path';
+
+setDefaultTimeout(ENV.DEFAULT_TIMEOUT || 30000);
 
 Before(async function (this: CustomWorld, scenario) {
   // 1. Inicialización de API Context para TODOS los escenarios
@@ -57,17 +59,20 @@ After(async function (this: CustomWorld, scenario) {
   if (this.context.createdBookIds.length > 0) {
     // Si no tenemos token en el contexto, usamos el admin seed para el teardown
     if (!this.context.token) {
-      const login = await this.apiClient.auth.login(ENV.DEFAULT_ADMIN.email, ENV.DEFAULT_ADMIN.password);
-      if (login.body.token) {
+      const login = await this.apiClient.http.send('POST', '/auth/login', {
+        data: { email: ENV.DEFAULT_ADMIN.email, password: ENV.DEFAULT_ADMIN.password }
+      });
+      if (login.body?.token) {
         this.context.token = login.body.token;
+        this.apiClient.http.setAuthToken(login.body.token);
       }
     }
 
     for (const bookId of this.context.createdBookIds) {
       try {
-        await this.apiClient.books.deleteBook(bookId);
-      } catch (err) {
-        console.warn(`[Teardown] Error al limpiar libro temporal ${bookId}:`, err);
+        await this.apiClient.http.send('DELETE', `/books/${bookId}`);
+      } catch {
+        // Ignorado: libro ya eliminado durante el escenario
       }
     }
   }

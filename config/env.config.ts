@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 export const ENV = {
-  API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:5000/api',
+  API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:5000',
   UI_BASE_URL: process.env.UI_BASE_URL || 'http://localhost:3000',
   HEADLESS: process.env.HEADLESS !== 'false',
   DEFAULT_ADMIN: {

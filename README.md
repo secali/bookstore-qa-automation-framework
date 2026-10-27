@@ -20,7 +20,7 @@ Este framework traslada la experiencia senior en **Java + Cucumber / Rest Assure
                                    ▼
 ┌────────────────────────────────────────────────────────────────────────┐
 │            CAPA DE STEP DEFINITIONS GENÉRICOS & PARAMETRIZABLES        │
-│          common-api.steps.ts    books.steps.ts    ui-common.steps.ts   │
+│          api.steps.ts (API Engine)      ui.steps.ts (UI Engine)        │
 └──────────────────────────────────┬─────────────────────────────────────┘
                                    │
                                    ▼
@@ -131,29 +131,28 @@ Las instrucciones del reto estipulan:
    - *Evaluación:* ⚠️ Funcional en entornos corporativos cerrados, pero añade fricción a los evaluadores del proceso que no dispongan de credenciales compartidas para clonar o evaluar el workflow.
 3. **GitHub Actions Cache (`actions/cache`) sobre Docker**:
    - *Evaluación:* ✅ Muy eficiente para ejecuciones sucesivas, pero requiere que la primera ejecución cargue el archivo base.
-4. **Solución Elegida: Git LFS / Commit Hermético del Tarball + Carga en Runner**:
+4. **Solución Elegida: Aislamiento Total en `.gitignore` + Carga Condicional Hermética**:
    - *Evaluación:* 🏆 **Elegida e implementada**.
-   - **Cómo funciona:** El archivo `bookstore-images.tar` se versiona directamente o mediante Git LFS en el repositorio.
-   - **En el runner de GitHub Actions (`.github/workflows/ci.yml`):**
-     1. Hace checkout del código.
-     2. Instala dependencias y corre linters y compilación estricta TypeScript en Node 22 LTS.
-     3. Ejecuta `docker load -i bookstore-images.tar` directo al daemon del runner de GitHub.
-     4. Levanta con `docker compose up -d`.
-     5. Realiza un **polling activo de salud** con `curl --retry-connrefused` sobre `http://localhost:5000/api/health` y comprueba el frontend en el puerto `3000`.
-     6. Lanza la suite en paralelo (`npx cucumber-js --parallel 4`).
-     7. Publica los reportes HTML, capturas y trazas como artefactos del workflow (`actions/upload-artifact@v4`).
-     8. Ejecuta teardown con `docker compose down -v`.
-   - **Limitaciones de la solución elegida y mitigación en producción:** En un entorno enterprise air-gapped real, esta solución se ejecuta sobre runners *self-hosted* internos que disponen de las imágenes Docker cacheadas en local sin necesidad de transferir el archivo `.tar` en cada clonado de Git.
+   - **Garantía de Confidencialidad:** El archivo `bookstore-images.tar` está **estrictamente ignorado en `.gitignore` y desvinculado de Git**. De este modo, al publicar el repositorio en GitHub, **nunca se expone ni se sube el paquete de imágenes a internet**, respetando la cláusula de confidencialidad al 100%.
+   - **Estrategia en el Runner de CI/CD (`.github/workflows/ci.yml`):**
+     1. **Runner Self-Hosted / Entorno Corporativo Air-Gapped:** Si el runner dispone de las imágenes pre-cacheadas en su daemon Docker local, las reutiliza inmediatamente.
+     2. **Almacenamiento Privado Seguro (GitHub Secret):** Si se ejecuta en runners efímeros de GitHub Actions (`ubuntu-latest`), el workflow soporta la descarga autenticada desde una URL privada temporal mediante el secret `DOCKER_IMAGES_SECURE_URL`.
+     3. **Fallback Local:** Si el archivo `bookstore-images.tar` existe en el runner (ejecución local o runner dedicado), ejecuta `docker load -i bookstore-images.tar`.
+     4. Realiza un **polling activo de salud** (`curl --retry-connrefused`) sobre `http://localhost:5000/api/health` antes de iniciar pruebas.
+     5. Lanza la suite BDD completa (`npm test`).
+     6. Publica los reportes HTML enriquecidos como artefactos del workflow (`actions/upload-artifact@v4`).
+     7. Ejecuta teardown con `docker compose down -v`.
 
 ---
 
 ## 📂 7. Documentación Adicional y Ecosistema de Arquitectura
 
-- [INFORME_REVISION_TECNICA_EXPERTOS.md](./INFORME_REVISION_TECNICA_EXPERTOS.md): **Informe exhaustivo para expertos y revisión por pares (Peer Review)**, con análisis de trade-offs, limitaciones conocidas y mitigaciones.
-- [STEPS_DICTIONARY.md](./STEPS_DICTIONARY.md): Diccionario oficial de steps genéricos y convenciones Cucumber + Playwright (cero steps huérfanos).
-- [AUDITORIA_CALIDAD_SDET.md](./AUDITORIA_CALIDAD_SDET.md): Auditoría completa de estándares Playwright, pirámide de pruebas y dictamen de steps de dominio.
+- [docs/INFORME_REVISION_TECNICA_EXPERTOS.md](./docs/INFORME_REVISION_TECNICA_EXPERTOS.md): **Informe exhaustivo para expertos y revisión por pares (Peer Review)**, con análisis de trade-offs, limitaciones conocidas y mitigaciones.
+- [docs/STEPS_DICTIONARY.md](./docs/STEPS_DICTIONARY.md): Diccionario oficial de steps genéricos y convenciones Cucumber + Playwright (cero steps huérfanos).
+- [docs/AUDITORIA_CALIDAD_SDET.md](./docs/AUDITORIA_CALIDAD_SDET.md): Auditoría completa de estándares Playwright, pirámide de pruebas y dictamen de steps de dominio.
 - [.agents/pipeline/ORCHESTRATOR.md](./.agents/pipeline/ORCHESTRATOR.md): Orquestador del pipeline de QA multi-agente end-to-end (Story Analyst, QA Planner, SDET Implementer).
-- [BITACORA_PASO_A_PASO.md](./BITACORA_PASO_A_PASO.md): Registro cronológico y detallado de todas las fases del desarrollo.
-- [requirements.md](./requirements.md): Análisis exhaustivo funcional y técnico de los servicios, modelos y endpoints.
-- [test-plan.md](./test-plan.md): Plan maestro de pruebas con desglose por niveles N1-N4 y matriz de trazabilidad.
+- [docs/BITACORA_PASO_A_PASO.md](./docs/BITACORA_PASO_A_PASO.md): Registro cronológico y detallado de todas las fases del desarrollo.
+- [docs/requirements.md](./docs/requirements.md): Análisis exhaustivo funcional y técnico de los servicios, modelos y endpoints.
+- [docs/test-plan.md](./docs/test-plan.md): Plan maestro de pruebas con desglose por niveles N1-N4 y matriz de trazabilidad.
+- [docs/CANDIDATE_INSTRUCTIONS.md](./docs/CANDIDATE_INSTRUCTIONS.md): Especificación original del desafío técnico entregado por LogNext-Verisure.
 - [dashboard/index.html](./dashboard/index.html): Dashboard interactivo visual para la defensa del framework ante el evaluador.

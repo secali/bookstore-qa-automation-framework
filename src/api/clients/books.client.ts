@@ -19,7 +19,7 @@ export class BooksClient {
   }
 
   async getAllBooks(params?: Record<string, string | number>): Promise<ApiResponse<BookDto[]>> {
-    const res = await this.request.get('/books', {
+    const res = await this.request.get('/api/books', {
       headers: this.getHeaders(),
       params: params ? Object.fromEntries(Object.entries(params).map(([k, v]) => [k, String(v)])) : undefined
     });
@@ -27,7 +27,7 @@ export class BooksClient {
   }
 
   async getBookById(id: string): Promise<ApiResponse<BookDto>> {
-    const res = await this.request.get(`/books/${id}`, {
+    const res = await this.request.get(`/api/books/${id}`, {
       headers: this.getHeaders()
     });
     return this.captureResponse<BookDto>(res);
@@ -43,7 +43,7 @@ export class BooksClient {
       }
     }
 
-    const res = await this.request.post('/books', {
+    const res = await this.request.post('/api/books', {
       headers,
       data
     });
@@ -60,7 +60,7 @@ export class BooksClient {
   }
 
   async updateBook(id: string, data: Partial<CreateBookPayload>): Promise<ApiResponse<BookDto>> {
-    const res = await this.request.put(`/books/${id}`, {
+    const res = await this.request.put(`/api/books/${id}`, {
       headers: this.getHeaders(),
       data
     });
@@ -68,7 +68,7 @@ export class BooksClient {
   }
 
   async deleteBook(id: string): Promise<ApiResponse<any>> {
-    const res = await this.request.delete(`/books/${id}`, {
+    const res = await this.request.delete(`/api/books/${id}`, {
       headers: this.getHeaders()
     });
     return this.captureResponse<any>(res);

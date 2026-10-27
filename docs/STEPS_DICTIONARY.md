@@ -21,9 +21,9 @@
 
 ---
 
-## 🔌 1. Common API Steps (Status & OpenAPI Zod Contracts)
+## 🔌 1. API Steps (Status, Contract & Envelope Validation)
 
-**File:** [tests/step-definitions/api/common-api.steps.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/step-definitions/api/common-api.steps.ts)
+**File:** [tests/step-definitions/api/api.steps.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/step-definitions/api/api.steps.ts)
 
 | Gherkin Step (Exact Syntax) | Parameters / Examples | Description / Action |
 |---|---|---|
@@ -36,9 +36,9 @@
 
 ---
 
-## 🧩 2. Atomic API Engine (Universal HTTP & JSONPath Mutation / Validation)
+## 🧩 2. API Engine (Universal HTTP & JSONPath Mutation / Validation)
 
-**File:** [tests/step-definitions/api/atomic-api.steps.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/step-definitions/api/atomic-api.steps.ts)
+**File:** [tests/step-definitions/api/api.steps.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/step-definitions/api/api.steps.ts)
 
 ### 2.1. Request Dispatching (Any HTTP Verb & Endpoint)
 | Gherkin Step (Exact Syntax) | Parameters / Examples | Action |
@@ -72,8 +72,9 @@
 | Gherkin Step (Exact Syntax) | Parameters / Examples | Action |
 |---|---|---|
 | `When the user saves the response JSONPath {string} as {string}` | `"$.id"`, `"createdBookId"` | Extracts value via JSONPath and stores in `this.context.storedData[alias]`. |
+| `When the user saves the response JSONPaths as variables:` | DataTable (`\| jsonPath \| variableName \|`) | Extracts multiple JSONPaths into context variables in a single step without repeating syntax. |
 
-### 2.5. JSONPath Response Assertions
+### 2.5. JSONPath Response Assertions (Single Values)
 | Gherkin Step (Exact Syntax) | Parameters / Examples | Action |
 |---|---|---|
 | `Then the response JSONPath {string} should equal {string}` | `"$.title"`, `"Clean Code"` | Asserts string equality at JSONPath (supports `{{alias}}`). |
@@ -85,11 +86,19 @@
 | `Then the response should contain an array with at least {int} item(s)` | `5` | Validates root response body array length. |
 | `Then the response header {string} should contain {string}` | `"content-type"`, `"json"` | Asserts substring presence in HTTP response header. |
 
+### 2.6. Multi-Field Response Validation via DataTable (Zero Repetition)
+| Gherkin Step (Exact Syntax) | Parameters / Examples | Action |
+|---|---|---|
+| `Then the response is validated with data:` | DataTable (`\| jsonPath \| Value \|`) | Validates multiple JSONPaths at once against strings, numbers, booleans, `not null`, `not empty` or `{{templates}}`. |
+| `Then the response FROM {string} is validated with data:` | Origin endpoint + DataTable | Asserts that response originated from target endpoint and validates all JSONPaths in the table. |
+| `Then the response matches the following data:` | DataTable (`\| jsonPath \| Value \|`) | Alias for multi-field response validation. |
+| `Then the response FROM {string} matches the following data:` | Origin endpoint + DataTable | Alias for endpoint-scoped multi-field validation. |
+
 ---
 
-## 🖥️ 3. Common UI Steps (Playwright Browser & Navigation)
+## 🖥️ 3. Universal UI Steps (Playwright Browser & Navigation)
 
-**File:** [tests/step-definitions/ui/common-ui.steps.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/step-definitions/ui/common-ui.steps.ts)
+**File:** [tests/step-definitions/ui/ui.steps.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/step-definitions/ui/ui.steps.ts)
 
 | Gherkin Step (Exact Syntax) | Parameters / Examples | Action |
 |---|---|---|
@@ -107,7 +116,7 @@
 
 ## 🏛️ 4. Page-Agnostic UI Engine (ElementResolver Driven)
 
-**File:** [tests/step-definitions/ui/atomic-ui.steps.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/step-definitions/ui/atomic-ui.steps.ts)
+**File:** [tests/step-definitions/ui/ui.steps.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/step-definitions/ui/ui.steps.ts)
 
 Operates across ANY page, form, modal or table by supplying the page/modal name and the target element identifier:
 
@@ -120,6 +129,9 @@ Operates across ANY page, form, modal or table by supplying the page/modal name 
 | `Then on the {string} page, the {string} button should be enabled` | Page name, Button identifier | Asserts button is in enabled state. |
 | `Then the modal should be visible` | *None* | Verifies that an active modal or dialog (`.modal, [role="dialog"]`) is open. |
 | `Then the modal should not be visible` | *None* | Verifies that modal is closed/hidden. |
+| `When in the active modal, the user fills the form with data:` | DataTable (`\| field \| value \|`) | Fills multiple inputs inside the active modal in a single step without repeating syntax. |
+| `When the user fills the form with data:` | DataTable (`\| field \| value \|`) | Fills multiple form inputs across the active page in a single step. |
+| `Then the form fields should have values:` | DataTable (`\| field \| value \|`) | Verifies multiple input element values across the page or modal. |
 | `When in the active modal, the user enters {string} into the {string} field` | Value, Field identifier | Scopes input resolution strictly within the active modal dialog. |
 | `When in the {string} modal, the user enters {string} into the {string} field` | Modal title, Value, Field identifier | Scopes input resolution to a specifically titled modal. |
 | `When in the active modal, the user clicks the {string} button` | Button text / identifier | Clicks button strictly inside active modal (`"Save"`, `"Confirm"`). |

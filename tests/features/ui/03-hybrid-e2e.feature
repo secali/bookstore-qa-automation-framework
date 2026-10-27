@@ -13,6 +13,7 @@ Feature: Hybrid E2E Flow (Fast API Injection and UI Verification)
         "title": "Multi-Agent QA Architecture",
         "author": "Sergio Cañete",
         "isbn": "{{random_isbn}}",
+        "publishedYear": 2024,
         "price": 49.99,
         "category": "Architecture"
       }

@@ -15,6 +15,7 @@ Feature: OpenAPI Contracts Validation and Standard Error Envelope
         "title": "Invalid Contract Book",
         "author": "QA Architect",
         "isbn": "<isbn>",
+        "publishedYear": 2024,
         "price": <price>,
         "category": "Testing"
       }
