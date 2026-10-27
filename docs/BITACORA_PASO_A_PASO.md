@@ -377,9 +377,11 @@ Atendiendo a la revisión técnica por pares (*Peer Review*), se blindaron los a
 377: | [dashboard/styles.css](file:///c:/Users/PC/Documents/LogNext-Verisure/dashboard/styles.css) | Sistema de diseño visual glassmorphic y paleta cyber dark en Vanilla CSS. |
 378: | [dashboard/app.js](file:///c:/Users/PC/Documents/LogNext-Verisure/dashboard/app.js) | Lógica interactiva del simulador, filtros ISTQB, diccionario y portapapeles. |
 379: | [docs/CANDIDATE_INSTRUCTIONS.md](file:///c:/Users/PC/Documents/LogNext-Verisure/docs/CANDIDATE_INSTRUCTIONS.md) | Especificación y requisitos originales del desafío técnico entregado por LogNext-Verisure. |
-380: | [docs/STEPS_DICTIONARY.md](file:///c:/Users/PC/Documents/LogNext-Verisure/docs/STEPS_DICTIONARY.md) | Diccionario oficial de steps genéricos, motor JSONPath, DataTables y taxonomía ISTQB. |
-381: | [docs/BITACORA_PASO_A_PASO.md](file:///c:/Users/PC/Documents/LogNext-Verisure/docs/BITACORA_PASO_A_PASO.md) | Bitácora integral paso a paso con el registro cronológico y exhaustivo de toda la solución. |
-382: | [.github/pull_request_template.md](file:///c:/Users/PC/Documents/LogNext-Verisure/.github/pull_request_template.md) | Plantilla estándar de GitHub para Pull Requests con checklist de calidad SDET. |
+380: | [docs/requirements.md](file:///c:/Users/PC/Documents/LogNext-Verisure/docs/requirements.md) | Análisis funcional y técnico de los servicios, modelos y endpoints. |
+381: | [docs/test-plan.md](file:///c:/Users/PC/Documents/LogNext-Verisure/docs/test-plan.md) | Plan maestro de pruebas con desglose por niveles N1-N4 y matriz de trazabilidad. |
+382: | [docs/STEPS_DICTIONARY.md](file:///c:/Users/PC/Documents/LogNext-Verisure/docs/STEPS_DICTIONARY.md) | Diccionario oficial de steps genéricos, motor JSONPath, DataTables y taxonomía ISTQB. |
+383: | [docs/BITACORA_PASO_A_PASO.md](file:///c:/Users/PC/Documents/LogNext-Verisure/docs/BITACORA_PASO_A_PASO.md) | Bitácora integral paso a paso con el registro cronológico y exhaustivo de toda la solución. |
+384: | [.github/pull_request_template.md](file:///c:/Users/PC/Documents/LogNext-Verisure/.github/pull_request_template.md) | Plantilla estándar de GitHub para Pull Requests con checklist de calidad SDET. |
 383: | [src/api/schemas/registry.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/api/schemas/registry.ts) | Registro dinámico universal de esquemas OpenAPI / Zod. |
 384: | [src/support/jsonpath.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/support/jsonpath.ts) | Motor nativo de extracción y mutación por JSONPath en runtime. |
 385: | [src/support/datatable-parser.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/support/datatable-parser.ts) | Parser agnóstico para DataTables y validación multi-campo. |

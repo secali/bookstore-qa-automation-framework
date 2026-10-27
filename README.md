@@ -148,7 +148,10 @@ Las instrucciones del reto estipulan:
 ## 📂 7. Documentación Oficial y Ecosistema de Arquitectura
 
 - [docs/CANDIDATE_INSTRUCTIONS.md](./docs/CANDIDATE_INSTRUCTIONS.md): **Especificación y Requisitos Oficiales** del desafío técnico entregado por LogNext-Verisure.
+- [docs/requirements.md](./docs/requirements.md): **Análisis Exhaustivo Funcional y Técnico** de los modelos, servicios y endpoints.
+- [docs/test-plan.md](./docs/test-plan.md): **Plan Maestro de Pruebas** con desglose por niveles N1-N4 y matriz de trazabilidad.
 - [docs/STEPS_DICTIONARY.md](./docs/STEPS_DICTIONARY.md): **Diccionario Oficial de Steps Genéricos**, motor dinámico JSONPath, soporte de DataTables y taxonomía ISTQB.
 - [docs/BITACORA_PASO_A_PASO.md](./docs/BITACORA_PASO_A_PASO.md): **Bitácora Integral Paso a Paso** con el registro cronológico y detallado de todas las fases del desarrollo y arquitectura.
 - [dashboard/index.html](./dashboard/index.html): **Dashboard Interactivo SDET** con métricas en tiempo real, simulador interactivo de steps y pitch ejecutivo de defensa.
+
 
