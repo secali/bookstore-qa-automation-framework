@@ -47,7 +47,7 @@ Feature: Authentication and User Management via REST API
     When the user sends a "POST" request to "/auth/register" with the prepared payload
     Then the API response status code should be 201
     And the response should match the "AuthResponse" contract
-    And the response JSONPath "$.token" should not be null or empty
+    And the response JSONPath "$.id" should not be null or empty
 
   @integration-test @functional @negative-testing @contract @error-guessing @reliability @boundary-value-analysis
   Scenario: Registration rejected when email address is already taken

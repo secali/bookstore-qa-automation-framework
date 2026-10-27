@@ -20,6 +20,6 @@ export class BookStoreApiClient {
   }
 
   async checkHealth() {
-    return this.request.get('/health');
+    return this.request.get('/api/health');
   }
 }

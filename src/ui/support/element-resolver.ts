@@ -47,8 +47,26 @@ export class ElementResolver {
    */
   findField(identifier: string, container?: Locator): Locator {
     const parent = container || this.page;
-    if (this.logicalMap.has(identifier.toLowerCase())) {
-      return parent.locator(this.logicalMap.get(identifier.toLowerCase())!).first();
+    const lower = identifier.toLowerCase();
+    if (this.logicalMap.has(lower)) {
+      return parent.locator(this.logicalMap.get(lower)!).first();
+    }
+
+    if (lower === 'year' || lower === 'publishedyear' || lower === 'año') {
+      return parent
+        .locator('[data-testid="book-year-input"]')
+        .or(parent.getByLabel(/published year|year|año/i))
+        .or(parent.locator('#book-year'))
+        .first();
+    }
+
+    if (lower === 'search') {
+      return parent
+        .locator('[data-testid="books-search-input"]')
+        .or(parent.getByRole('searchbox'))
+        .or(parent.getByPlaceholder(/search/i))
+        .or(parent.locator('input[type="search"]'))
+        .first();
     }
 
     const exactRegex = new RegExp(`^${identifier}$`, 'i');
@@ -57,25 +75,52 @@ export class ElementResolver {
     return parent
       .getByLabel(exactRegex)
       .or(parent.locator(`[data-testid="${identifier}"]`))
+      .or(parent.locator(`[data-testid="book-${lower}-input"]`))
+      .or(parent.locator(`[data-testid="${lower}-input"]`))
       .or(parent.getByLabel(fallbackRegex))
       .or(parent.getByPlaceholder(exactRegex))
+      .or(parent.getByPlaceholder(fallbackRegex))
       .or(parent.locator(`input[name="${identifier}"], textarea[name="${identifier}"], select[name="${identifier}"]`))
       .or(parent.locator(`#${identifier}`))
+      .or(parent.locator(`#book-${lower}`))
       .first();
   }
 
-  /**
-   * Localiza un botón priorizando accesibilidad:
-   * 1. Alias lógico registrado
-   * 2. Rol accesible getByRole('button') exacto
-   * 3. data-testid
-   * 4. Rol accesible getByRole('button') flexible o texto visible
-   * 5. id
-   */
   findButton(identifier: string, container?: Locator): Locator {
     const parent = container || this.page;
-    if (this.logicalMap.has(identifier.toLowerCase())) {
-      return parent.locator(this.logicalMap.get(identifier.toLowerCase())!).first();
+    const lower = identifier.toLowerCase();
+    if (this.logicalMap.has(lower)) {
+      return parent.locator(this.logicalMap.get(lower)!).first();
+    }
+
+    if (lower === 'save' || lower === 'create' || lower === 'guardar' || lower === 'crear') {
+      return parent
+        .locator('[data-testid="book-save-btn"]')
+        .or(parent.getByRole('button', { name: /save|create|guardar|crear/i }))
+        .first();
+    }
+
+    if (lower === 'confirm' || lower === 'confirmar') {
+      return parent
+        .locator('[data-testid="delete-confirm-btn"]')
+        .or(parent.getByRole('button', { name: /confirm/i }))
+        .first();
+    }
+
+    if (lower === 'add book' || lower === '+ add book' || lower === 'agregar libro') {
+      return parent
+        .locator('[data-testid="add-book-btn"]')
+        .or(parent.getByRole('button', { name: /\+?\s*add book/i }))
+        .first();
+    }
+
+    if (lower === 'login' || lower === 'iniciar sesión' || lower === 'sign in' || lower === 'acceder') {
+      return this.page
+        .frameLocator('iframe[name="secure-submit"], iframe')
+        .locator('#submit, [data-testid="login-submit-btn"], button')
+        .or(parent.locator('[data-testid="login-submit-btn"]'))
+        .or(parent.getByRole('button', { name: /login|sign in|iniciar sesión/i }))
+        .first();
     }
 
     const exactRegex = new RegExp(`^${identifier}$`, 'i');
@@ -84,6 +129,8 @@ export class ElementResolver {
     return parent
       .getByRole('button', { name: exactRegex })
       .or(parent.locator(`[data-testid="${identifier}"]`))
+      .or(parent.locator(`[data-testid="${lower}-btn"]`))
+      .or(parent.locator(`[data-testid="book-${lower}-btn"]`))
       .or(parent.getByRole('button', { name: fallbackRegex }))
       .or(parent.locator(`button:has-text("${identifier}"), input[type="submit"][value="${identifier}"]`))
       .or(parent.locator(`#${identifier}`))

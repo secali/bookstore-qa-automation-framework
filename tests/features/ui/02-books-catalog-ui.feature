@@ -15,10 +15,13 @@ Feature: Book Catalog Management in Web Dashboard
   Scenario: Create a book via modal in UI and delete it from the table
     When the user clicks the "Add Book" button
     Then the modal should be visible
-    When in the active modal, the user enters "Playwright with TypeScript in Verisure" into the "title" field
-    And in the active modal, the user enters "Sergio Cañete" into the "author" field
-    And in the active modal, the user enters "9788424115549" into the "isbn" field
-    And in the active modal, the user enters "29.99" into the "price" field
+    When in the active modal, the user fills the form with data:
+      | field  | value |
+      | title  | Playwright with TypeScript in Verisure |
+      | author | Sergio Cañete |
+      | isbn   | {{random_isbn}} |
+      | year   | 2024 |
+      | price  | 29.99 |
     And in the active modal, the user clicks the "Save" button
     Then the modal should not be visible
     And in the table, the row containing "Playwright with TypeScript in Verisure" should be visible

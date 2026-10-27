@@ -18,7 +18,7 @@ module.exports = {
     formatOptions: {
       snippetInterface: 'async-await'
     },
-    parallel: 2,
+    parallel: 1,
     retry: 0
   }
 };

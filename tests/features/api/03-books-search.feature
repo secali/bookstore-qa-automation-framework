@@ -14,7 +14,8 @@ Feature: Book Catalog Search and Filtering via REST API
       {
         "title": "Design Patterns 2026",
         "author": "Erich Gamma",
-        "isbn": "9780201633610",
+        "isbn": "{{random_isbn}}",
+        "publishedYear": 2024,
         "price": 54.00,
         "category": "Software"
       }

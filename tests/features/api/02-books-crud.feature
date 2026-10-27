@@ -21,15 +21,50 @@ Feature: Book Catalog Management (Full REST API CRUD)
       {
         "title": "Architecture with Kafka",
         "author": "Sergio Cañete",
-        "isbn": "9780132350884",
+        "isbn": "{{random_isbn}}",
+        "publishedYear": 2024,
         "price": 45.50,
         "category": "Tech"
       }
       """
     Then the API response status code should be 201
     And the response should match the "Book" contract
-    And the response JSONPath "$.title" should equal "Architecture with Kafka"
-    And the response JSONPath "$.price" should equal the number 45.50
+    And the response FROM "/books" is validated with data:
+      | jsonPath | Value |
+      | $.title  | Architecture with Kafka |
+      | $.price  | 45.50 |
+      | $.author | Sergio Cañete |
+
+  @integration-test @functional @positive-testing @contract @equivalence-partitioning @atomic @generic @p1
+  Scenario: Create a book mutating base template via dynamic JSONPath and verify persistence
+    Given the user prepares a JSON payload:
+      """
+      {
+        "title": "Base Title",
+        "author": "Sergio Cañete",
+        "isbn": "{{random_isbn}}",
+        "publishedYear": 2024,
+        "price": 10.00,
+        "category": "Architecture"
+      }
+      """
+    When the user updates the prepared payload with data:
+      | jsonPath | Value |
+      | $.title  | {{random_title}} |
+      | $.price  | 49.99 |
+    When the user sends a "POST" request to "/books" with the prepared payload
+    Then the API response status code should be 201
+    And the response should match the "Book" contract
+    And the response is validated with data:
+      | jsonPath | Value |
+      | $.title  | not null |
+      | $.price  | 49.99 |
+    When the user saves the response JSONPath "$.id" as "createdItemId"
+    And the user sends a "GET" request to "/books/{{createdItemId}}"
+    Then the API response status code should be 200
+    And the response FROM "/books/{{createdItemId}}" is validated with data:
+      | jsonPath | Value |
+      | $.id     | {{createdItemId}} |
 
   @integration-test @functional @positive-testing @negative-testing @state-transition @contract @reliability @p1
   Scenario: Full entity lifecycle: Create, Retrieve by ID, Update and Delete
@@ -39,6 +74,7 @@ Feature: Book Catalog Management (Full REST API CRUD)
         "title": "{{random_title}}",
         "author": "Sergio Cañete",
         "isbn": "{{random_isbn}}",
+        "publishedYear": 2024,
         "price": 50.00,
         "category": "Tech"
       }
