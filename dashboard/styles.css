@@ -1151,10 +1151,10 @@ body {
   color: var(--text-muted);
   letter-spacing: 0.05em;
 }
-.ci-stage-status.success {
-  background: rgba(16, 185, 129, 0.15);
-  color: #10b981;
-  border: 1px solid rgba(16, 185, 129, 0.3);
+.ci-stage-status.configured {
+  background: rgba(37, 99, 235, 0.12);
+  color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.3);
   padding: 0.15rem 0.5rem;
   border-radius: 4px;
   font-size: 0.7rem;

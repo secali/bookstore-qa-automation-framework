@@ -357,10 +357,10 @@ function renderMatriz(lista) {
   });
 }
 
-function filtrarMatriz(criterio) {
+function filtrarMatriz(criterio, boton) {
   const pills = document.querySelectorAll(".filter-pill");
   pills.forEach(p => p.classList.remove("active"));
-  event.target.classList.add("active");
+  if (boton) boton.classList.add("active");
 
   if (criterio === "todos") {
     renderMatriz(ESCENARIOS);
@@ -405,10 +405,10 @@ function buscarPasos() {
   renderCatalogo(filtrados);
 }
 
-function filtrarCategoriaPasos(categoria) {
+function filtrarCategoriaPasos(categoria, boton) {
   const pills = document.querySelectorAll(".cat-pill");
   pills.forEach(p => p.classList.remove("active"));
-  event.target.classList.add("active");
+  if (boton) boton.classList.add("active");
 
   if (categoria === "todos") {
     renderCatalogo(PASOS);
@@ -417,7 +417,7 @@ function filtrarCategoriaPasos(categoria) {
   }
 }
 
-function cargarPlantilla(tipo) {
+function cargarPlantilla(tipo, boton) {
   const textarea = document.getElementById("gherkin-input");
   if (textarea && PLANTILLAS[tipo]) {
     textarea.value = PLANTILLAS[tipo];
@@ -425,9 +425,8 @@ function cargarPlantilla(tipo) {
 
   const btns = document.querySelectorAll(".btn-template");
   btns.forEach(b => b.classList.remove("active"));
-  if (event && event.target && event.target.classList.contains("btn-template")) {
-    event.target.classList.add("active");
-  }
+  const activeButton = boton || document.querySelector(`[data-template="${tipo}"]`);
+  if (activeButton) activeButton.classList.add("active");
 }
 
 function ejecutarSimulacion() {
@@ -458,9 +457,9 @@ function ejecutarSimulacion() {
   });
 
   setTimeout(() => {
-    appendLog("success", "[PASSED] Escenario completado exitosamente con 0 ambigüedades (100% verde).");
-    statusEl.textContent = "Exitoso (Passed)";
-    statusEl.style.color = "#10b981";
+    appendLog("info", "[SIMULACIÓN] Recorrido visual completado; no se ejecutó Cucumber ni se llamó a la API.");
+    statusEl.textContent = "Simulación completada";
+    statusEl.style.color = "#93c5fd";
   }, delay + 100);
 }
 
@@ -499,10 +498,36 @@ function appendLog(tipo, msg) {
   terminal.scrollTop = terminal.scrollHeight;
 }
 
-function copiarTexto(texto) {
-  navigator.clipboard.writeText(texto).then(() => {
+async function copiarTexto(texto) {
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(texto);
+    } else {
+      copiarTextoConFallback(texto);
+    }
     mostrarToast("Copiado al portapapeles: " + texto.substring(0, 40) + "...");
-  });
+  } catch (error) {
+    try {
+      copiarTextoConFallback(texto);
+      mostrarToast("Copiado al portapapeles: " + texto.substring(0, 40) + "...");
+    } catch (fallbackError) {
+      mostrarToast("No se pudo copiar. Copia el texto manualmente.");
+      console.warn("No se pudo copiar al portapapeles:", fallbackError || error);
+    }
+  }
+}
+
+function copiarTextoConFallback(texto) {
+  const textarea = document.createElement("textarea");
+  textarea.value = texto;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.select();
+  const copied = document.execCommand("copy");
+  textarea.remove();
+  if (!copied) throw new Error("El navegador rechazó la copia");
 }
 
 function copiarComandoRapido() {

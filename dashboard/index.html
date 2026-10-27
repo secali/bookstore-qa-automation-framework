@@ -35,7 +35,7 @@
 
       <div class="topbar-actions">
         <a href="https://github.com/secali/bookstore-qa-automation-framework/actions" target="_blank" class="ci-live-pill">
-          <span class="status-dot"></span> CI/CD en Vivo: PASSING
+          <span class="status-dot"></span> Ver workflow de CI/CD
         </a>
         <a href="#simulador" class="btn btn-primary btn-sm">
           Simulador BDD
@@ -56,7 +56,7 @@
         <h1 class="hero-heading">Framework de Automatización de Pruebas API &amp; UI</h1>
         <p class="hero-description">
           Arquitectura orientada a pasos atómicos genéricos y desacoplados implementada con <strong>Playwright</strong>, <strong>TypeScript</strong>, <strong>Cucumber BDD</strong>, motor dinámico <strong>JSONPath + DataTables</strong> y validación de contratos en runtime con <strong>Zod</strong>. 
-          Diseñado para eliminar la duplicidad del Page Object Model tradicional, permitiendo cubrir nuevos endpoints y pantallas sin generar código adicional en TypeScript.
+          Diseñado para combinar pasos Gherkin reutilizables con clientes API, esquemas Zod y Page Objects ligeros en TypeScript.
         </p>
       </div>
 
@@ -75,17 +75,17 @@
         <div class="kpi-card">
           <div class="kpi-number">19 / 19</div>
           <div class="kpi-label">Escenarios BDD funcionales</div>
-          <p class="kpi-desc">118 pasos aprobados estrictamente con 0 ambigüedades en ~30 segundos.</p>
+          <p class="kpi-desc">125 pasos aprobados en la última evidencia local disponible; 0 pasos ambiguos.</p>
         </div>
         <div class="kpi-card">
-          <div class="kpi-number">18 / 18</div>
-          <div class="kpi-label">Pruebas unitarias de arquitectura</div>
-          <p class="kpi-desc">100% de cobertura sobre JSONPath, TemplateResolver y DataTableParser.</p>
+          <div class="kpi-number">3 módulos</div>
+          <div class="kpi-label">Con pruebas unitarias</div>
+          <p class="kpi-desc">JSONPath, TemplateResolver y DataTableParser. La suite unitaria no forma parte del workflow CI actual.</p>
         </div>
         <div class="kpi-card kpi-highlight">
-          <div class="kpi-number">3 Etapas</div>
-          <div class="kpi-label">Pipeline CI/CD Multi-Job</div>
-          <p class="kpi-desc">Quality Gates &rarr; Sandbox Docker &rarr; Compliance Gate con reportes HTML.</p>
+          <div class="kpi-number">1 job</div>
+          <div class="kpi-label">Workflow de GitHub Actions</div>
+          <p class="kpi-desc">Lint y TypeScript, suite Docker, reportes y limpieza en un mismo job.</p>
         </div>
       </div>
     </section>
@@ -130,16 +130,16 @@
             Bypass de inicios de sesión repetitivos en navegador mediante precarga de JWT directamente en <code>localStorage</code> utilizando <code>addInitScript</code> de Playwright. Los datos previos se crean mediante llamadas REST ultrarrápidas y se validan visualmente en pantalla en un solo paso.
           </p>
           <ul class="pillar-list">
-            <li>Reducción del 85% en tiempos de ejecución de suites de UI.</li>
-            <li>Auto-captura y auto-teardown garantizado de libros creados en UI vía API.</li>
+            <li>La inyección de sesión y el setup vía API evitan repetir pasos de UI en los flujos híbridos.</li>
+            <li>El hook limpia libros creados por API; el escenario UI borra su libro en un paso explícito.</li>
           </ul>
         </div>
 
         <div class="pillar-item">
           <div class="pillar-index">04</div>
-          <h3 class="pillar-title">CI/CD Hermético y Cumplimiento Docker</h3>
+          <h3 class="pillar-title">CI/CD con Docker Local</h3>
           <p class="pillar-text">
-            Cumplimiento riguroso de la restricción de confidencialidad: <strong>las imágenes jamás se suben a registros públicos</strong>. El flujo de GitHub Actions gestiona el aprovisionamiento hermético con secrets protegidos, polling de salud sobre <code>/api/health</code> y pipeline multi-etapa.
+            El workflow carga <code>bookstore-images.tar</code> desde el checkout y espera la salud de <code>/api/health</code>. Para publicar el repositorio, el tar debe llegar al runner por un medio privado; incluirlo en un repo público expondría las imágenes.
           </p>
           <ul class="pillar-list">
             <li>Aislamiento estricto de datos preservando los libros semilla intactos.</li>
@@ -153,22 +153,21 @@
     <section class="content-section" id="pipeline">
       <div class="section-title-group">
         <span class="section-eyebrow">Integración Continua en la Nube</span>
-        <h2 class="section-heading">Pipeline Multi-Etapa de GitHub Actions</h2>
-        <p class="section-lead">Estructura visual modular de 3 etapas encadenadas con principio Fail-Fast y reporte de calidad automático.</p>
+        <h2 class="section-heading">Flujo de GitHub Actions</h2>
+          <p class="section-lead">Vista de las comprobaciones, pruebas y tareas de limpieza configuradas en el workflow.</p>
       </div>
 
       <div class="ci-pipeline-flow">
         <div class="ci-stage-card">
           <div class="ci-stage-header">
-            <span class="ci-badge-step">Etapa 1</span>
-            <span class="ci-stage-status success">PASSED</span>
+            <span class="ci-badge-step">Bloque 1</span>
+            <span class="ci-stage-status configured">CONFIGURADO</span>
           </div>
-          <h3 class="ci-stage-title">🛡️ Quality Gates &amp; Unit Tests</h3>
-          <p class="ci-stage-desc">Ejecuta en < 20s la compilación estricta TypeScript, análisis ESLint y las 18 pruebas unitarias de los motores.</p>
+          <h3 class="ci-stage-title">🛡️ Quality Gates</h3>
+          <p class="ci-stage-desc">Antes de iniciar Docker, ejecuta la comprobación estricta de TypeScript y ESLint.</p>
           <div class="ci-stage-tags">
             <code>tsc --noEmit</code>
             <code>npm run lint</code>
-            <code>npm run test:unit</code>
           </div>
         </div>
 
@@ -176,11 +175,11 @@
 
         <div class="ci-stage-card">
           <div class="ci-stage-header">
-            <span class="ci-badge-step">Etapa 2</span>
-            <span class="ci-stage-status success">PASSED</span>
+            <span class="ci-badge-step">Bloque 2</span>
+            <span class="ci-stage-status configured">CONFIGURADO</span>
           </div>
           <h3 class="ci-stage-title">🚀 Sandbox Docker &amp; BDD Suite</h3>
-          <p class="ci-stage-desc">Descarga segura hermética, levanta Docker Compose, espera a /api/health y ejecuta los 19 escenarios BDD.</p>
+          <p class="ci-stage-desc">Carga las imágenes locales, levanta Docker Compose, espera a /api/health y ejecuta Cucumber en paralelo.</p>
           <div class="ci-stage-tags">
             <code>docker load</code>
             <code>healthcheck</code>
@@ -192,15 +191,14 @@
 
         <div class="ci-stage-card">
           <div class="ci-stage-header">
-            <span class="ci-badge-step">Etapa 3</span>
-            <span class="ci-stage-status success">PASSED</span>
+            <span class="ci-badge-step">Bloque 3</span>
+            <span class="ci-stage-status configured">CONFIGURADO</span>
           </div>
-          <h3 class="ci-stage-title">📊 Executive Quality Gate</h3>
-          <p class="ci-stage-desc">Genera el reporte gráfico HTML consolidado, archiva evidencias y publica el resumen ejecutivo en GitHub.</p>
+          <h3 class="ci-stage-title">Reportes &amp; Limpieza</h3>
+          <p class="ci-stage-desc">Intenta generar el reporte, archiva la carpeta reports y limpia Docker incluso si falla una etapa anterior.</p>
           <div class="ci-stage-tags">
             <code>HTML Report</code>
             <code>Artifact Archive</code>
-            <code>Step Summary</code>
           </div>
         </div>
       </div>
@@ -230,10 +228,10 @@
           <div class="comparison-badge active">Arquitectura OmniSpec SDET</div>
           <h3 class="comparison-title">Motor Genérico y Composición Atómica</h3>
           <ul class="comparison-list">
-            <li><strong>Cero Page Objects:</strong> Motor universal <code>ElementResolver</code> que busca por accesibilidad semántica (<code>getByRole</code>, <code>getByLabel</code>).</li>
+            <li><strong>Page Objects y resolución reutilizable:</strong> Objetos de página ligeros junto a <code>ElementResolver</code>, con búsquedas semánticas (<code>getByRole</code>, <code>getByLabel</code>).</li>
             <li><strong>Resolución por contexto:</strong> <code>When in the active modal, the user fills the form with data:</code> funciona en cualquier modal.</li>
             <li><strong>DataTables nativas:</strong> Validación de múltiples campos en un único paso sin sintaxis repetitiva.</li>
-            <li><strong>Reutilización 100%:</strong> Nuevos formularios o tablas se prueban al instante sin programar una sola línea de TypeScript.</li>
+            <li><strong>Menos código repetido:</strong> Los pasos genéricos cubren formularios y tablas comunes; los casos nuevos aún requieren validar su comportamiento y selectores.</li>
           </ul>
         </div>
       </div>
@@ -252,9 +250,9 @@
           <div class="simulator-toolbar">
             <span class="editor-label">Editor Gherkin</span>
             <div class="editor-templates">
-              <button class="btn-template active" onclick="cargarPlantilla('api-crud')">API CRUD + DataTable</button>
-              <button class="btn-template" onclick="cargarPlantilla('ui-modal')">UI Modal + Form Data</button>
-              <button class="btn-template" onclick="cargarPlantilla('hybrid-state')">Híbrido API &rarr; UI</button>
+              <button class="btn-template active" data-template="api-crud" onclick="cargarPlantilla('api-crud', this)">API CRUD + DataTable</button>
+              <button class="btn-template" data-template="ui-modal" onclick="cargarPlantilla('ui-modal', this)">UI Modal + Form Data</button>
+              <button class="btn-template" data-template="hybrid-state" onclick="cargarPlantilla('hybrid-state', this)">Híbrido API &rarr; UI</button>
             </div>
           </div>
           <textarea id="gherkin-input" class="gherkin-textarea" spellcheck="false"></textarea>
@@ -262,7 +260,7 @@
             <button class="btn btn-primary" id="btn-ejecutar" onclick="ejecutarSimulacion()">
               &blacktriangleright; Ejecutar Simulación
             </button>
-            <span class="execution-hint">Resuelve en memoria tokens dinámicos, selectores y esquemas Zod</span>
+            <span class="execution-hint">Simulación ilustrativa: no llama a la API ni ejecuta steps de Cucumber.</span>
           </div>
         </div>
 
@@ -300,20 +298,20 @@
             <span class="tier-count">13 Escenarios &bull; Contratos &amp; HTTP</span>
           </div>
           <div class="pyramid-tier tier-unit">
-            <span class="tier-tag">100% Cobertura</span>
+            <span class="tier-tag">Pruebas unitarias</span>
             <span class="tier-name">Motores Unitarios de la Arquitectura</span>
-            <span class="tier-count">18 Tests &bull; JSONPath / Templates / DataTables</span>
+            <span class="tier-count">JSONPath / Templates / DataTables</span>
           </div>
         </div>
 
         <div class="matrix-container">
           <div class="matrix-filter-bar">
             <span class="filter-label">Filtrar por:</span>
-            <button class="filter-pill active" onclick="filtrarMatriz('todos')">Todos (19)</button>
-            <button class="filter-pill" onclick="filtrarMatriz('API')">API REST (13)</button>
-            <button class="filter-pill" onclick="filtrarMatriz('UI')">UI &amp; Híbrido (6)</button>
-            <button class="filter-pill" onclick="filtrarMatriz('contrato')">Contratos Zod</button>
-            <button class="filter-pill" onclick="filtrarMatriz('limite')">Valores Límite</button>
+            <button class="filter-pill active" onclick="filtrarMatriz('todos', this)">Todos (19)</button>
+            <button class="filter-pill" onclick="filtrarMatriz('API', this)">API REST (13)</button>
+            <button class="filter-pill" onclick="filtrarMatriz('UI', this)">UI &amp; Híbrido (6)</button>
+            <button class="filter-pill" onclick="filtrarMatriz('contrato', this)">Contratos Zod</button>
+            <button class="filter-pill" onclick="filtrarMatriz('limite', this)">Valores Límite</button>
           </div>
 
           <div class="table-responsive">
@@ -348,13 +346,13 @@
         <div class="catalog-search-bar">
           <input type="text" id="input-buscar-step" class="search-field" placeholder="Buscar paso por palabra clave (ej. JSONPath, modal, status code, request, table, data)..." onkeyup="buscarPasos()">
           <div class="catalog-categories">
-            <button class="cat-pill active" onclick="filtrarCategoriaPasos('todos')">Todos</button>
-            <button class="cat-pill" onclick="filtrarCategoriaPasos('api-req')">Peticiones HTTP</button>
-            <button class="cat-pill" onclick="filtrarCategoriaPasos('api-json')">Mutación JSONPath &amp; DataTables</button>
-            <button class="cat-pill" onclick="filtrarCategoriaPasos('api-assert')">Aserciones y Contratos</button>
-            <button class="cat-pill" onclick="filtrarCategoriaPasos('ui-nav')">Navegación UI</button>
-            <button class="cat-pill" onclick="filtrarCategoriaPasos('ui-form')">Formularios y Botones</button>
-            <button class="cat-pill" onclick="filtrarCategoriaPasos('ui-modal')">Modales y Tablas</button>
+            <button class="cat-pill active" onclick="filtrarCategoriaPasos('todos', this)">Todos</button>
+            <button class="cat-pill" onclick="filtrarCategoriaPasos('api-req', this)">Peticiones HTTP</button>
+            <button class="cat-pill" onclick="filtrarCategoriaPasos('api-json', this)">Mutación JSONPath &amp; DataTables</button>
+            <button class="cat-pill" onclick="filtrarCategoriaPasos('api-assert', this)">Aserciones y Contratos</button>
+            <button class="cat-pill" onclick="filtrarCategoriaPasos('ui-nav', this)">Navegación UI</button>
+            <button class="cat-pill" onclick="filtrarCategoriaPasos('ui-form', this)">Formularios y Botones</button>
+            <button class="cat-pill" onclick="filtrarCategoriaPasos('ui-modal', this)">Modales y Tablas</button>
           </div>
         </div>
 
@@ -376,7 +374,7 @@
         <div class="cli-item">
           <span class="cli-badge">Paso 1</span>
           <h4 class="cli-heading">Carga del archivo de imágenes local</h4>
-          <p class="cli-desc">Extrae los contenedores de backend, frontend y base de datos sin conectarse a internet.</p>
+          <p class="cli-desc">Carga las imágenes del paquete local en el daemon Docker. MongoDB puede requerir descarga si no está cacheada.</p>
           <div class="cli-code-row">
             <code>docker load -i bookstore-images.tar</code>
             <button class="btn-copy" onclick="copiarTexto('docker load -i bookstore-images.tar')">Copiar</button>
