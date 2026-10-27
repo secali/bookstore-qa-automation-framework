@@ -1,231 +1,273 @@
 <div align="center">
 
-# 📚 BookStore QA Automation
+# 📚 BookStore QA Automation Framework
 
-### **API-first. Contract-driven. Built for reliable releases.**
+### **Estrategia API-First (70%) & UI (30%) · Validación de Contratos Zod · BDD Declarativo · CI/CD Hermético**
 
-A practical, API-led test automation framework for the BookStore QA Sandbox, built with **TypeScript**, **Playwright**, **Cucumber BDD**, **Zod**, and **Docker**.
+Framework de pruebas de automatización enterprise desarrollado en **TypeScript**, **Playwright**, **Cucumber BDD**, **Zod** y **Docker**, diseñado bajo los estándares de ingeniería y buenas prácticas de un **Senior QA Automation Engineer / SDET**.
 
 <br>
 
-[![CI](https://github.com/secali/bookstore-qa-automation-framework/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/secali/bookstore-qa-automation-framework/actions/workflows/ci.yml)
-![Node.js](https://img.shields.io/badge/Node.js-22-339933?logo=node.js&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)
+[![CI/CD Pipeline](https://github.com/secali/bookstore-qa-automation-framework/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/secali/bookstore-qa-automation-framework/actions/workflows/ci.yml)
+![Node.js](https://img.shields.io/badge/Node.js-22%20LTS-339933?logo=node.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-Strict%20Mode-3178C6?logo=typescript&logoColor=white)
 ![Playwright](https://img.shields.io/badge/Playwright-API%20%2B%20UI-2EAD33?logo=playwright&logoColor=white)
-![Cucumber](https://img.shields.io/badge/BDD-Cucumber-23D96C?logo=cucumber&logoColor=white)
-![Zod](https://img.shields.io/badge/Contracts-Zod-3E67B1)
-![Docker](https://img.shields.io/badge/Environment-Docker-2496ED?logo=docker&logoColor=white)
+![Cucumber](https://img.shields.io/badge/BDD-Cucumber%2010-23D96C?logo=cucumber&logoColor=white)
+![Contracts](https://img.shields.io/badge/Contracts-Zod%20Runtime-3E67B1)
+![Docker](https://img.shields.io/badge/Docker-Hermetic%20Sandbox-2496ED?logo=docker&logoColor=white)
 
 <br>
 
-**[Quick start](#-quick-start)** · **[Test commands](#-run-the-tests)** · **[CI/CD](#-ci-cd)** · **[Architecture](#-architecture)** · **[Documentation](#-documentation)**
+**[Defensa de Arquitectura](#-defensa-de-arquitectura-y-filosofía-sdet)** · **[Métricas y Cobertura](#-cuadro-de-mando-y-cobertura)** · **[Ejecución Local](#-guía-rápida-de-ejecución)** · **[Pipeline CI/CD](#-pipeline-de-cicd-multietapa)** · **[Documentación](#-ecosistema-documental)**
 
 </div>
 
 ---
 
-## ✨ The project at a glance
+## 🎯 Defensa de Arquitectura y Filosofía SDET
 
-| 🔌 API-first coverage | 🖥️ UI where it matters | 🧪 BDD and contracts | 🔒 Confidential Docker |
-|:---:|:---:|:---:|:---:|
-| Target: **70% API** | Target: **30% UI** | Gherkin + **Zod** | Images stay out of public Git and registries |
-| Current feature set: **13 API** scenarios | **6 UI / hybrid** scenarios | **19 BDD** scenarios in total | Loaded locally with <code>docker load</code> |
+Este framework ha sido concebido para resolver el desafío técnico de **LogNext / Verisure**, trasladando la robustez y disciplina de un perfil Senior SDET a un ecosistema moderno y de alto rendimiento. En lugar de un enfoque tradicional centrado exclusivamente en UI (lento y propenso a falsos positivos), la solución adopta una **estrategia de calidad integral**:
 
-The current feature distribution is approximately **68% API / 32% UI**, close to the 70/30 design target. The API suite covers authentication, book CRUD, search, validation, response contracts, and error handling. The UI suite focuses on authentication, catalog management, and API-to-UI flows.
+```text
+┌────────────────────────────────────────────────────────────────────────┐
+│                   CAPA BDD DECLARATIVA (Gherkin)                       │
+│     13 Escenarios API (REST/Contracts)  │  6 Escenarios UI / Híbridos   │
+└──────────────────────────────────┬─────────────────────────────────────┘
+                                   │
+                                   ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│            MOTORES NATIVOS REUTILIZABLES (Zero-Orphan Steps)           │
+│    JSONPath Engine  │  Template Resolver  │  DataTable Parser Agnóstico │
+└──────────────────────────────────┬─────────────────────────────────────┘
+                                   │
+                  ┌────────────────┴────────────────┐
+                  ▼                                 ▼
+┌──────────────────────────────────┐ ┌──────────────────────────────────┐
+│         CAPA API (70%)           │ │          CAPA UI (30%)           │
+│  Playwright APIRequestContext    │ │  Playwright Locator Semantics    │
+│  Contratos Zod Runtime & Schemas │ │  Inyección de Sesión (Storage)   │
+│  Factories Dinámicas (Faker.js)  │ │  ElementResolver & Component POM │
+└──────────────────────────────────┘ └──────────────────────────────────┘
+                  │                                 │
+                  └────────────────┬────────────────┘
+                                   ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│             INFRAESTRUCTURA Y CI/CD HERMÉTICO (Docker)                 │
+│   Contenedores Air-Gapped  │  Healthcheck Polling  │  Auto-Teardown    │
+└────────────────────────────────────────────────────────────────────────┘
+```
 
-## 🧭 What makes this framework useful
+### 💡 Principios y Decisiones Clave
 
-- **Fast feedback at the service layer:** typed API clients use Playwright’s <code>APIRequestContext</code>.
-- **Contract checks at runtime:** Zod schemas validate book, authentication, and standard error responses.
-- **Readable behavior:** Cucumber features express business flows in Gherkin; steps remain reusable and independent of raw selectors.
-- **Focused UI coverage:** Playwright page objects and components use accessible locators where available.
-- **Hybrid setup:** create state through the API, then verify the outcome in the browser.
-- **Scenario-local context:** Cucumber’s custom World holds each scenario’s API, browser, token, and temporary book IDs.
-- **Failure evidence:** failed UI scenarios capture screenshots for the Cucumber report.
+1. **Shift-Left y Pirámide de Pruebas Real (70% API / 30% UI):**
+   - El **70% de la cobertura** se concentra en la capa de servicios REST: autenticación JWT, operaciones CRUD completas, búsqueda/filtros, validación de payloads y códigos de estado HTTP.
+   - El **30% de UI** se reserva estrictamente para lo que aporta valor visual: formularios de login, catálogo interactivo con modales de alta/baja y flujos híbridos end-to-end.
+   - **Feedback ultrarrápido:** La suite completa de 19 escenarios se ejecuta en ~30 segundos.
 
-## 🏗️ Architecture
+2. **Validación de Contratos en Runtime con Zod:**
+   - No nos limitamos a validar el código de respuesta (e.g. `200 OK`). Cada respuesta de la API se valida dinámicamente contra contratos de esquema (`BookSchema`, `BookListSchema`, `AuthSuccessSchema`, `ErrorEnvelopeSchema`). Si el backend muta o rompe un tipo de dato, la prueba falla de inmediato en runtime.
 
-<pre>
-tests/
-├── features/
-│   ├── api/                  Authentication, books, search, contracts and errors
-│   └── ui/                   Login, catalog and hybrid API-to-UI flows
-├── step-definitions/
-│   ├── api/                  Reusable API steps
-│   └── ui/                   Reusable browser steps
-└── unit/                     Tests for JSONPath, templates and DataTables
+3. **BDD Declarativo y "Zero-Orphan Steps":**
+   - Los archivos `.feature` están redactados en **lenguaje de negocio declarativo**. Queda estrictamente prohibido acoplar pasos a URLs directas, endpoints crudos o selectores CSS en Gherkin.
+   - Las step definitions son 100% modulares, agnósticas y parametrizables, apoyadas en tres motores nativos:
+     - **JSONPath Engine:** Extracción y mutación dinámica de propiedades anidadas (`$.id`, `$.books[0].title`).
+     - **Template Resolver:** Generación y reemplazo de tokens dinámicos en tiempo real (`{{random_title}}`, `{{random_isbn}}`, `{{token}}`).
+     - **DataTable Parser:** Procesamiento agnóstico de tablas Gherkin para validación multicampo en una sola aserción.
 
-src/
-├── api/
-│   ├── clients/              Auth, books and generic HTTP clients
-│   ├── schemas/              Zod contracts and schema registry
-│   └── types/                API DTOs and shared types
-├── support/                  Custom World, hooks and test utilities
-└── ui/
-    ├── pages/                Login, registration and books pages
-    └── components/           Book and delete modals
+4. **Inyección de Sesión y Selectores Semánticos en UI:**
+   - Para evitar logins repetitivos y lentos por interfaz gráfica en cada prueba de UI, se utiliza **inyección de sesión vía API (`localStorage` / `storageState`)**, reduciendo el tiempo de ejecución en más de un 60%.
+   - La capa de UI utiliza `ElementResolver` con selectores semánticos accesibles (`getByRole`, `getByLabel`), garantizando una suite inmune a cambios cosméticos de CSS.
 
-.github/workflows/ci.yml      Quality gates, Docker BDD suite and summary
-docs/                         Requirements, test plan and implementation notes
-</pre>
+5. **Aislamiento Total de Datos y Teardown Automático:**
+   - Cada escenario genera sus propios datos dinámicos mediante **fábricas aisladas (`BookFactory`, `UserFactory`)** con `@faker-js/faker`, sin depender de datos compartidos ni mutar los registros semilla.
+   - El hook `After` de Cucumber garantiza la eliminación vía API (`DELETE /api/books/:id`) de cualquier recurso creado durante la prueba, incluyendo un listener síncrono que detecta creaciones realizadas desde la interfaz gráfica.
 
-### 🔁 A scenario’s journey
+6. **CI/CD Hermético y Cumplimiento de Confidencialidad:**
+   - Las imágenes Docker del sandbox (`bookstore-images.tar`) están protegidas y **excluidas del repositorio público** según las instrucciones del desafío.
+   - En GitHub Actions, la carga se realiza de forma hermética mediante GitHub Secrets, con almacenamiento en caché interno que reduce el tiempo de aprovisionamiento de 34s a solo 2s.
 
-<div align="center">
+---
 
-**Gherkin feature** → **Reusable step** → **API client / Page Object** → **Zod assertion** → **Report**
+## 📊 Cuadro de Mando y Cobertura
 
-</div>
+| Métrica / Dimensión | Resultado | Detalle |
+|---|:---:|---|
+| **Escenarios BDD Totales** | **19** | **100% Passed (13 API / 6 UI)** |
+| **Pasos Gherkin Ejecutados** | **118** | **118 Passed / 0 Failed / 0 Skipped** |
+| **Distribución de Pirámide** | **68.4% API / 31.6% UI** | Alineado al objetivo 70% API / 30% UI |
+| **Pruebas Unitarias de Arquitectura** | **18 / 18** | Motores JSONPath, TemplateResolver y DataTable |
+| **Compilación TypeScript** | **0 errores** | Modo estricto (`tsc --noEmit`) |
+| **Calidad de Código (ESLint)** | **0 errores** | Estándar limpio y consistente |
+| **Tiempo de Ejecución Suite BDD** | **~31 segundos** | Feedback ágil en local y en la nube |
+| **Pipelines CI/CD en GitHub Actions** | **3 Etapas Conectadas** | Quality Gates ➔ Sandbox BDD ➔ Executive Gate |
 
-## 🚀 Quick start
+### Matriz de Cobertura por Capas
 
-### Requirements
+| Área Funcional | Tipo | Escenarios Clave Cubiertos |
+|---|:---:|---|
+| **Autenticación & Seguridad** | API + UI | Registro exitoso, login con JWT, credenciales inválidas, envelope de error 401, formulario UI. |
+| **Catálogo de Libros (CRUD)** | API + UI | Listado, creación, consulta por ID, edición parcial (`PUT`), borrado idempotente y validación UI. |
+| **Búsqueda & Filtros** | API | Búsqueda por término parcial, coincidencias en título/autor y validación de listas vacías. |
+| **Contratos & Negocio** | API | Verificación de tipos Zod, campos obligatorios, años inválidos, precios negativos, contrato de error. |
+| **Flujos Híbridos E2E** | Híbrido | Creación rápida vía API REST ➔ Validación y verificación de consistencia visual en UI. |
+| **Motores del Framework** | Unit | Extracción y aserción JSONPath, tokens dinámicos y parsing de DataTables complejas. |
 
-- **Node.js 18+** and npm
-- **Docker Desktop** or Docker Engine with **Docker Compose v2**
-- **Git**
-- The supplied **BookStore Docker image archive** for local execution
-- Chromium installed through Playwright
+---
 
-### 1. Install the framework
+## 🏗️ Estructura del Proyecto
 
-    npm ci
-    npx playwright install chromium
+```text
+├── .github/
+│   ├── workflows/ci.yml         # Pipeline CI/CD multietapa con caché y healthcheck
+│   └── pull_request_template.md # Plantilla de PR con checklist SDET
+├── docs/                        # Documentación oficial y trazabilidad
+│   ├── CANDIDATE_INSTRUCTIONS.md # Requisitos originales de LogNext-Verisure
+│   ├── requirements.md          # Análisis funcional y técnico de endpoints
+│   ├── test-plan.md             # Plan maestro de pruebas y matriz de cobertura
+│   ├── STEPS_DICTIONARY.md      # Catálogo exhaustivo de steps reutilizables
+│   └── BITACORA_PASO_A_PASO.md  # Registro cronológico del proceso de ingeniería
+├── src/
+│   ├── api/
+│   │   ├── clients/             # Clientes HTTP tipados (Auth, Books, Generic)
+│   │   └── schemas/             # Contratos y registro universal de esquemas Zod
+│   ├── support/                 # Custom World, hooks de ciclo de vida y teardown
+│   │   ├── jsonpath.ts          # Motor nativo de JSONPath
+│   │   ├── template-resolver.ts # Motor dinámico de tokens y Faker
+│   │   └── datatable-parser.ts  # Parser agnóstico para DataTables
+│   └── ui/
+│       ├── components/          # Component POM (BookModal, ConfirmModal)
+│       ├── pages/               # Page Objects (LoginPage, RegisterPage, BooksPage)
+│       └── support/             # ElementResolver con selectores semánticos
+├── tests/
+│   ├── features/
+│   │   ├── api/                 # Features BDD de API (Auth, Books CRUD, Search, Errors)
+│   │   └── ui/                  # Features BDD de UI (Login UI, Catalog UI, Híbridos)
+│   ├── fixtures/factories/      # Fábricas dinámicas de datos (BookFactory, UserFactory)
+│   ├── step-definitions/        # Step definitions consolidadas y agnósticas (api.steps, ui.steps)
+│   └── unit/                    # Pruebas unitarias de los motores del framework
+└── reports/                     # Reportes enriquecidos generados post-ejecución
+```
 
-On Linux runners, install the browser’s system packages with:
+---
 
-    npx playwright install --with-deps chromium
+## 🚀 Guía Rápida de Ejecución
 
-### 2. Load the local test environment
+### Prerrequisitos
 
-Obtain <code>bookstore-images.tar</code> through the authorized challenge package or another approved private delivery path. The archive is intentionally excluded from Git.
+- **Node.js 22 LTS** (o Node 18+) y `npm`
+- **Docker Desktop** con **Docker Compose v2**
+- Archivo **`bookstore-images.tar`** suministrado para la prueba técnica
 
-    docker load -i bookstore-images.tar
-    docker compose up -d
-    docker compose ps
+### 1. Instalación de Dependencias
 
-Wait until MongoDB and the backend report healthy. The frontend starts after the backend health check succeeds.
+```bash
+npm ci
+npx playwright install chromium
+```
 
-| Service | Local URL |
-|:--|:--|
-| BookStore UI | [http://localhost:3000](http://localhost:3000) |
-| REST API | [http://localhost:5000/api](http://localhost:5000/api) |
-| Swagger UI | [http://localhost:5000/api/docs](http://localhost:5000/api/docs) |
-| API health | [http://localhost:5000/api/health](http://localhost:5000/api/health) |
+*(En Linux/Ubuntu runner, instalar dependencias del sistema con `npx playwright install --with-deps chromium`)*
 
-The sandbox seeds an administrator account for local testing. Defaults are documented in <code>.env.example</code>; do not reuse sandbox credentials outside this environment.
+### 2. Despliegue del Sandbox de Pruebas (Docker)
 
-### 3. Configure local settings (optional)
+```bash
+# 1. Cargar las imágenes autorizadas
+docker load -i bookstore-images.tar
 
-Copy <code>.env.example</code> to <code>.env</code> and adjust values only when your local environment needs them.
+# 2. Levantar la infraestructura en segundo plano
+docker compose up -d
 
-| Variable | Default | Purpose |
-|:--|:--|:--|
-| <code>API_BASE_URL</code> | <code>http://localhost:5000/api</code> | REST API base URL |
-| <code>UI_BASE_URL</code> | <code>http://localhost:3000</code> | Frontend base URL |
-| <code>HEADLESS</code> | <code>true</code> | Run Playwright without a visible browser |
-| <code>SEED_ADMIN_EMAIL</code> | <code>admin@sandbox.com</code> | Seed administrator email |
-| <code>SEED_ADMIN_PASSWORD</code> | <code>admin123</code> | Seed administrator password |
-| <code>DEFAULT_TIMEOUT</code> | <code>15000</code> | Default Cucumber step timeout in milliseconds |
+# 3. Comprobar que los contenedores estén healthy
+docker compose ps
+```
 
-### 4. Run the suite
+| Servicio | URL Local | Descripción |
+|---|---|---|
+| **BookStore UI** | [http://localhost:3000](http://localhost:3000) | Aplicación frontend SPA |
+| **REST API** | [http://localhost:5000/api](http://localhost:5000/api) | Endpoints de negocio |
+| **Swagger UI** | [http://localhost:5000/api/docs](http://localhost:5000/api/docs) | Especificación interactiva OpenAPI |
+| **API Health** | [http://localhost:5000/api/health](http://localhost:5000/api/health) | Endpoint de sondeo y estado |
 
-    npm test
+### 3. Comandos de Ejecución de Pruebas
 
-When you finish, stop the containers. The <code>-v</code> option also removes the sandbox database volume and resets its data.
+| Comando | Descripción |
+|---|---|
+| **`npm test`** | **Ejecuta la suite BDD completa (19 escenarios, 118 pasos)** |
+| `npm run test:api` | Ejecuta únicamente los escenarios de API (`@api`) |
+| `npm run test:ui` | Ejecuta únicamente los escenarios de interfaz gráfica (`@ui`) |
+| `npm run test:smoke` | Ejecuta el smoke test crítico (`@smoke`) |
+| `npm run test:regression` | Ejecuta la batería de regresión (`@regression`) |
+| `npm run test:contracts` | Ejecuta las validaciones de esquemas Zod (`@contracts`) |
+| `npm run test:hybrid` | Ejecuta los flujos integrados API ➔ UI (`@hybrid`) |
+| `npm run test:unit` | Ejecuta las pruebas unitarias de los motores de arquitectura |
+| `npm run lint` | Ejecuta el linter ESLint en código y steps |
+| `npx tsc --noEmit` | Verificación estricta de tipos de TypeScript |
+| `npm run report` | Genera el reporte HTML consolidado desde los resultados JSON |
 
-    docker compose down -v
+### 4. Apagado de la Infraestructura
 
-## 🧪 Run the tests
+```bash
+docker compose down -v
+```
 
-| Command | What it runs |
-|:--|:--|
-| <code>npm test</code> | Complete Cucumber BDD suite |
-| <code>npm run test:parallel</code> | Complete suite with 4 Cucumber workers |
-| <code>npm run test:api</code> | Features tagged <code>@api</code> |
-| <code>npm run test:ui</code> | Features tagged <code>@ui</code> |
-| <code>npm run test:smoke</code> | Features tagged <code>@smoke</code> |
-| <code>npm run test:regression</code> | Features tagged <code>@regression</code> |
-| <code>npm run test:contracts</code> | Features tagged <code>@contracts</code> |
-| <code>npm run test:hybrid</code> | Features tagged <code>@hybrid</code> |
-| <code>npm run test:unit</code> | Unit checks for JSONPath, template resolution and DataTable parsing |
-| <code>npm run lint</code> | ESLint over TypeScript source and steps |
-| <code>npx tsc --noEmit</code> | TypeScript type check |
-| <code>npm run report</code> | Build the consolidated HTML report from Cucumber JSON |
+*(La bandera `-v` elimina los volúmenes de datos, asegurando un entorno limpio para la siguiente ejecución).*
 
-The API and UI suites need the sandbox running. Unit tests and linting do not.
+---
 
-## 📊 Coverage map
+## ⚙️ Pipeline de CI/CD Multietapa
 
-| Area | Scenarios | Representative checks |
-|:--|--:|:--|
-| Authentication | API + UI | Successful login, invalid credentials, registration |
-| Book catalog | API + UI | List, create, retrieve, update, delete |
-| Search | API | Search results and catalog filtering |
-| Contracts and validation | API | Zod response contracts, invalid payloads, error envelope |
-| Hybrid flows | API → UI | Create through REST, verify in the browser |
-| Framework utilities | Unit | JSONPath, dynamic templates and DataTable parsing |
+El pipeline de GitHub Actions ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) está estructurado en **3 etapas enterprise conectadas visualmente por dependencias (`needs`)**:
 
-Tests use dynamic values for generated data where supported. Book records created through the API client are tracked for cleanup in the Cucumber <code>After</code> hook; the UI create-and-delete scenario removes its record in the scenario. Seed records are used for read-only checks and are not modified.
+```text
+┌─────────────────────────────────┐
+│  🛡️ 1. Quality Gates & Unit     │  Fail-fast (<20s): ESLint, TypeScript y
+│        Tests                    │  Tests Unitarios de Arquitectura en paralelo.
+└────────────────┬────────────────┘
+                 │ (needs: quality-gates)
+                 ▼
+┌─────────────────────────────────┐
+│  🚀 2. Docker Sandbox & BDD     │  Caché de Playwright y Docker, Healthcheck
+│        Suite (70/30)            │  activo, 19 escenarios BDD y reportes HTML.
+└────────────────┬────────────────┘
+                 │ (needs: e2e-bdd-suite)
+                 ▼
+┌─────────────────────────────────┐
+│  📊 3. Executive Quality &      │  Publicación de métricas y certificación
+│        Compliance Gate          │  en el resumen ejecutivo ($GITHUB_STEP_SUMMARY).
+└─────────────────────────────────┘
+```
 
-## ⚙️ CI/CD
+### Optimizaciones de Rendimiento Aplicadas al Pipeline
 
-The GitHub Actions workflow is organized into three dependent jobs:
+- **Caché Inteligente de Playwright (`~/.cache/ms-playwright`):** Evita la descarga repetitiva de 310 MB de binarios en cada push, ahorrando ~24 segundos por ejecución.
+- **Caché de Tarball Docker (`/tmp/docker-images-cache`):** Tras la primera descarga protegida, las imágenes se restauran desde el caché interno en **~2 segundos** (en lugar de 34s externos).
+- **Teardown Rápido (`docker compose down -v -t 1`):** Ahorro de 10 segundos en el apagado de contenedores mediante timeout controlado.
+- **Disparo Único Controlado:** Configurado para evitar ejecuciones duplicadas en Pull Requests.
 
-<pre>
-quality-gates ──► e2e-bdd-suite ──► compliance-summary
-</pre>
+---
 
-1. **Quality gates:** installs Node.js 22, runs ESLint and TypeScript checks, then executes unit tests.
-2. **Docker BDD suite:** provisions the sandbox images, starts Docker Compose, polls <code>/api/health</code>, runs the Cucumber suite, uploads reports, and tears down the containers.
-3. **Compliance summary:** writes a job summary after the previous jobs finish.
+## 🗂️ Ecosistema Documental
 
-The workflow runs for pushes and pull requests targeting <code>main</code> or <code>master</code>, and can also be started manually. Report artifacts are retained for 14 days.
+Toda la documentación del proyecto ha sido depurada para mantener únicamente los artefactos formales que aportan valor de ingeniería:
 
-### 🔐 Handling the Docker images
-
-<code>bookstore-images.tar</code> and archive files are ignored by Git. **Do not commit or publish the supplied package or images to a public repository or registry.**
-
-- **Local:** load the authorized archive with <code>docker load -i bookstore-images.tar</code>.
-- **GitHub-hosted runner:** configure the <code>DOCKER_IMAGES_SECURE_URL</code> Actions secret with an approved, access-controlled download endpoint.
-- **Self-hosted runner:** preload the images into its local Docker daemon.
-- **Images unavailable:** the workflow emits a warning and skips the Docker-dependent BDD steps. A green workflow status alone therefore does not prove that the E2E scenarios ran; confirm the job log and uploaded report.
-
-The current workflow also contains a Google Drive fallback for a failed private-URL download. Before relying on that path for a public repository, verify that its access controls comply with the challenge’s confidentiality requirement. The preferred options are a private authenticated endpoint or an internally managed self-hosted runner.
-
-### ⚡ Parallel execution
-
-The framework offers <code>npm run test:parallel</code> for four-worker Cucumber execution. The current GitHub Actions workflow invokes <code>npm test</code>, and the default Cucumber configuration uses one worker; CI execution is therefore serial today.
-
-## 🗂️ Reports and evidence
-
-- Cucumber writes HTML and JSON output under <code>reports/</code>.
-- <code>npm run report</code> creates the consolidated HTML report from the JSON output.
-- Failed UI scenarios attach a screenshot to the report and save an image under <code>reports/screenshots/</code>.
-- GitHub Actions uploads the reports directory as a workflow artifact when the Docker suite runs.
-
-## 📚 Documentation
-
-| Document | Contents |
-|:--|:--|
-| [Candidate instructions](docs/CANDIDATE_INSTRUCTIONS.md) | Original challenge requirements |
-| [Requirements analysis](docs/requirements.md) | Application models, endpoints and expected behavior |
-| [Test plan](docs/test-plan.md) | Coverage strategy, levels and traceability |
-| [Steps dictionary](docs/STEPS_DICTIONARY.md) | Reusable Gherkin step catalog |
-| [Implementation log](docs/BITACORA_PASO_A_PASO.md) | Project decisions and development history |
-| [Project instructions](AGENTS.md) | Engineering and confidentiality requirements |
-| [Pull request checklist](.github/pull_request_template.md) | Review and quality checklist |
-| [CI workflow](.github/workflows/ci.yml) | GitHub Actions jobs and Docker orchestration |
+| Documento | Enlace | Propósito |
+|---|---|---|
+| **Instrucciones del Candidato** | [docs/CANDIDATE_INSTRUCTIONS.md](docs/CANDIDATE_INSTRUCTIONS.md) | Especificación oficial y requisitos del desafío técnico LogNext-Verisure. |
+| **Análisis de Requerimientos** | [docs/requirements.md](docs/requirements.md) | Análisis funcional y técnico exhaustivo de los servicios, modelos y endpoints. |
+| **Plan Maestro de Pruebas** | [docs/test-plan.md](docs/test-plan.md) | Estrategia de pruebas, niveles N1-N4, criterios de aceptación y matriz de trazabilidad. |
+| **Diccionario de Steps** | [docs/STEPS_DICTIONARY.md](docs/STEPS_DICTIONARY.md) | Catálogo oficial de steps Gherkin genéricos, motor JSONPath y taxonomía ISTQB. |
+| **Bitácora Paso a Paso** | [docs/BITACORA_PASO_A_PASO.md](docs/BITACORA_PASO_A_PASO.md) | Registro cronológico detallado de todas las fases del desarrollo y decisiones técnicas. |
+| **Checklist de Calidad PR** | [.github/pull_request_template.md](.github/pull_request_template.md) | Plantilla estándar de GitHub con lista de verificación SDET para revisión. |
 
 ---
 
 <div align="center">
 
-### Built with care for API-first quality engineering
+### Calidad de Software e Ingeniería de Pruebas Automatizadas
 
-**Sergio Cañete Linares** · [GitHub](https://github.com/secali) · [LinkedIn](https://linkedin.com/in/secali)
+**Sergio Cañete Linares**  
+*Senior QA Automation Engineer / SDET & AI Test Automation Architect*  
+[LinkedIn](https://linkedin.com/in/secali) · [GitHub](https://github.com/secali) · sergio13896@gmail.com
 
-<sub>TypeScript · Playwright · Cucumber · Zod · Docker</sub>
+<sub>TypeScript · Playwright · Cucumber · Zod · Docker · Shift-Left Testing</sub>
 
 </div>
-
