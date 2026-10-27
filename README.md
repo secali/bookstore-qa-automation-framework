@@ -1,157 +1,231 @@
-# 🚀 BookStore QA Automation Framework (API-First 70% & UI 30%)
+<div align="center">
 
-> **Desafío Técnico:** QA Automation Engineer (API-First & CI/CD Focus) — LogNext / Verisure  
-> **Autor & Arquitecto:** **Sergio Cañete Linares** (Senior QA Automation Engineer / SDET & AI Test Automation Architect)  
-> **Stack:** TypeScript + Playwright + Cucumber BDD + Zod + Docker CI/CD  
-> **Contacto:** sergio13896@gmail.com | [LinkedIn](https://linkedin.com/in/secali) | [GitHub](https://github.com/secali) | +34 661 15 71 64
+# 📚 BookStore QA Automation
 
----
+### **API-first. Contract-driven. Built for reliable releases.**
 
-## 🧭 1. Visión y Filosofía de Arquitectura
+A practical, API-led test automation framework for the BookStore QA Sandbox, built with **TypeScript**, **Playwright**, **Cucumber BDD**, **Zod**, and **Docker**.
 
-Este framework traslada la experiencia senior en **Java + Cucumber / Rest Assured** a un ecosistema moderno y de alto rendimiento en **TypeScript + Playwright**, manteniendo los principios de mantenibilidad, desacoplamiento y escalabilidad:
+<br>
 
-```text
-┌────────────────────────────────────────────────────────────────────────┐
-│                   CAPA BDD DECLARATIVA (Gherkin)                       │
-│           tests/features/api/          tests/features/ui/              │
-└──────────────────────────────────┬─────────────────────────────────────┘
-                                   │
-                                   ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│            CAPA DE STEP DEFINITIONS GENÉRICOS & PARAMETRIZABLES        │
-│          api.steps.ts (API Engine)      ui.steps.ts (UI Engine)        │
-└──────────────────────────────────┬─────────────────────────────────────┘
-                                   │
-                                   ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│      DEPENDENCY INJECTION & CONTEXTO COMPARTIDO (CustomWorld)          │
-│    Equivalente a PicoContainer en Java: Estado aislado por escenario   │
-└──────────────────┬───────────────────────────────┬─────────────────────┘
-                   │                               │
-                   ▼ (70% Scope)                   ▼ (30% Scope)
-┌──────────────────────────────────────┐ ┌───────────────────────────────┐
-│     CLIENTES API & CONTRATOS ZOD     │ │    PAGE OBJECTS ACCESIBLES    │
-│  • AuthClient      • BooksClient     │ │  • LoginPage    • BooksPage   │
-│  • Zod Schemas     • Error Envelope  │ │  • Modales      • getByRole   │
-└──────────────────────────────────────┘ └───────────────────────────────┘
-```
+[![CI](https://github.com/secali/bookstore-qa-automation-framework/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/secali/bookstore-qa-automation-framework/actions/workflows/ci.yml)
+![Node.js](https://img.shields.io/badge/Node.js-22-339933?logo=node.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)
+![Playwright](https://img.shields.io/badge/Playwright-API%20%2B%20UI-2EAD33?logo=playwright&logoColor=white)
+![Cucumber](https://img.shields.io/badge/BDD-Cucumber-23D96C?logo=cucumber&logoColor=white)
+![Zod](https://img.shields.io/badge/Contracts-Zod-3E67B1)
+![Docker](https://img.shields.io/badge/Environment-Docker-2496ED?logo=docker&logoColor=white)
 
-### Principios Fundamentales:
-1. **Pirámide 70% API / 30% UI**: Cobertura exhaustiva en capa de servicios (códigos HTTP, contratos, integridad transaccional) y pruebas E2E de valor en interfaz gráfica.
-2. **Steps Genéricos y Reutilizables (Zero Orphan Steps)**: Pasos parametrizables con Cucumber Expressions y Data Tables, evitando la duplicación de código.
-3. **Validación Fuerte de Contratos (Zod)**: Verificación en tiempo de ejecución de las especificaciones OpenAPI (`/api/docs.json`) y del envelope de error estandarizado:
-   ```json
-   { "code": "VALIDATION_ERROR", "message": "Validation failed.", "errors": { ... } }
-   ```
-4. **Optimización Híbrida de Sesiones**: En pruebas de UI que requieren login previo, se inyecta la sesión autenticada vía API en `localStorage`, evitando logins repetitivos por UI y reduciendo tiempos de suite.
-5. **Aislamiento e Idempotencia**: Cada prueba genera datos dinámicos con `@faker-js/faker` y realiza auto-limpieza (teardown) en el hook `After`, preservando los 5 libros semilla.
+<br>
+
+**[Quick start](#-quick-start)** · **[Test commands](#-run-the-tests)** · **[CI/CD](#-ci-cd)** · **[Architecture](#-architecture)** · **[Documentation](#-documentation)**
+
+</div>
 
 ---
 
-## 📦 2. Requisitos Previos y Entorno
+## ✨ The project at a glance
 
-- **Node.js**: v18 o superior (v20 recomendada).
-- **Docker Desktop** (o Docker Engine + Docker Compose v2).
-- **Git**.
+| 🔌 API-first coverage | 🖥️ UI where it matters | 🧪 BDD and contracts | 🔒 Confidential Docker |
+|:---:|:---:|:---:|:---:|
+| Target: **70% API** | Target: **30% UI** | Gherkin + **Zod** | Images stay out of public Git and registries |
+| Current feature set: **13 API** scenarios | **6 UI / hybrid** scenarios | **19 BDD** scenarios in total | Loaded locally with <code>docker load</code> |
+
+The current feature distribution is approximately **68% API / 32% UI**, close to the 70/30 design target. The API suite covers authentication, book CRUD, search, validation, response contracts, and error handling. The UI suite focuses on authentication, catalog management, and API-to-UI flows.
+
+## 🧭 What makes this framework useful
+
+- **Fast feedback at the service layer:** typed API clients use Playwright’s <code>APIRequestContext</code>.
+- **Contract checks at runtime:** Zod schemas validate book, authentication, and standard error responses.
+- **Readable behavior:** Cucumber features express business flows in Gherkin; steps remain reusable and independent of raw selectors.
+- **Focused UI coverage:** Playwright page objects and components use accessible locators where available.
+- **Hybrid setup:** create state through the API, then verify the outcome in the browser.
+- **Scenario-local context:** Cucumber’s custom World holds each scenario’s API, browser, token, and temporary book IDs.
+- **Failure evidence:** failed UI scenarios capture screenshots for the Cucumber report.
+
+## 🏗️ Architecture
+
+<pre>
+tests/
+├── features/
+│   ├── api/                  Authentication, books, search, contracts and errors
+│   └── ui/                   Login, catalog and hybrid API-to-UI flows
+├── step-definitions/
+│   ├── api/                  Reusable API steps
+│   └── ui/                   Reusable browser steps
+└── unit/                     Tests for JSONPath, templates and DataTables
+
+src/
+├── api/
+│   ├── clients/              Auth, books and generic HTTP clients
+│   ├── schemas/              Zod contracts and schema registry
+│   └── types/                API DTOs and shared types
+├── support/                  Custom World, hooks and test utilities
+└── ui/
+    ├── pages/                Login, registration and books pages
+    └── components/           Book and delete modals
+
+.github/workflows/ci.yml      Quality gates, Docker BDD suite and summary
+docs/                         Requirements, test plan and implementation notes
+</pre>
+
+### 🔁 A scenario’s journey
+
+<div align="center">
+
+**Gherkin feature** → **Reusable step** → **API client / Page Object** → **Zod assertion** → **Report**
+
+</div>
+
+## 🚀 Quick start
+
+### Requirements
+
+- **Node.js 18+** and npm
+- **Docker Desktop** or Docker Engine with **Docker Compose v2**
+- **Git**
+- The supplied **BookStore Docker image archive** for local execution
+- Chromium installed through Playwright
+
+### 1. Install the framework
+
+    npm ci
+    npx playwright install chromium
+
+On Linux runners, install the browser’s system packages with:
+
+    npx playwright install --with-deps chromium
+
+### 2. Load the local test environment
+
+Obtain <code>bookstore-images.tar</code> through the authorized challenge package or another approved private delivery path. The archive is intentionally excluded from Git.
+
+    docker load -i bookstore-images.tar
+    docker compose up -d
+    docker compose ps
+
+Wait until MongoDB and the backend report healthy. The frontend starts after the backend health check succeeds.
+
+| Service | Local URL |
+|:--|:--|
+| BookStore UI | [http://localhost:3000](http://localhost:3000) |
+| REST API | [http://localhost:5000/api](http://localhost:5000/api) |
+| Swagger UI | [http://localhost:5000/api/docs](http://localhost:5000/api/docs) |
+| API health | [http://localhost:5000/api/health](http://localhost:5000/api/health) |
+
+The sandbox seeds an administrator account for local testing. Defaults are documented in <code>.env.example</code>; do not reuse sandbox credentials outside this environment.
+
+### 3. Configure local settings (optional)
+
+Copy <code>.env.example</code> to <code>.env</code> and adjust values only when your local environment needs them.
+
+| Variable | Default | Purpose |
+|:--|:--|:--|
+| <code>API_BASE_URL</code> | <code>http://localhost:5000/api</code> | REST API base URL |
+| <code>UI_BASE_URL</code> | <code>http://localhost:3000</code> | Frontend base URL |
+| <code>HEADLESS</code> | <code>true</code> | Run Playwright without a visible browser |
+| <code>SEED_ADMIN_EMAIL</code> | <code>admin@sandbox.com</code> | Seed administrator email |
+| <code>SEED_ADMIN_PASSWORD</code> | <code>admin123</code> | Seed administrator password |
+| <code>DEFAULT_TIMEOUT</code> | <code>15000</code> | Default Cucumber step timeout in milliseconds |
+
+### 4. Run the suite
+
+    npm test
+
+When you finish, stop the containers. The <code>-v</code> option also removes the sandbox database volume and resets its data.
+
+    docker compose down -v
+
+## 🧪 Run the tests
+
+| Command | What it runs |
+|:--|:--|
+| <code>npm test</code> | Complete Cucumber BDD suite |
+| <code>npm run test:parallel</code> | Complete suite with 4 Cucumber workers |
+| <code>npm run test:api</code> | Features tagged <code>@api</code> |
+| <code>npm run test:ui</code> | Features tagged <code>@ui</code> |
+| <code>npm run test:smoke</code> | Features tagged <code>@smoke</code> |
+| <code>npm run test:regression</code> | Features tagged <code>@regression</code> |
+| <code>npm run test:contracts</code> | Features tagged <code>@contracts</code> |
+| <code>npm run test:hybrid</code> | Features tagged <code>@hybrid</code> |
+| <code>npm run test:unit</code> | Unit checks for JSONPath, template resolution and DataTable parsing |
+| <code>npm run lint</code> | ESLint over TypeScript source and steps |
+| <code>npx tsc --noEmit</code> | TypeScript type check |
+| <code>npm run report</code> | Build the consolidated HTML report from Cucumber JSON |
+
+The API and UI suites need the sandbox running. Unit tests and linting do not.
+
+## 📊 Coverage map
+
+| Area | Scenarios | Representative checks |
+|:--|--:|:--|
+| Authentication | API + UI | Successful login, invalid credentials, registration |
+| Book catalog | API + UI | List, create, retrieve, update, delete |
+| Search | API | Search results and catalog filtering |
+| Contracts and validation | API | Zod response contracts, invalid payloads, error envelope |
+| Hybrid flows | API → UI | Create through REST, verify in the browser |
+| Framework utilities | Unit | JSONPath, dynamic templates and DataTable parsing |
+
+Tests use dynamic values for generated data where supported. Book records created through the API client are tracked for cleanup in the Cucumber <code>After</code> hook; the UI create-and-delete scenario removes its record in the scenario. Seed records are used for read-only checks and are not modified.
+
+## ⚙️ CI/CD
+
+The GitHub Actions workflow is organized into three dependent jobs:
+
+<pre>
+quality-gates ──► e2e-bdd-suite ──► compliance-summary
+</pre>
+
+1. **Quality gates:** installs Node.js 22, runs ESLint and TypeScript checks, then executes unit tests.
+2. **Docker BDD suite:** provisions the sandbox images, starts Docker Compose, polls <code>/api/health</code>, runs the Cucumber suite, uploads reports, and tears down the containers.
+3. **Compliance summary:** writes a job summary after the previous jobs finish.
+
+The workflow runs for pushes and pull requests targeting <code>main</code> or <code>master</code>, and can also be started manually. Report artifacts are retained for 14 days.
+
+### 🔐 Handling the Docker images
+
+<code>bookstore-images.tar</code> and archive files are ignored by Git. **Do not commit or publish the supplied package or images to a public repository or registry.**
+
+- **Local:** load the authorized archive with <code>docker load -i bookstore-images.tar</code>.
+- **GitHub-hosted runner:** configure the <code>DOCKER_IMAGES_SECURE_URL</code> Actions secret with an approved, access-controlled download endpoint.
+- **Self-hosted runner:** preload the images into its local Docker daemon.
+- **Images unavailable:** the workflow emits a warning and skips the Docker-dependent BDD steps. A green workflow status alone therefore does not prove that the E2E scenarios ran; confirm the job log and uploaded report.
+
+The current workflow also contains a Google Drive fallback for a failed private-URL download. Before relying on that path for a public repository, verify that its access controls comply with the challenge’s confidentiality requirement. The preferred options are a private authenticated endpoint or an internally managed self-hosted runner.
+
+### ⚡ Parallel execution
+
+The framework offers <code>npm run test:parallel</code> for four-worker Cucumber execution. The current GitHub Actions workflow invokes <code>npm test</code>, and the default Cucumber configuration uses one worker; CI execution is therefore serial today.
+
+## 🗂️ Reports and evidence
+
+- Cucumber writes HTML and JSON output under <code>reports/</code>.
+- <code>npm run report</code> creates the consolidated HTML report from the JSON output.
+- Failed UI scenarios attach a screenshot to the report and save an image under <code>reports/screenshots/</code>.
+- GitHub Actions uploads the reports directory as a workflow artifact when the Docker suite runs.
+
+## 📚 Documentation
+
+| Document | Contents |
+|:--|:--|
+| [Candidate instructions](docs/CANDIDATE_INSTRUCTIONS.md) | Original challenge requirements |
+| [Requirements analysis](docs/requirements.md) | Application models, endpoints and expected behavior |
+| [Test plan](docs/test-plan.md) | Coverage strategy, levels and traceability |
+| [Steps dictionary](docs/STEPS_DICTIONARY.md) | Reusable Gherkin step catalog |
+| [Implementation log](docs/BITACORA_PASO_A_PASO.md) | Project decisions and development history |
+| [Project instructions](AGENTS.md) | Engineering and confidentiality requirements |
+| [Pull request checklist](.github/pull_request_template.md) | Review and quality checklist |
+| [CI workflow](.github/workflows/ci.yml) | GitHub Actions jobs and Docker orchestration |
 
 ---
 
-## 🚀 3. Puesta en Marcha de la Infraestructura Local
+<div align="center">
 
-1. **Cargar las imágenes en Docker (solo la primera vez):**
-   ```bash
-   docker load -i bookstore-images.tar
-   ```
+### Built with care for API-first quality engineering
 
-2. **Levantar el entorno contenerizado:**
-   ```bash
-   docker compose up -d
-   ```
+**Sergio Cañete Linares** · [GitHub](https://github.com/secali) · [LinkedIn](https://linkedin.com/in/secali)
 
-3. **Verificar estado de los contenedores (`healthy`):**
-   ```bash
-   docker compose ps
-   ```
-   - **Frontend (React UI):** [http://localhost:3000](http://localhost:3000)
-   - **Backend API REST:** [http://localhost:5000/api](http://localhost:5000/api)
-   - **Documentación Swagger UI:** [http://localhost:5000/api/docs](http://localhost:5000/api/docs)
-   - **Healthcheck:** [http://localhost:5000/api/health](http://localhost:5000/api/health)
+<sub>TypeScript · Playwright · Cucumber · Zod · Docker</sub>
 
----
-
-## 🧪 4. Instalación del Framework y Ejecución de Pruebas
-
-1. **Instalar dependencias del proyecto:**
-   ```bash
-   npm install
-   ```
-
-2. **Instalar los navegadores de Playwright:**
-   ```bash
-   npx playwright install --with-deps chromium
-   ```
-
-### ⚡ Scripts de Ejecución Disponibles
-
-| Comando | Descripción |
-|---|---|
-| `npm test` | Ejecución estándar de toda la suite BDD. |
-| `npm run test:parallel` | **Ejecución multihilo paralela (4 workers)** para máxima velocidad. |
-| `npm run test:api` | Ejecuta exclusivamente la suite de **API / Backend (70%)**. |
-| `npm run test:ui` | Ejecuta exclusivamente la suite de **UI / Frontend (30%)**. |
-| `npm run test:unit` | Ejecuta las **pruebas unitarias** de los motores internos (`jsonpath` y `template-resolver`). |
-| `npm run test:smoke` | Ejecuta los flujos críticos de verificación rápida (`@smoke`). |
-| `npm run test:contracts` | Ejecuta las validaciones de esquemas OpenAPI y envelope de errores (`@contracts`). |
-| `npm run test:hybrid` | Ejecuta las pruebas híbridas (inyección API y verificación UI). |
-| `npm run dashboard` | Abre el **dashboard interactivo** visual en español para la defensa técnica. |
-| `npm run report` | Genera y consolida el reporte visual en `reports/cucumber-html-report.html`. |
-
----
-
-## 📊 5. Reportabilidad y Trazabilidad
-
-- **Reporte Cucumber HTML**: Generado automáticamente en `reports/cucumber-report.html` y consolidable con `npm run report`.
-- **Capturas de Pantalla en Fallos**: En caso de fallo en cualquier escenario UI, el hook `After` toma un pantallazo a pantalla completa y lo adjunta al reporte en `reports/screenshots/`.
-- **Trazas de Playwright**: Se retienen trazas interactivas (`trace.zip`) para depuración paso a paso en caso de regresiones.
-
----
-
-## 🚢 6. Estrategia de CI/CD para Docker Local (`bookstore-images.tar`)
-
-### 🔍 El Desafío
-Las instrucciones del reto estipulan:
-> *"El entorno se entrega únicamente como imágenes Docker dentro del archivo bookstore-images.tar y no está publicado en ningún registro. No publiques el paquete ni las imágenes en repositorios o registros públicos. Decide cómo disponibilizar el entorno dentro de tu pipeline y documenta en tu README.md la solución elegida, sus limitaciones y las alternativas que consideraste."*
-
-### ⚖️ Análisis de Alternativas Consideradas
-
-1. **Registro Docker Público (Docker Hub / GHCR Público)**:
-   - *Evaluación:* ❌ **Descartada categóricamente**. Violaría la cláusula de confidencialidad y propiedad intelectual del ejercicio.
-2. **Registro Docker Privado con Credenciales en Secrets**:
-   - *Evaluación:* ⚠️ Funcional en entornos corporativos cerrados, pero añade fricción a los evaluadores del proceso que no dispongan de credenciales compartidas para clonar o evaluar el workflow.
-3. **GitHub Actions Cache (`actions/cache`) sobre Docker**:
-   - *Evaluación:* ✅ Muy eficiente para ejecuciones sucesivas, pero requiere que la primera ejecución cargue el archivo base.
-4. **Solución Elegida: Aislamiento Total en `.gitignore` + Carga Condicional Hermética**:
-   - *Evaluación:* 🏆 **Elegida e implementada**.
-   - **Garantía de Confidencialidad:** El archivo `bookstore-images.tar` está **estrictamente ignorado en `.gitignore` y desvinculado de Git**. De este modo, al publicar el repositorio en GitHub, **nunca se expone ni se sube el paquete de imágenes a internet**, respetando la cláusula de confidencialidad al 100%.
-   - **Estrategia en el Runner de CI/CD (`.github/workflows/ci.yml`):**
-     1. **Runner Self-Hosted / Entorno Corporativo Air-Gapped:** Si el runner dispone de las imágenes pre-cacheadas en su daemon Docker local, las reutiliza inmediatamente.
-     2. **Almacenamiento Privado Seguro (GitHub Secret):** Si se ejecuta en runners efímeros de GitHub Actions (`ubuntu-latest`), el workflow soporta la descarga autenticada desde una URL privada temporal mediante el secret `DOCKER_IMAGES_SECURE_URL`.
-     3. **Fallback Local:** Si el archivo `bookstore-images.tar` existe en el runner (ejecución local o runner dedicado), ejecuta `docker load -i bookstore-images.tar`.
-     4. Realiza un **polling activo de salud** (`curl --retry-connrefused`) sobre `http://localhost:5000/api/health` antes de iniciar pruebas.
-     5. Lanza la suite BDD completa (`npm test`).
-     6. Publica los reportes HTML enriquecidos como artefactos del workflow (`actions/upload-artifact@v4`).
-     7. Ejecuta teardown con `docker compose down -v`.
-
----
-
-## 📂 7. Documentación Oficial y Ecosistema de Arquitectura
-
-- [docs/CANDIDATE_INSTRUCTIONS.md](./docs/CANDIDATE_INSTRUCTIONS.md): **Especificación y Requisitos Oficiales** del desafío técnico entregado por LogNext-Verisure.
-- [docs/requirements.md](./docs/requirements.md): **Análisis Exhaustivo Funcional y Técnico** de los modelos, servicios y endpoints.
-- [docs/test-plan.md](./docs/test-plan.md): **Plan Maestro de Pruebas** con desglose por niveles N1-N4 y matriz de trazabilidad.
-- [docs/STEPS_DICTIONARY.md](./docs/STEPS_DICTIONARY.md): **Diccionario Oficial de Steps Genéricos**, motor dinámico JSONPath, soporte de DataTables y taxonomía ISTQB.
-- [docs/BITACORA_PASO_A_PASO.md](./docs/BITACORA_PASO_A_PASO.md): **Bitácora Integral Paso a Paso** con el registro cronológico y detallado de todas las fases del desarrollo y arquitectura.
-- [dashboard/index.html](./dashboard/index.html): **Dashboard Interactivo SDET** con métricas en tiempo real, simulador interactivo de steps y pitch ejecutivo de defensa.
-
+</div>
 

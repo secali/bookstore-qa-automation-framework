@@ -19,4 +19,3 @@ Describir brevemente el propósito de esta PR y los componentes afectados.
 
 ## 📸 Evidencias de Ejecución
 - Reporte Cucumber HTML generado: `reports/cucumber-html-report.html`
-- Dashboard interactivo disponible: `dashboard/index.html`

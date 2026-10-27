@@ -29,11 +29,14 @@ jobs:
       - name: 📦 Install NPM Dependencies
         run: npm ci
 
-      - name: 🔍 Static Analysis (ESLint) & TypeScript Typecheck
+      - name: 🔍 Static Analysis (ESLint) & TypeScript Typecheck (Concurrent)
         run: |
-          echo "Ejecutando verificación de tipos estricta y linters..."
-          npm run lint
-          npx tsc --noEmit
+          echo "Ejecutando verificación de tipos estricta y linters en paralelo..."
+          npm run lint &
+          PID_LINT=$!
+          npx tsc --noEmit &
+          PID_TSC=$!
+          wait $PID_LINT && wait $PID_TSC
 
       - name: 🧪 Run Architecture Unit Tests (JSONPath, TemplateResolver, DataTableParser)
         run: |
@@ -62,33 +65,55 @@ jobs:
       - name: 📦 Install NPM Dependencies
         run: npm ci
 
+      - name: 🎭 Cache Playwright Chromium
+        id: playwright_cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
       - name: 🎭 Install Playwright Chromium & System Dependencies
+        if: steps.playwright_cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
+
+      - name: 📦 Cache Docker Images Tarball
+        id: docker_cache
+        uses: actions/cache@v4
+        with:
+          path: /tmp/docker-images-cache
+          key: bookstore-images-tar-v1
 
       - name: 🐳 Provision Sandbox Docker Images (Hermetic & Confidential)
         id: docker_provision
         # Cumple estrictamente la cláusula de confidencialidad:
         # El archivo tarball NO se comitea al repositorio público de Git.
-        # Soporta 3 estrategias herméticas:
-        # 1. Secret / Secure Storage: descarga autenticada desde almacenamiento privado protegido.
-        # 2. Archivo local/cache: si bookstore-images.tar existe en runner, lo carga.
-        # 3. Runner Self-Hosted corporativo: imágenes preexistentes en daemon local.
+        # Soporta 4 estrategias herméticas:
+        # 1. Caché interno de CI/CD: reuso de tarball verificado entre ejecuciones.
+        # 2. Secret / Secure Storage: descarga autenticada desde endpoint privado protegido.
+        # 3. Archivo local/runner: si bookstore-images.tar existe en runner, lo carga.
+        # 4. Runner Self-Hosted corporativo: imágenes preexistentes en daemon local.
         run: |
           IMAGES_AVAILABLE=false
-          if [ -f bookstore-images.tar ]; then
+          CACHE_FILE="/tmp/docker-images-cache/bookstore-images.tar"
+
+          if [ -f "$CACHE_FILE" ]; then
+            echo "⚡ Cargando imágenes desde caché rápido de GitHub Actions..."
+            docker load -i "$CACHE_FILE"
+            IMAGES_AVAILABLE=true
+          elif [ -f bookstore-images.tar ]; then
             echo "Cargando imágenes locales desde bookstore-images.tar..."
             docker load -i bookstore-images.tar
             IMAGES_AVAILABLE=true
           elif [ -n "${{ secrets.DOCKER_IMAGES_SECURE_URL }}" ]; then
             echo "Descargando imágenes desde endpoint privado seguro..."
-            curl -s -L "${{ secrets.DOCKER_IMAGES_SECURE_URL }}" -o bookstore-images.tar || true
-            if [ ! -s bookstore-images.tar ] || [ $(wc -c < bookstore-images.tar) -lt 1000000 ]; then
+            mkdir -p /tmp/docker-images-cache
+            curl -s -L "${{ secrets.DOCKER_IMAGES_SECURE_URL }}" -o "$CACHE_FILE" || true
+            if [ ! -s "$CACHE_FILE" ] || [ $(wc -c < "$CACHE_FILE") -lt 1000000 ]; then
               echo "Usando gdown para descarga robusta desde Google Drive..."
               pip install --quiet gdown
-              python3 -m gdown 18mlmaRZXKnWbqLVLmYSRLV3JERHH-wAH -O bookstore-images.tar
+              python3 -m gdown 18mlmaRZXKnWbqLVLmYSRLV3JERHH-wAH -O "$CACHE_FILE"
             fi
-            docker load -i bookstore-images.tar
-            rm -f bookstore-images.tar
+            docker load -i "$CACHE_FILE"
             IMAGES_AVAILABLE=true
           elif docker images --format '{{.Repository}}' | grep -q "bookstore-qa-sandbox-backend"; then
             echo "Imágenes detectadas en el daemon local..."
@@ -157,7 +182,7 @@ jobs:
       - name: 🧹 Cleanup Docker Infrastructure
         if: always() && steps.docker_provision.outputs.images_available == 'true'
         run: |
-          docker compose down -v
+          docker compose down -v -t 1
 
   # ==========================================================================
   # ETAPA 3: Puerta de Calidad Ejecutiva y Resumen de Métricas
@@ -171,7 +196,7 @@ jobs:
     steps:
       - name: 📋 Generate Executive Summary Report
         run: |
-          echo "## 🎯 OmniSpec SDET Framework — CI/CD Execution Summary" >> $GITHUB_STEP_SUMMARY
+          echo "## 🎯 BookStore QA Automation — CI/CD Execution Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Etapa | Estado | Detalle |" >> $GITHUB_STEP_SUMMARY
           echo "|---|:---:|---|" >> $GITHUB_STEP_SUMMARY
