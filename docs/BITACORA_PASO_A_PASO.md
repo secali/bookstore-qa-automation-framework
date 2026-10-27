@@ -376,28 +376,22 @@ Atendiendo a la revisión técnica por pares (*Peer Review*), se blindaron los a
 376: | [dashboard/index.html](file:///c:/Users/PC/Documents/LogNext-Verisure/dashboard/index.html) | Dashboard interactivo visual para defender el framework ante entrevistadores. |
 377: | [dashboard/styles.css](file:///c:/Users/PC/Documents/LogNext-Verisure/dashboard/styles.css) | Sistema de diseño visual glassmorphic y paleta cyber dark en Vanilla CSS. |
 378: | [dashboard/app.js](file:///c:/Users/PC/Documents/LogNext-Verisure/dashboard/app.js) | Lógica interactiva del simulador, filtros ISTQB, diccionario y portapapeles. |
-379: | [docs/PULL_REQUEST.md](file:///c:/Users/PC/Documents/LogNext-Verisure/docs/PULL_REQUEST.md) | Informe formal y completo de la Pull Request para evaluación técnica. |
-380: | [.github/pull_request_template.md](file:///c:/Users/PC/Documents/LogNext-Verisure/.github/pull_request_template.md) | Plantilla estándar de GitHub para Pull Requests con checklist de calidad SDET. |
-381: | [docs/BITACORA_PASO_A_PASO.md](file:///c:/Users/PC/Documents/LogNext-Verisure/docs/BITACORA_PASO_A_PASO.md) | Registro cronológico y detallado de toda la solución (este documento). |
-382: | [docs/INFORME_REVISION_TECNICA_EXPERTOS.md](file:///c:/Users/PC/Documents/LogNext-Verisure/docs/INFORME_REVISION_TECNICA_EXPERTOS.md) | Informe de revisión por pares, trade-offs, limitaciones y mitigaciones. |
-383: | [docs/AUDITORIA_CALIDAD_SDET.md](file:///c:/Users/PC/Documents/LogNext-Verisure/docs/AUDITORIA_CALIDAD_SDET.md) | Informe de auditoría técnica y dictamen sobre la eliminación de steps de dominio. |
-384: | [docs/STEPS_DICTIONARY.md](file:///c:/Users/PC/Documents/LogNext-Verisure/docs/STEPS_DICTIONARY.md) | Diccionario universal de steps genéricos, motor JSONPath, DataTables y taxonomía ISTQB. |
-385: | [.agents/pipeline/ORCHESTRATOR.md](file:///c:/Users/PC/Documents/LogNext-Verisure/.agents/pipeline/ORCHESTRATOR.md) | Orquestador del pipeline de QA multi-agente end-to-end. |
-386: | [.agents/pipeline/agents/](file:///c:/Users/PC/Documents/LogNext-Verisure/.agents/pipeline/agents/) | Especificaciones de Agente 1 (Analyst), Agente 2 (QA Lead) y Agente 3 (SDET). |
-387: | [docs/requirements.md](file:///c:/Users/PC/Documents/LogNext-Verisure/docs/requirements.md) | Análisis funcional y técnico de los servicios, modelos y endpoints. |
-388: | [docs/test-plan.md](file:///c:/Users/PC/Documents/LogNext-Verisure/docs/test-plan.md) | Plan maestro de pruebas con desglose por niveles N1-N4 y matriz de trazabilidad. |
-389: | [src/api/schemas/registry.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/api/schemas/registry.ts) | Registro dinámico universal de esquemas OpenAPI / Zod. |
-390: | [src/support/jsonpath.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/support/jsonpath.ts) | Motor nativo de extracción y mutación por JSONPath en runtime. |
-391: | [src/support/datatable-parser.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/support/datatable-parser.ts) | Parser agnóstico para DataTables y validación multi-campo. |
-392: | [src/support/template-resolver.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/support/template-resolver.ts) | Generador de tokens aleatorios dinámicos (`{{random_*}}`, `{{token}}`, `{{alias}}`). |
-393: | [tests/fixtures/factories/](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/fixtures/factories/) | Fábricas aisladas de datos de prueba (`book.factory.ts`, `user.factory.ts`). |
-394: | [src/ui/support/element-resolver.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/ui/support/element-resolver.ts) | Resolutor agnóstico de páginas, modales, campos, botones y tablas. |
-395: | [src/api/clients/generic-http.client.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/api/clients/generic-http.client.ts) | Cliente HTTP desacoplado para cualquier verbo y endpoint. |
-396: | [tests/features/api/](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/features/api/) | Features BDD de API (Auth, Books CRUD, Search, Contracts & Errors). |
-397: | [tests/features/ui/](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/features/ui/) | Features BDD de UI (Login UI, Books Catalog UI, Hybrid E2E). |
-398: | [tests/step-definitions/api/api.steps.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/step-definitions/api/api.steps.ts) | Step definitions universales consolidadas para API y contratos Zod. |
-399: | [tests/step-definitions/ui/ui.steps.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/step-definitions/ui/ui.steps.ts) | Step definitions universales consolidadas para UI con ElementResolver. |
-400: | [reports/cucumber-html-report.html](file:///c:/Users/PC/Documents/LogNext-Verisure/reports/cucumber-html-report.html) | Reporte consolidado de ejecución de pruebas en HTML enriquecido. |
+379: | [docs/CANDIDATE_INSTRUCTIONS.md](file:///c:/Users/PC/Documents/LogNext-Verisure/docs/CANDIDATE_INSTRUCTIONS.md) | Especificación y requisitos originales del desafío técnico entregado por LogNext-Verisure. |
+380: | [docs/STEPS_DICTIONARY.md](file:///c:/Users/PC/Documents/LogNext-Verisure/docs/STEPS_DICTIONARY.md) | Diccionario oficial de steps genéricos, motor JSONPath, DataTables y taxonomía ISTQB. |
+381: | [docs/BITACORA_PASO_A_PASO.md](file:///c:/Users/PC/Documents/LogNext-Verisure/docs/BITACORA_PASO_A_PASO.md) | Bitácora integral paso a paso con el registro cronológico y exhaustivo de toda la solución. |
+382: | [.github/pull_request_template.md](file:///c:/Users/PC/Documents/LogNext-Verisure/.github/pull_request_template.md) | Plantilla estándar de GitHub para Pull Requests con checklist de calidad SDET. |
+383: | [src/api/schemas/registry.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/api/schemas/registry.ts) | Registro dinámico universal de esquemas OpenAPI / Zod. |
+384: | [src/support/jsonpath.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/support/jsonpath.ts) | Motor nativo de extracción y mutación por JSONPath en runtime. |
+385: | [src/support/datatable-parser.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/support/datatable-parser.ts) | Parser agnóstico para DataTables y validación multi-campo. |
+386: | [src/support/template-resolver.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/support/template-resolver.ts) | Generador de tokens aleatorios dinámicos (`{{random_*}}`, `{{token}}`, `{{alias}}`). |
+387: | [tests/fixtures/factories/](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/fixtures/factories/) | Fábricas aisladas de datos de prueba (`book.factory.ts`, `user.factory.ts`). |
+388: | [src/ui/support/element-resolver.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/ui/support/element-resolver.ts) | Resolutor agnóstico de páginas, modales, campos, botones y tablas. |
+389: | [src/api/clients/generic-http.client.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/src/api/clients/generic-http.client.ts) | Cliente HTTP desacoplado para cualquier verbo y endpoint. |
+390: | [tests/features/api/](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/features/api/) | Features BDD de API (Auth, Books CRUD, Search, Contracts & Errors). |
+391: | [tests/features/ui/](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/features/ui/) | Features BDD de UI (Login UI, Books Catalog UI, Hybrid E2E). |
+392: | [tests/step-definitions/api/api.steps.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/step-definitions/api/api.steps.ts) | Step definitions universales consolidadas para API y contratos Zod. |
+393: | [tests/step-definitions/ui/ui.steps.ts](file:///c:/Users/PC/Documents/LogNext-Verisure/tests/step-definitions/ui/ui.steps.ts) | Step definitions universales consolidadas para UI con ElementResolver. |
+394: | [reports/cucumber-html-report.html](file:///c:/Users/PC/Documents/LogNext-Verisure/reports/cucumber-html-report.html) | Reporte consolidado de ejecución de pruebas en HTML enriquecido. |
 
 
 

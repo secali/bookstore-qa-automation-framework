@@ -145,14 +145,10 @@ Las instrucciones del reto estipulan:
 
 ---
 
-## 📂 7. Documentación Adicional y Ecosistema de Arquitectura
+## 📂 7. Documentación Oficial y Ecosistema de Arquitectura
 
-- [docs/INFORME_REVISION_TECNICA_EXPERTOS.md](./docs/INFORME_REVISION_TECNICA_EXPERTOS.md): **Informe exhaustivo para expertos y revisión por pares (Peer Review)**, con análisis de trade-offs, limitaciones conocidas y mitigaciones.
-- [docs/STEPS_DICTIONARY.md](./docs/STEPS_DICTIONARY.md): Diccionario oficial de steps genéricos y convenciones Cucumber + Playwright (cero steps huérfanos).
-- [docs/AUDITORIA_CALIDAD_SDET.md](./docs/AUDITORIA_CALIDAD_SDET.md): Auditoría completa de estándares Playwright, pirámide de pruebas y dictamen de steps de dominio.
-- [.agents/pipeline/ORCHESTRATOR.md](./.agents/pipeline/ORCHESTRATOR.md): Orquestador del pipeline de QA multi-agente end-to-end (Story Analyst, QA Planner, SDET Implementer).
-- [docs/BITACORA_PASO_A_PASO.md](./docs/BITACORA_PASO_A_PASO.md): Registro cronológico y detallado de todas las fases del desarrollo.
-- [docs/requirements.md](./docs/requirements.md): Análisis exhaustivo funcional y técnico de los servicios, modelos y endpoints.
-- [docs/test-plan.md](./docs/test-plan.md): Plan maestro de pruebas con desglose por niveles N1-N4 y matriz de trazabilidad.
-- [docs/CANDIDATE_INSTRUCTIONS.md](./docs/CANDIDATE_INSTRUCTIONS.md): Especificación original del desafío técnico entregado por LogNext-Verisure.
-- [dashboard/index.html](./dashboard/index.html): Dashboard interactivo visual para la defensa del framework ante el evaluador.
+- [docs/CANDIDATE_INSTRUCTIONS.md](./docs/CANDIDATE_INSTRUCTIONS.md): **Especificación y Requisitos Oficiales** del desafío técnico entregado por LogNext-Verisure.
+- [docs/STEPS_DICTIONARY.md](./docs/STEPS_DICTIONARY.md): **Diccionario Oficial de Steps Genéricos**, motor dinámico JSONPath, soporte de DataTables y taxonomía ISTQB.
+- [docs/BITACORA_PASO_A_PASO.md](./docs/BITACORA_PASO_A_PASO.md): **Bitácora Integral Paso a Paso** con el registro cronológico y detallado de todas las fases del desarrollo y arquitectura.
+- [dashboard/index.html](./dashboard/index.html): **Dashboard Interactivo SDET** con métricas en tiempo real, simulador interactivo de steps y pitch ejecutivo de defensa.
+
