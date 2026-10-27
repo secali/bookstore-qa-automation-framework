@@ -56,7 +56,12 @@ jobs:
             IMAGES_AVAILABLE=true
           elif [ -n "${{ secrets.DOCKER_IMAGES_SECURE_URL }}" ]; then
             echo "Descargando imágenes desde endpoint privado seguro..."
-            curl -s -L "${{ secrets.DOCKER_IMAGES_SECURE_URL }}" -o bookstore-images.tar
+            curl -s -L "${{ secrets.DOCKER_IMAGES_SECURE_URL }}" -o bookstore-images.tar || true
+            if [ ! -s bookstore-images.tar ] || [ $(wc -c < bookstore-images.tar) -lt 1000000 ]; then
+              echo "Usando gdown para descarga robusta desde Google Drive..."
+              pip install --quiet gdown
+              python3 -m gdown 18mlmaRZXKnWbqLVLmYSRLV3JERHH-wAH -O bookstore-images.tar
+            fi
             docker load -i bookstore-images.tar
             rm -f bookstore-images.tar
             IMAGES_AVAILABLE=true
